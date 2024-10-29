@@ -59,6 +59,8 @@ public:
 
 private:
     sf::Image image_;
+
+    friend class Texture;
 };
 
 class Texture : public ITexture

@@ -408,15 +408,27 @@ vec2u Texture::getSize() const
 }
 std::unique_ptr<IImage> Texture::copyToImage() const
 {
-    // TODO
+    sf::Image sf_image = texture_.copyToImage();
+
+    auto unique_img = std::make_unique<Image>();
+    unique_img->image_ = std::move(sf_image);
+
+    return unique_img;
 }
+
 void Texture::update(const IImage *image)
 {
-    // TODO
+    const Image* img = static_cast<const Image*>(image);
+
+    texture_.loadFromImage(img->image_);
 }
 void Texture::update(const Color *pixels)
 {
-    // TODO
+    vec2u size = getSize();
+
+    Image img;
+    img.create(size, pixels);
+    update(&img);
 }
 void Texture::update(const Color *pixels, unsigned int width, unsigned int height,
                                           unsigned int x,     unsigned int y)

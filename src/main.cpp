@@ -35,8 +35,11 @@ int main()
 
     sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
+    sfm::Image image;
+    image.create(100, 100, psapi::sfm::RED);
+
     sfm::Texture texture;
-    texture.loadFromFile("assets/textures/blue_hovered.png");
+    texture.update(&image);
 
     sfm::Sprite sprite;
     sprite.setTexture(&texture, true);
