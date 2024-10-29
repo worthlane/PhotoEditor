@@ -327,47 +327,61 @@ void PixelsArray::draw(IRenderWindow *window) const
 
 void Image::create(unsigned int width, unsigned int height, const Color &color)
 {
-    // TODO
+    image_.create(width, height, sf::Color(color.r, color.g, color.b, color.a));
 }
 void Image::create(vec2u size, const Color &color)
 {
-    // TODO
+    image_.create(size.x, size.y, sf::Color(color.r, color.g, color.b, color.a));
 }
 
 void Image::create(unsigned int width, unsigned int height, const Color *pixels)
 {
-    // TODO
+    image_.create(width, height, sf::Color(0, 0, 0, 0));
+
+    for (size_t y = 0; y < height; y++)
+    {
+        for (size_t x = 0; x < width; x++)
+        {
+            image_.setPixel(x, y, sf::Color(pixels[y * width + x].r, pixels[y * width + x].g,
+                                            pixels[y * width + x].b, pixels[y * width + x].a));
+        }
+    }
 }
 void Image::create(vec2u size, const Color *pixels)
 {
-    // TODO
+    create(size.x, size.y, pixels);
 }
 
 bool Image::loadFromFile(const std::string &filename)
 {
-    // TODO
+    return image_.loadFromFile(filename);
 }
 
 vec2u Image::getSize() const
 {
-    // TODO
+    sf::Vector2u size = image_.getSize();
+
+    return {size.x, size.y};
 }
 void Image::setPixel(unsigned int x, unsigned int y, const Color &color)
 {
-    // TODO
+    image_.setPixel(x, y, sf::Color(color.r, color.g, color.b, color.a));
 }
+
 void Image::setPixel(vec2u pos, const Color &color)
 {
-    // TODO
+    setPixel(pos.x, pos.y, color);
 }
 
 Color Image::getPixel(unsigned int x, unsigned int y) const
 {
-    // TODO
+    sf::Color color = image_.getPixel(x, y);
+
+    return {color.r, color.g, color.b, color.a};
 }
 Color Image::getPixel(vec2u pos) const
 {
-    // TODO
+    return getPixel(pos.x, pos.y);
 }
 
 // *************************************************************************
@@ -411,9 +425,48 @@ void Texture::update(const Color *pixels, unsigned int width, unsigned int heigh
 }
 
 // *************************************************************************
-//                          SHAPE
+//                          MOUSE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
+bool Mouse::isButtonPressed(Button button)
+{
+    return sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(button));
+}
+
+vec2i Mouse::getPosition()
+{
+    sf::Vector2i position = sf::Mouse::getPosition();
+
+    return vec2i(position.x, position.y);
+}
+
+vec2i Mouse::getPosition(const IRenderWindow* relative_to)
+{
+    auto window = dynamic_cast<const RenderWindow*>(relative_to);
+
+    if (window)
+    {
+        sf::Vector2i position = sf::Mouse::getPosition(window->window_);
+        return vec2i(position.x, position.y);
+    }
+
+    return vec2i(0, 0);
+}
+
+void Mouse::setPosition(const vec2i& position)
+{
+    sf::Mouse::setPosition(sf::Vector2i(position.x, position.y));
+}
+
+void Mouse::setPosition(const vec2i& position, const IRenderWindow* relative_to)
+{
+    auto window = dynamic_cast<const RenderWindow*>(relative_to);
+
+    if (window)
+    {
+        sf::Mouse::setPosition(sf::Vector2i(position.x, position.y), window->window_);
+    }
+}
 
 } // sfm
 

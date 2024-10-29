@@ -8,37 +8,31 @@ namespace psapi {
 class AWindow : public IWindow
 {
 public:
-    virtual ~AWindow();
+    virtual ~AWindow() = default;
 
-    virtual wid_t getId() const                 = 0;
+    virtual wid_t getId() const override { return id_; };
 
-    virtual vec2i getPos() const  = 0;
-    virtual vec2u getSize() const = 0;
-
-    virtual void setParent(const IWindow* parent) = 0;
-
-    virtual void forceActivate()   = 0;
-    virtual void forceDeactivate() = 0;
-    virtual bool isActive() const  = 0;
-
-    virtual bool isWindowContainer() const = 0;
-
-private:
+protected:
     wid_t id_ = kInvalidWindowId;
 };
 
 
-class IWindowContainer : public IWindow
+class AWindowContainer : public IWindowContainer
 {
 public:
+
+    virtual wid_t getId() const override { return id_; };
 
     virtual void addWindow(std::unique_ptr<IWindow> window) = 0;
     virtual void removeWindow(wid_t id) = 0;
 
-    virtual bool isWindowContainer() const override;
+    virtual bool isWindowContainer() const override { return true; };
+
+protected:
+    wid_t id_ = kInvalidWindowId;
 };
 
-class IWindowVector : public IWindowContainer
+class AWindowVector : public IWindowVector
 {
 public:
     virtual void addWindow(std::unique_ptr<IWindow> window) override;
@@ -47,16 +41,15 @@ public:
     virtual       IWindow* getWindowById(wid_t id)       override;
     virtual const IWindow* getWindowById(wid_t id) const override;
 
-    virtual bool isWindowContainer() const override;
+    virtual bool isWindowContainer() const override { return false; };
 
 protected:
     std::vector<std::unique_ptr<IWindow> > windows_; ///< Vector of windows.
+
+    wid_t id_ = kInvalidWindowId;
 };
 
 IWindowContainer* getRootWindow();
-
-using generalFunction = void* (*)(void*);
-generalFunction getGeneralFunction(const std::string& name);
 
 } // namespace psapi
 

@@ -43,7 +43,7 @@ GRAPHICS_DIR = $(SOURCE_DIR)/graphics
 STANDARD_SOURCES = api_system.cpp
 STANDARD_DIR = $(SOURCE_DIR)/standard
 
-API_SOURCES =
+API_SOURCES = canvas.cpp
 API_DIR = $(SOURCE_DIR)/api
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
@@ -58,25 +58,16 @@ all: $(EXECUTABLE)
 
 # -------------------------------------------------------------------------------
 
-$(EXECUTABLE): $(OBJECTS) $(GUI_OBJECTS) $(MODEL_OBJECTS) $(MATHS_OBJECTS) $(GRAPHICS_OBJECTS) $(UTILS_OBJECTS)
+$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS)
 	$(CXX) $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
-$(BUILD_DIR)/%.o : $(GUI_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS)
-
-$(BUILD_DIR)/%.o : $(MODEL_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS)
-
-$(BUILD_DIR)/%.o : $(MATHS_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS)
-
 $(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
-$(BUILD_DIR)/%.o : $(UTILS_DIR)/%.cpp
+$(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 
@@ -85,7 +76,7 @@ $(BUILD_DIR)/%.o : $(UTILS_DIR)/%.cpp
 .PHONY: clean makedirs
 
 clean:
-	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o
+	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o *.dll *.so *.dylib
 
 makedirs:
 	mkdir -p $(BUILD_DIR)

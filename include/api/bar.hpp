@@ -5,14 +5,17 @@
 
 namespace psapi {
 
-class BarButton : public IBarButton
+class ABarButton : public IBarButton
 {
 public:
-    virtual void  setState(State state) override;
-    virtual State getState() const override; // return state
+    virtual void  setState(State state) override { state_ = state; };
+    virtual State getState() const override      { return state_; };
+
+private:
+    State state_ = State::Normal;
 };
 
-class Bar : public IBar
+class ABar : public IBar
 {
 public:
     virtual ChildInfo getNextChildInfo() const override;

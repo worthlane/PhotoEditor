@@ -1,18 +1,38 @@
 #include <assert.h>
 #include <iostream>
 #include <time.h>
+#include <dlfcn.h>
 
 #include "graphics/my_sfml.hpp"
+#include "api/canvas.hpp"
 
-static const double DELTA_ANGLE = 1e-4;
+#define DLL_CHECK(pointer)          if (pointer == nullptr) \
+                                    {                       \
+                                        std::cerr << "Error: " << dlerror() << std::endl; \
+                                        return 1;           \
+                                    }
+
+
+static const char* DYNAMIC_LIB_NAME = "libapi_photoshop.dll";
+
 static const size_t LENGTH = 1280;
 static const size_t WIDTH  = 720;
-static const double SCALE  = 0.05;
 
 using namespace psapi;
 
 int main()
 {
+    /*void* so_lib = dlopen(DYNAMIC_LIB_NAME, RTLD_NOW);
+    DLL_CHECK(so_lib);
+
+    bool (*loadPlugin)() = (bool (*)()) dlsym(so_lib, "loadPlugin");
+    DLL_CHECK(loadPlugin);
+
+    bool (*unloadPlugin)() = (bool (*)()) dlsym(so_lib, "unloadPlugin");
+    DLL_CHECK(unloadPlugin);*/
+
+    //loadPlugin();
+
     sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
     sfm::Texture texture;
@@ -39,6 +59,10 @@ int main()
         window.display();
         window.clear();
     }
+
+    //unloadPlugin();
+
+    //dlclose(so_lib);
 
     return 0;
 }

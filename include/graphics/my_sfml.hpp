@@ -1,5 +1,5 @@
-#ifndef SFML_HPP
-#define SFML_HPP
+#ifndef MY_SFML_HPP
+#define MY_SFML_HPP
 
 #include <SFML/Graphics.hpp>
 
@@ -10,6 +10,13 @@ namespace psapi
 
 namespace sfm
 {
+
+static const Color WHITE = Color(255, 255, 255);
+static const Color BLACK = Color(0, 0, 0);
+
+static const Color RED   = Color(255, 0, 0);
+static const Color GREEN = Color(0, 255, 0);
+static const Color BLUE  = Color(0, 0, 255);
 
 class PixelsArray : public IPixelsArray
 {
@@ -29,7 +36,6 @@ public:
     virtual void draw(IRenderWindow *window) const override;
 };
 
-
 class Image : public IImage
 {
 public:
@@ -43,12 +49,16 @@ public:
 
     virtual bool loadFromFile(const std::string &filename) override;
 
-    virtual vec2u getSize() const override;
     virtual void setPixel(unsigned int x, unsigned int y, const Color &color) override;
     virtual void setPixel(vec2u pos, const Color &color) override;
 
     virtual Color getPixel(unsigned int x, unsigned int y) const override;
     virtual Color getPixel(vec2u pos) const override;
+
+    virtual vec2u getSize() const override;
+
+private:
+    sf::Image image_;
 };
 
 class Texture : public ITexture
@@ -154,6 +164,7 @@ private:
 
     friend class Sprite;
     friend class Text;
+    friend class Mouse;
 };
 
 
