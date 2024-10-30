@@ -7,12 +7,12 @@
 namespace psapi
 {
 
-class Layer : public ILayer
+class SimpleLayer : public ILayer
 {
 public:
-    Layer(const size_t width, const size_t height);
-    Layer(const size_t width, const size_t height, const sfm::Color& color);
-    virtual ~Layer() = default;
+    SimpleLayer(const size_t width, const size_t height);
+    SimpleLayer(const size_t width, const size_t height, const sfm::Color& color);
+    virtual ~SimpleLayer() = default;
 
     virtual sfm::Color getPixel(sfm::vec2i pos) const override;
     virtual void       setPixel(sfm::vec2i pos, sfm::Color pixel) override;
@@ -22,13 +22,15 @@ private:
 
     void resize(const size_t width, const size_t height);
 
-    friend class Canvas;
+    friend class SimpleCanvas;
 };
 
-class Canvas : public ICanvas
+class SimpleCanvas : public ICanvas
 {
 public:
-    Canvas(sfm::vec2i pos,sfm::vec2i size, sfm::vec2f scale);
+    SimpleCanvas(sfm::vec2i pos,sfm::vec2i size, sfm::vec2f scale);
+
+    virtual wid_t getId() const override { return kInvalidWindowId; }
 
     virtual void draw(IRenderWindow* renderWindow) override;
     virtual bool update(const IRenderWindow* renderWindow, const Event& event) override;
@@ -62,13 +64,13 @@ private:
     sfm::vec2i size_;
     sfm::vec2f scale_;
 
-    std::vector<std::unique_ptr<Layer> > layers_;
-    std::unique_ptr<Layer> temp_layer_;
+    std::vector<std::unique_ptr<SimpleLayer> > layers_;
+    std::unique_ptr<SimpleLayer> temp_layer_;
 
     sfm::vec2i mouse_pos_ = {0, 0};
     bool       pressed_   = false;
 
-    size_t      active_ = 0;
+    size_t     active_ = 0;
 };
 
 } // psapi

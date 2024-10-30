@@ -3,24 +3,29 @@
 
 #include "standard/api_bar.hpp"
 
-namespace psapi {
+namespace psapi
+{
 
-class ABarButton : public IBarButton
+class Bar : public IBar
 {
 public:
+    virtual wid_t getId() const override { return kInvalidWindowId; };
+
+    virtual ChildInfo getNextChildInfo() const override;
+
+    virtual void finishButtonDraw(IRenderWindow* renderWindow, const IBarButton* button) const override;
+};
+
+class BarButton : public IBarButton
+{
+public:
+    virtual wid_t getId() const override { return kInvalidWindowId; };
+    
     virtual void  setState(State state) override { state_ = state; };
     virtual State getState() const override      { return state_; };
 
 private:
     State state_ = State::Normal;
-};
-
-class ABar : public IBar
-{
-public:
-    virtual ChildInfo getNextChildInfo() const override;
-
-    virtual void finishButtonDraw(IRenderWindow* renderWindow, const IBarButton* button) const override;
 };
 
 } // namespace psapi

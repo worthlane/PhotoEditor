@@ -41,10 +41,10 @@ SOURCES = main.cpp
 GRAPHICS_SOURCES = my_sfml.cpp
 GRAPHICS_DIR = $(SOURCE_DIR)/graphics
 
-STANDARD_SOURCES = api_system.cpp
+STANDARD_SOURCES = api_system.cpp api_windows.cpp
 STANDARD_DIR = $(SOURCE_DIR)/standard
 
-API_SOURCES = canvas.cpp utils.cpp awindows.cpp iwindows.cpp
+API_SOURCES = canvas.cpp utils.cpp window_vector.cpp root_window.cpp
 API_DIR = $(SOURCE_DIR)/api
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)

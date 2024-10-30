@@ -6,7 +6,8 @@
 #include "graphics/my_sfml.hpp"
 #include "api/canvas.hpp"
 #include "api/utils.hpp"
-#include "api/awindows.hpp"
+#include "api/window_vector.hpp"
+#include "api/root_window.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -19,8 +20,6 @@ static const char* DYNAMIC_LIB_NAME = ".dll";
 
 static const size_t LENGTH = 1280;
 static const size_t WIDTH  = 720;
-
-using namespace psapi;
 
 int main()
 {
@@ -35,24 +34,24 @@ int main()
 
     //loadPlugin();
 
-    sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
+    psapi::sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
-    sfm::Texture texture;
+    psapi::sfm::Texture texture;
     texture.loadFromFile("assets/textures/blue_hovered.png");
 
-    sfm::Sprite sprite;
-    sprite.setTexture(&texture, true);
+    psapi::sfm::Sprite sprite;
+    sprite.setTexture(&texture);
     sprite.setPosition(LENGTH / 2, WIDTH / 2);
 
-    RootWindow* root = static_cast<RootWindow*>(getRootWindow());
+    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
     while (window.isOpen())
     {
-        sfm::Event event;
+        psapi::sfm::Event event;
 
         if (window.pollEvent(event))
         {
-            if (event.type == sfm::Event::Closed)
+            if (event.type == psapi::sfm::Event::Closed)
             {
                 window.close();
             }
