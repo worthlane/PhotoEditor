@@ -5,6 +5,8 @@
 
 #include "graphics/my_sfml.hpp"
 #include "api/canvas.hpp"
+#include "api/utils.hpp"
+#include "api/awindows.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -13,7 +15,7 @@
                                     }
 
 
-static const char* DYNAMIC_LIB_NAME = "libapi_photoshop.dll";
+static const char* DYNAMIC_LIB_NAME = ".dll";
 
 static const size_t LENGTH = 1280;
 static const size_t WIDTH  = 720;
@@ -35,15 +37,14 @@ int main()
 
     sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
-    sfm::Image image;
-    image.create(100, 100, psapi::sfm::RED);
-
     sfm::Texture texture;
-    texture.update(&image);
+    texture.loadFromFile("assets/textures/blue_hovered.png");
 
     sfm::Sprite sprite;
     sprite.setTexture(&texture, true);
     sprite.setPosition(LENGTH / 2, WIDTH / 2);
+
+    RootWindow* root = static_cast<RootWindow*>(getRootWindow());
 
     while (window.isOpen())
     {
@@ -56,6 +57,9 @@ int main()
                 window.close();
             }
         }
+
+        root->update(&window, event);
+        root->draw(&window);
 
         sprite.draw(&window);
 

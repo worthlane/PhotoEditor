@@ -19,6 +19,10 @@ public:
 
 private:
     sfm::Image image_;
+
+    void resize(const size_t width, const size_t height);
+
+    friend class Canvas;
 };
 
 class Canvas : public ICanvas

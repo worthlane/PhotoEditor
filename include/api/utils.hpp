@@ -8,3 +8,5 @@ namespace psapi
     using generalFunction = void* (*)(void*);
     generalFunction getGeneralFunction(const std::string& name);
 }
+
+#endif // UTILS_HPP

@@ -10,7 +10,7 @@ Layer::Layer(const size_t width, const size_t height)
     image_.create(width, height);
 }
 
-Layer::Layer(const size_t width, const size_t height, const Color& color)
+Layer::Layer(const size_t width, const size_t height, const sfm::Color& color)
 {
     image_.create(width, height, color);
 }
@@ -37,7 +37,7 @@ Canvas::Canvas(sfm::vec2i pos,sfm::vec2i size, sfm::vec2f scale) :
     layers_(), temp_layer_(std::make_unique<Layer>(size_.x, size_.y)),
     mouse_pos_(sfm::vec2i(0, 0)), pressed_(false)
 {
-    layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, WHITE));
+    layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, sfm::WHITE));
 }
 
 ILayer* Canvas::getLayer(size_t index)
@@ -96,7 +96,7 @@ void Canvas::cleanTempLayer()
     {
         for (size_t x = 0; x < size_.x; x++)
         {
-            temp_layer_->setPixel({x, y}, WHITE);
+            temp_layer_->setPixel({x, y}, sfm::WHITE);
         }
     }
 }

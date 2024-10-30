@@ -16,6 +16,7 @@ CXXFLAGS  = -D _DEBUG -ggdb3 -std=c++17 -O3 -Wall -Wextra -Weffc++ -Waggressive-
 			-fstack-protector -fstrict-overflow -fno-omit-frame-pointer -Wlarger-than=8192         \
 			-Wstack-usage=8192 -fPIE -Werror=vla
 
+
 HOME = $(shell pwd)
 
 SOURCE_DIR = src
@@ -43,7 +44,7 @@ GRAPHICS_DIR = $(SOURCE_DIR)/graphics
 STANDARD_SOURCES = api_system.cpp
 STANDARD_DIR = $(SOURCE_DIR)/standard
 
-API_SOURCES = canvas.cpp
+API_SOURCES = canvas.cpp utils.cpp awindows.cpp iwindows.cpp
 API_DIR = $(SOURCE_DIR)/api
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
@@ -58,7 +59,7 @@ all: $(EXECUTABLE)
 
 # -------------------------------------------------------------------------------
 
-$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS)
+$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS) $(API_OBJECTS)
 	$(CXX) $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
@@ -68,6 +69,9 @@ $(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS)
+
+$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 

@@ -6,4 +6,5 @@ namespace psapi
     {
         return nullptr;
     }
+
 } // namespace psapi
