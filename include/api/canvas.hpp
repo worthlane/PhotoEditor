@@ -28,7 +28,7 @@ private:
 class SimpleCanvas : public ICanvas
 {
 public:
-    SimpleCanvas(sfm::vec2i pos,sfm::vec2i size, sfm::vec2f scale);
+    SimpleCanvas(const sfm::vec2i pos, const sfm::vec2i size, const sfm::vec2f scale);
 
     virtual wid_t getId() const override { return kInvalidWindowId; }
 
@@ -59,7 +59,7 @@ public:
     virtual sfm::vec2i getMousePosition() const override { return mouse_pos_; };
     virtual bool       isPressed()        const override { return pressed_; };
 
-private:
+protected:
     sfm::vec2i pos_;
     sfm::vec2i size_;
     sfm::vec2f scale_;

@@ -6,26 +6,17 @@
 namespace psapi
 {
 
-class Bar : public IBar
+class SimpleBarButton : public IBarButton
 {
 public:
     virtual wid_t getId() const override { return kInvalidWindowId; };
 
-    virtual ChildInfo getNextChildInfo() const override;
-
-    virtual void finishButtonDraw(IRenderWindow* renderWindow, const IBarButton* button) const override;
-};
-
-class BarButton : public IBarButton
-{
-public:
-    virtual wid_t getId() const override { return kInvalidWindowId; };
-    
     virtual void  setState(State state) override { state_ = state; };
     virtual State getState() const override      { return state_; };
 
 private:
     State state_ = State::Normal;
+
 };
 
 } // namespace psapi

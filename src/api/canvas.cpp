@@ -95,7 +95,9 @@ void SimpleCanvas::draw(IRenderWindow* renderWindow)
 
 bool SimpleCanvas::update(const IRenderWindow* renderWindow, const Event& event)
 {
-    // TODO
+    mouse_pos_ = sfm::Mouse::getPosition(renderWindow);
+
+    pressed_ = sfm::Mouse::isButtonPressed(sfm::Mouse::Button::Left);
 }
 
 void SimpleCanvas::setSize(sfm::vec2i size)

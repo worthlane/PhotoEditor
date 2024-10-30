@@ -47,25 +47,43 @@ STANDARD_DIR = $(SOURCE_DIR)/standard
 API_SOURCES = canvas.cpp utils.cpp window_vector.cpp root_window.cpp
 API_DIR = $(SOURCE_DIR)/api
 
+PLUGINS_SOURCES = canvas_plugin.cpp
+PLUGINS_DIR = $(SOURCE_DIR)/plugins
+
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 GRAPHICS_OBJECTS = $(GRAPHICS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 STANDARD_OBJECTS = $(STANDARD_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+PLUGINS_OBJECTS = $(PLUGINS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+
+# ==============================================================
+#						 API
+# ==============================================================
+
+API_TARGET_DLL = libapi_photoshop.dll
+
+DLL_API_SOURCES = src/api/canvas.cpp src/api/utils.cpp src/api/window_vector.cpp src/api/root_window.cpp src/standard/api_system.cpp src/standard/api_windows.cpp src/graphics/my_sfml.cpp
 
 # ==============================================================
 
 .PHONY: all
-all: $(EXECUTABLE)
+all: $(EXECUTABLE) $(API_TARGET_DLL)
+
+$(API_TARGET_DLL): $(DLL_API_SOURCES)
+	$(CXX) $^ -shared -o $@ $(CXXFLAGS)
 
 # -------------------------------------------------------------------------------
 
-$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS) $(API_OBJECTS)
+$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS) $(API_OBJECTS) $(PLUGINS_OBJECTS)
 	$(CXX) $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS)
+
+$(BUILD_DIR)/%.o : $(PLUGINS_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp

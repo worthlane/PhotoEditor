@@ -9,6 +9,8 @@
 #include "api/window_vector.hpp"
 #include "api/root_window.hpp"
 
+#include "plugins/canvas_plugin.hpp"
+
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
                                         std::cerr << "Error: " << dlerror() << std::endl; \
@@ -36,14 +38,11 @@ int main()
 
     psapi::sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
-    psapi::sfm::Texture texture;
-    texture.loadFromFile("assets/textures/blue_hovered.png");
-
-    psapi::sfm::Sprite sprite;
-    sprite.setTexture(&texture);
-    sprite.setPosition(LENGTH / 2, WIDTH / 2);
+    Canvas canvas({(LENGTH - 900) / 2, 150}, {900, 500}, {1, 1});
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+
+    root->addWindow(std::unique_ptr<psapi::IWindow>(&canvas));
 
     while (window.isOpen())
     {
@@ -59,8 +58,6 @@ int main()
 
         root->update(&window, event);
         root->draw(&window);
-
-        sprite.draw(&window);
 
         window.display();
         window.clear();
