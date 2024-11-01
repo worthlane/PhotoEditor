@@ -19,12 +19,12 @@ CXXFLAGS  = -D _DEBUG -ggdb3 -std=c++17 -O3 -Wall -Wextra -Weffc++ -Waggressive-
 
 HOME = $(shell pwd)
 
-SOURCE_DIR = src
+SOURCE_DIR =
 INCLUDE_DIR = include
 
 LIB_INCLUDE = -I/opt/homebrew/Cellar/sfml/2.6.1/include -L/opt/homebrew/Cellar/sfml/2.6.1/lib -lsfml-graphics -lsfml-window -lsfml-system
 
-CXXFLAGS  += -I $(HOME)/$(INCLUDE_DIR)
+CXXFLAGS  += -I $(HOME)
 CXXFLAGS  += $(LIB_INCLUDE)
 
 BUILD_DIR   = build
@@ -39,16 +39,16 @@ DOXYBUILD = doxygen $(DOXYFILE)
 SOURCES = main.cpp
 
 GRAPHICS_SOURCES = my_sfml.cpp
-GRAPHICS_DIR = $(SOURCE_DIR)/graphics
+GRAPHICS_DIR = graphics
 
 STANDARD_SOURCES = api_system.cpp api_windows.cpp
-STANDARD_DIR = $(SOURCE_DIR)/standard
+STANDARD_DIR = standard
 
-API_SOURCES = canvas.cpp utils.cpp window_vector.cpp root_window.cpp
-API_DIR = $(SOURCE_DIR)/api
+API_SOURCES = utils.cpp window_vector.cpp root_window.cpp
+API_DIR = api
 
 PLUGINS_SOURCES = canvas_plugin.cpp
-PLUGINS_DIR = $(SOURCE_DIR)/plugins
+PLUGINS_DIR = plugins
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 GRAPHICS_OBJECTS = $(GRAPHICS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
@@ -60,9 +60,9 @@ API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 #						 API
 # ==============================================================
 
-API_TARGET_DLL = libapi_photoshop.dll
+API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 
-DLL_API_SOURCES = src/api/canvas.cpp src/api/utils.cpp src/api/window_vector.cpp src/api/root_window.cpp src/standard/api_system.cpp src/standard/api_windows.cpp src/graphics/my_sfml.cpp
+DLL_API_SOURCES = api/utils.cpp api/window_vector.cpp api/root_window.cpp standard/api_system.cpp standard/api_windows.cpp graphics/my_sfml.cpp
 
 # ==============================================================
 
@@ -70,20 +70,17 @@ DLL_API_SOURCES = src/api/canvas.cpp src/api/utils.cpp src/api/window_vector.cpp
 all: $(EXECUTABLE) $(API_TARGET_DLL)
 
 $(API_TARGET_DLL): $(DLL_API_SOURCES)
-	$(CXX) $^ -shared -o $@ $(CXXFLAGS)
+	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS)
 
 # -------------------------------------------------------------------------------
 
-$(EXECUTABLE): $(OBJECTS) $(GRAPHICS_OBJECTS) $(STANDARD_OBJECTS) $(API_OBJECTS) $(PLUGINS_OBJECTS)
-	$(CXX) $^ -o $@ $(CXXFLAGS)
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX) $^ -o $@ $(CXXFLAGS) $(API_TARGET_DLL)
 
-$(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
+$(BUILD_DIR)/%.o : %.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS)
-
-$(BUILD_DIR)/%.o : $(PLUGINS_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
@@ -95,13 +92,16 @@ $(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
 
 # -------------------------------------------------------------------------------
 
-.PHONY: clean makedirs
+.PHONY: clean makedirs canvas
 
 clean:
 	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o *.dll *.so *.dylib
 
 makedirs:
 	mkdir -p $(BUILD_DIR)
+
+canvas:
+	$(CXX) -dynamiclib plugins/canvas_plugin.cpp -o plugin.dll $(CXXFLAGS) build/libapi_photoshop.dll
 
 
 
