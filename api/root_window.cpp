@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "api/root_window.hpp"
 
 namespace psapi

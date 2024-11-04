@@ -5,24 +5,46 @@
 #include "api/root_window.hpp"
 
 static psapi::sfm::Texture back;
+static psapi::sfm::Texture hover;
+static psapi::sfm::Texture press;
+static psapi::sfm::Texture normal;
+
+static const psapi::sfm::IntRect BACKGROUND_RECT = {0, 0, 128, 800};
+static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
+
+static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
+static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
+static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
+
 
 bool loadPlugin()
 {
     std::cout << "aue2\n";
 
-    back.loadFromFile("assets/textures/bar_template.png");
+    back.loadFromFile(BACKGROUND_TEXTURE);
+    hover.loadFromFile(HOVER_TEXTURE);
+    press.loadFromFile(PRESS_TEXTURE);
+    normal.loadFromFile(NORMAL_TEXTURE);
 
     psapi::sfm::Sprite back_sprite;
+    back_sprite.setTextureRect(BACKGROUND_RECT);
     back_sprite.setTexture(&back);
     back_sprite.setColor(psapi::sfm::Color(213, 34, 124, 255));
 
     psapi::sfm::Sprite hover_sprite;
+    hover_sprite.setTextureRect(BUTTON_RECT);
+    hover_sprite.setTexture(&hover);
     hover_sprite.setColor(psapi::sfm::RED);
 
     psapi::sfm::Sprite press_sprite;
+    press_sprite.setTextureRect(BUTTON_RECT);
+    press_sprite.setTexture(&press);
     press_sprite.setColor(psapi::sfm::GREEN);
 
     psapi::sfm::Sprite normal_sprite;
+    normal_sprite.setTextureRect(BUTTON_RECT);
+    normal_sprite.setTexture(&normal);
     normal_sprite.setColor(psapi::sfm::BLUE);
 
     auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
@@ -40,9 +62,6 @@ bool loadPlugin()
 void unloadPlugin()
 {
 }
-
-// ****************** TOOLBARBUTTON ******************
-
 
 // ********************* TOOLBAR *********************
 
@@ -113,9 +132,7 @@ ToolBar::ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
 
 void ToolBar::addWindow(std::unique_ptr<psapi::IWindow> window)
 {
-    //std::unique_ptr<psapi::IBarButton> button = reinterpret_cast<std::unique_ptr<psapi::IBarButton>>(window);
-
-    psapi::IBarButton* button = dynamic_cast<psapi::IBarButton*>(window.get());
+    psapi::IBarButton* button = dynamic_cast<psapi::IBarButton*>(window.release());
 
     buttons_.push_back(std::unique_ptr<psapi::IBarButton>(button));
 }
@@ -158,12 +175,30 @@ void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const ps
 
 psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id)
 {
-    return (id == getId()) ? this : nullptr;
+    if (id == getId())
+        return this;
+
+    for (auto& button : buttons_)
+    {
+        if (button->getId() == id)
+            return button.get();
+    }
+
+    return nullptr;
 };
 
 const psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id) const
 {
-    return (id == getId()) ? this : nullptr;
+    if (id == getId())
+        return this;
+
+    for (auto& button : buttons_)
+    {
+        if (button->getId() == id)
+            return button.get();
+    }
+
+    return nullptr;
 };
 
 psapi::vec2i ToolBar::getPos() const

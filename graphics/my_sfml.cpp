@@ -38,7 +38,7 @@ void Sprite::setScale(float factorX, float factorY)
 
 vec2u Sprite::getSize() const
 {
-    // TODO
+    // TODO implement
 }
 
 void Sprite::setColor(const Color &color)
@@ -208,12 +208,12 @@ void RenderWindow::draw(Drawable *target)
 
 void RenderWindow::setFps(float fps)
 {
-    // TODO
+    // TODO implement
 }
 
 float RenderWindow::getFps() const
 {
-    // TODO
+    // TODO implement
 }
 
 // *************************************************************************
@@ -278,47 +278,47 @@ bool Font::loadFromFile(const std::string& filename)
 
 void PixelsArray::setColor(const Color &color, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 Color PixelsArray::getColor(size_t ind) const
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(const vec2i &coord, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(const vec2f &coord, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(const vec2d &coord, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(int x, int y, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(float x, float y, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::setPosition(double x, double y, size_t ind)
 {
-    // TODO
+    // TODO implement
 }
 
 void PixelsArray::draw(IRenderWindow *window) const
 {
-    // TODO
+    // TODO implement
 }
 
 // *************************************************************************
@@ -433,7 +433,7 @@ void Texture::update(const Color *pixels)
 void Texture::update(const Color *pixels, unsigned int width, unsigned int height,
                                           unsigned int x,     unsigned int y)
 {
-    // TODO
+    // TODO implement
 }
 
 // *************************************************************************

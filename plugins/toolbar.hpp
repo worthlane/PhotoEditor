@@ -12,42 +12,6 @@ void unloadPlugin();
 
 }
 
-/*class ToolBarButton : public psapi::IBarButton
-{
-public:
-    ToolBarButton();
-
-    virtual psapi::wid_t getId() const override { return psapi::kToolBarWindowId; };
-
-    virtual void setState(psapi::State state) override { state_ = state; };
-    virtual psapi::State getState() const override { return state_; };
-
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
-
-    virtual psapi::IWindow* getWindowById(psapi::wid_t id) override { return (id == getId()) ? this : nullptr; };
-    virtual const psapi::IWindow* getWindowById(psapi::wid_t id) const override { return (id == getId()) ? this : nullptr; };
-
-    virtual psapi::vec2i getPos() const override { return pos_; }
-    virtual psapi::vec2u getSize() const override { return size_; }
-
-    void setPos(const psapi::vec2i pos) { pos_ = pos; }
-
-    virtual void setParent(const psapi::IWindow* parent) override;
-
-    virtual void forceActivate() override;
-    virtual void forceDeactivate() override;
-    virtual bool isActive() const override;
-
-    virtual bool isWindowContainer() const override { return false; };
-
-private:
-    psapi::State state_;
-
-    psapi::vec2u size_;
-    psapi::vec2i pos_;
-}*/
-
 class ToolBar : public psapi::IBar
 {
 public:

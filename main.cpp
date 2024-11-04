@@ -15,7 +15,7 @@
                                     }
 
 
-static const std::vector<const char*> PLUGIN_NAMES = {"canvas.dll", "toolbar.dll"};
+static const std::vector<const char*> PLUGIN_NAMES = {"canvas.dll", "toolbar.dll", "brush.dll"};
 static       std::vector<void*> dll_ptrs;
 
 static const char* LOAD_PLUGIN   = "loadPlugin";
@@ -26,7 +26,6 @@ static const size_t WIDTH  = 800;
 
 int main()
 {
-
     psapi::sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
