@@ -33,7 +33,9 @@ private:
 class Canvas : public psapi::ICanvas
 {
 public:
-    Canvas(const psapi::sfm::vec2i pos, const psapi::sfm::vec2i size, const psapi::sfm::vec2f scale);
+    Canvas(const psapi::sfm::vec2i& pos,
+           const psapi::sfm::vec2i& size,
+           const psapi::sfm::vec2f& scale);
 
     virtual psapi::wid_t getId() const override { return psapi::kCanvasWindowId; }
 

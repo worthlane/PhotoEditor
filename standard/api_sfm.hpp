@@ -78,6 +78,7 @@ class ITexture
 public:
     virtual ~ITexture() = default;
 
+
     virtual bool create(unsigned int width, unsigned int height)                                     = 0;
     virtual bool loadFromFile  (const std::string& filename,        const IntRect& area = IntRect()) = 0;
     virtual bool loadFromMemory(const void* data, std::size_t size, const IntRect& area = IntRect()) = 0;
@@ -111,7 +112,6 @@ public:
 
     virtual const vec2f getPosition() const = 0;
     virtual IntRect getGlobalBounds() const = 0;
-
 
     static std::unique_ptr<ISprite> create();
 };

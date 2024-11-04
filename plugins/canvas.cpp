@@ -1,26 +1,23 @@
 #include <cassert>
 #include <iostream>
 
-#include "plugins/canvas_plugin.hpp"
+#include "plugins/canvas.hpp"
 
-static Canvas* canvas = nullptr;
-
-bool   loadPlugin()
+bool loadPlugin()
 {
     std::cout << "aue\n";
 
-    canvas = new Canvas({(1280 - 900) / 2, 150}, {900, 500}, {1, 1});
+    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i((1280 - 900) / 2, 150),
+                                           psapi::sfm::vec2i(900, 500),
+                                           psapi::sfm::vec2f(1, 1));
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
-    printf("{%p}\n", root);
-
-    root->addWindow(std::unique_ptr<psapi::IWindow>(canvas));
+    root->addWindow(std::move(canvas));
 }
 
 void unloadPlugin()
 {
-    delete canvas;
 }
 
 
@@ -55,11 +52,16 @@ void Layer::resize(const size_t width, const size_t height)
 
 // ****************** CANVAS *******************
 
-Canvas::Canvas(psapi::sfm::vec2i pos, psapi::sfm::vec2i size, psapi::sfm::vec2f scale) :
-    pos_(pos), size_(size), scale_(scale),
+Canvas::Canvas(const psapi::sfm::vec2i& pos,
+               const psapi::sfm::vec2i& size,
+               const psapi::sfm::vec2f& scale) :
     layers_(), temp_layer_(std::make_unique<Layer>(size_.x, size_.y)),
     mouse_pos_(psapi::sfm::vec2i(0, 0)), pressed_(false)
 {
+    pos_ = {pos.x, pos.y};
+    size_ = {size.x, size.y};
+    scale_ = {scale.x, scale.y};
+
     layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, psapi::sfm::WHITE));
 }
 

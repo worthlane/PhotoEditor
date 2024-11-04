@@ -67,10 +67,7 @@ DLL_API_SOURCES = api/utils.cpp api/window_vector.cpp api/root_window.cpp standa
 # ==============================================================
 
 .PHONY: all
-all: $(EXECUTABLE) $(API_TARGET_DLL)
-
-$(API_TARGET_DLL): $(DLL_API_SOURCES)
-	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS)
+all: $(API_TARGET_DLL) $(EXECUTABLE)
 
 # -------------------------------------------------------------------------------
 
@@ -89,10 +86,12 @@ $(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
 $(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
+$(API_TARGET_DLL): $(DLL_API_SOURCES)
+	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS)
 
 # -------------------------------------------------------------------------------
 
-.PHONY: clean makedirs canvas
+.PHONY: clean makedirs plugins
 
 clean:
 	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o *.dll *.so *.dylib
@@ -100,8 +99,9 @@ clean:
 makedirs:
 	mkdir -p $(BUILD_DIR)
 
-canvas:
-	$(CXX) -dynamiclib plugins/canvas_plugin.cpp -o plugin.dll $(CXXFLAGS) build/libapi_photoshop.dll
+plugins:
+	$(CXX) -dynamiclib plugins/canvas.cpp -o canvas.dll $(CXXFLAGS) build/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/toolbar.cpp -o toolbar.dll $(CXXFLAGS) build/libapi_photoshop.dll
 
 
 
