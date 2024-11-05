@@ -1,0 +1,44 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     'build/brush.dll'
+relocations:
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x12A, offset: 0x12A, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x145, offset: 0x145, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x160, offset: 0x160, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x17B, offset: 0x17B, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x195D, offset: 0x195D, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x55AA8, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xD849, offset: 0xD849, size: 0x8, addend: 0x0, symName: __ZNSt3__124__put_character_sequenceB7v160006IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m, symObjAddr: 0x7B8, symBinAddr: 0x3780, symSize: 0x164 }
+  - { offsetInCU: 0x10A80, offset: 0x10A80, size: 0x8, addend: 0x0, symName: __ZNSt3__116__pad_and_outputB7v160006IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_, symObjAddr: 0x91C, symBinAddr: 0x38E4, symSize: 0x19C }
+  - { offsetInCU: 0x111A4, offset: 0x111A4, size: 0x8, addend: 0x0, symName: __ZNSt3__120__throw_length_errorB7v160006EPKc, symObjAddr: 0xACC, symBinAddr: 0x3A94, symSize: 0x50 }
+  - { offsetInCU: 0x15BB7, offset: 0x15BB7, size: 0x8, addend: 0x0, symName: __ZL11BUTTON_RECT, symObjAddr: 0xC54, symBinAddr: 0x3DA4, symSize: 0x0 }
+  - { offsetInCU: 0x18D06, offset: 0x18D06, size: 0x8, addend: 0x0, symName: __ZN5psapi3sfm7TextureD1Ev, symObjAddr: 0x0, symBinAddr: 0x2FC8, symSize: 0x34 }
+  - { offsetInCU: 0x196D7, offset: 0x196D7, size: 0x8, addend: 0x0, symName: _loadPlugin, symObjAddr: 0x34, symBinAddr: 0x2FFC, symSize: 0x2F0 }
+  - { offsetInCU: 0x1A487, offset: 0x1A487, size: 0x8, addend: 0x0, symName: __ZN11BrushButtonD0Ev, symObjAddr: 0x758, symBinAddr: 0x3720, symSize: 0x4C }
+  - { offsetInCU: 0x1A598, offset: 0x1A598, size: 0x8, addend: 0x0, symName: _unloadPlugin, symObjAddr: 0x324, symBinAddr: 0x32EC, symSize: 0x4 }
+  - { offsetInCU: 0x1A5D0, offset: 0x1A5D0, size: 0x8, addend: 0x0, symName: __ZN11BrushButtonC2ERKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEE, symObjAddr: 0x328, symBinAddr: 0x32F0, symSize: 0x34 }
+  - { offsetInCU: 0x1A6D0, offset: 0x1A6D0, size: 0x8, addend: 0x0, symName: __ZN11BrushButtonC1ERKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEE, symObjAddr: 0x35C, symBinAddr: 0x3324, symSize: 0x34 }
+  - { offsetInCU: 0x1A708, offset: 0x1A708, size: 0x8, addend: 0x0, symName: __ZN11BrushButtonC1ERKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEE, symObjAddr: 0x35C, symBinAddr: 0x3324, symSize: 0x34 }
+  - { offsetInCU: 0x1A802, offset: 0x1A802, size: 0x8, addend: 0x0, symName: __ZN11BrushButton8setStateEN5psapi10IBarButton5StateE, symObjAddr: 0x390, symBinAddr: 0x3358, symSize: 0xC }
+  - { offsetInCU: 0x1A837, offset: 0x1A837, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton8getStateEv, symObjAddr: 0x39C, symBinAddr: 0x3364, symSize: 0x8 }
+  - { offsetInCU: 0x1A87B, offset: 0x1A87B, size: 0x8, addend: 0x0, symName: __ZN11BrushButton4drawEPN5psapi3sfm13IRenderWindowE, symObjAddr: 0x3A4, symBinAddr: 0x336C, symSize: 0x1C }
+  - { offsetInCU: 0x1A8EC, offset: 0x1A8EC, size: 0x8, addend: 0x0, symName: __ZN11BrushButton6updateEPKN5psapi3sfm13IRenderWindowERKNS1_5EventE, symObjAddr: 0x3C0, symBinAddr: 0x3388, symSize: 0x58 }
+  - { offsetInCU: 0x1A969, offset: 0x1A969, size: 0x8, addend: 0x0, symName: __ZN11BrushButton11updateStateEPKN5psapi3sfm13IRenderWindowERKNS1_5EventERKNS1_5Vec2DIiEEb, symObjAddr: 0x418, symBinAddr: 0x33E0, symSize: 0x238 }
+  - { offsetInCU: 0x1AB9F, offset: 0x1AB9F, size: 0x8, addend: 0x0, symName: __ZN11BrushButton13getWindowByIdEx, symObjAddr: 0x650, symBinAddr: 0x3618, symSize: 0x34 }
+  - { offsetInCU: 0x1ABEB, offset: 0x1ABEB, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton13getWindowByIdEx, symObjAddr: 0x684, symBinAddr: 0x364C, symSize: 0x34 }
+  - { offsetInCU: 0x1AC37, offset: 0x1AC37, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton6getPosEv, symObjAddr: 0x6B8, symBinAddr: 0x3680, symSize: 0x8 }
+  - { offsetInCU: 0x1AC60, offset: 0x1AC60, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton7getSizeEv, symObjAddr: 0x6C0, symBinAddr: 0x3688, symSize: 0x8 }
+  - { offsetInCU: 0x1AC89, offset: 0x1AC89, size: 0x8, addend: 0x0, symName: __ZN11BrushButton6setPosEN5psapi3sfm5Vec2DIiEE, symObjAddr: 0x6C8, symBinAddr: 0x3690, symSize: 0x20 }
+  - { offsetInCU: 0x1ACE1, offset: 0x1ACE1, size: 0x8, addend: 0x0, symName: __ZN11BrushButton9setParentEPKN5psapi7IWindowE, symObjAddr: 0x6E8, symBinAddr: 0x36B0, symSize: 0x8 }
+  - { offsetInCU: 0x1ACEC, offset: 0x1ACEC, size: 0x8, addend: 0x0, symName: __ZN11BrushButton9setParentEPKN5psapi7IWindowE, symObjAddr: 0x6E8, symBinAddr: 0x36B0, symSize: 0x8 }
+  - { offsetInCU: 0x1AD21, offset: 0x1AD21, size: 0x8, addend: 0x0, symName: __ZN11BrushButton13forceActivateEv, symObjAddr: 0x6F0, symBinAddr: 0x36B8, symSize: 0xC }
+  - { offsetInCU: 0x1AD48, offset: 0x1AD48, size: 0x8, addend: 0x0, symName: __ZN11BrushButton15forceDeactivateEv, symObjAddr: 0x6FC, symBinAddr: 0x36C4, symSize: 0x8 }
+  - { offsetInCU: 0x1AD6F, offset: 0x1AD6F, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton8isActiveEv, symObjAddr: 0x704, symBinAddr: 0x36CC, symSize: 0x8 }
+  - { offsetInCU: 0x1AD98, offset: 0x1AD98, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton17isWindowContainerEv, symObjAddr: 0x70C, symBinAddr: 0x36D4, symSize: 0x8 }
+  - { offsetInCU: 0x1ADBD, offset: 0x1ADBD, size: 0x8, addend: 0x0, symName: __ZN11BrushButtonD1Ev, symObjAddr: 0x714, symBinAddr: 0x36DC, symSize: 0x44 }
+  - { offsetInCU: 0x1AEB6, offset: 0x1AEB6, size: 0x8, addend: 0x0, symName: __ZNK11BrushButton5getIdEv, symObjAddr: 0x7A4, symBinAddr: 0x376C, symSize: 0x8 }
+  - { offsetInCU: 0x1B1EE, offset: 0x1B1EE, size: 0x8, addend: 0x0, symName: __ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB7v160006Ev, symObjAddr: 0xAB8, symBinAddr: 0x3A80, symSize: 0x14 }
+  - { offsetInCU: 0x1B218, offset: 0x1B218, size: 0x8, addend: 0x0, symName: __ZNSt3__120__throw_length_errorB7v160006EPKc, symObjAddr: 0xACC, symBinAddr: 0x3A94, symSize: 0x50 }
+  - { offsetInCU: 0x1B223, offset: 0x1B223, size: 0x8, addend: 0x0, symName: __ZNSt3__116__pad_and_outputB7v160006IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_.cold.1, symObjAddr: 0xB40, symBinAddr: 0x3BCC, symSize: 0x24 }
+  - { offsetInCU: 0x1B361, offset: 0x1B361, size: 0x8, addend: 0x0, symName: __ZNSt12length_errorC1B7v160006EPKc, symObjAddr: 0xB1C, symBinAddr: 0x3AE4, symSize: 0x24 }
+...

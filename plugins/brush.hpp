@@ -46,7 +46,8 @@ public:
     virtual bool isWindowContainer() const override;
 
 private:
-    State state_ = State::Normal;
+    State state_      = State::Normal;
+    State prev_state_ = State::Normal;
 
     psapi::vec2u size_;
     psapi::vec2i pos_;
@@ -55,6 +56,11 @@ private:
 
     const psapi::IWindow* parent_ = nullptr;
     bool is_active_ = true;
+
+    
+
+    void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
+                     const psapi::vec2i& mouse_pos, const bool LMB_down);
 };
 
 #endif // BRUSH_PLUGIN_HPP

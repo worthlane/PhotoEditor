@@ -17,9 +17,10 @@ class ToolBar : public psapi::IBar
 public:
     ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
+            std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
             std::unique_ptr<psapi::sfm::ISprite> pressed,
-            std::unique_ptr<psapi::sfm::ISprite> normal);
+            std::unique_ptr<psapi::sfm::ISprite> released);
 
     virtual psapi::wid_t getId() const override { return psapi::kToolBarWindowId; };
 
@@ -56,6 +57,7 @@ private:
     std::unique_ptr<psapi::sfm::ISprite> hovered_;
     std::unique_ptr<psapi::sfm::ISprite> pressed_;
     std::unique_ptr<psapi::sfm::ISprite> normal_;
+    std::unique_ptr<psapi::sfm::ISprite> released_;
 
     std::vector<std::unique_ptr<psapi::IBarButton> > buttons_;
 

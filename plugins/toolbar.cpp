@@ -5,6 +5,7 @@
 #include "api/root_window.hpp"
 
 static psapi::sfm::Texture back;
+static psapi::sfm::Texture release;
 static psapi::sfm::Texture hover;
 static psapi::sfm::Texture press;
 static psapi::sfm::Texture normal;
@@ -14,6 +15,7 @@ static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
+static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
 static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 
@@ -31,6 +33,11 @@ bool loadPlugin()
     back_sprite.setTextureRect(BACKGROUND_RECT);
     back_sprite.setTexture(&back);
     back_sprite.setColor(psapi::sfm::Color(213, 34, 124, 255));
+
+    psapi::sfm::Sprite release_sprite;
+    release_sprite.setTextureRect(BUTTON_RECT);
+    release_sprite.setTexture(&normal);
+    release_sprite.setColor(psapi::sfm::Color(255, 255, 255, 255));
 
     psapi::sfm::Sprite hover_sprite;
     hover_sprite.setTextureRect(BUTTON_RECT);
@@ -50,9 +57,10 @@ bool loadPlugin()
     auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
                                          psapi::vec2u(128, 32),
                                          std::make_unique<psapi::sfm::Sprite>(back_sprite),
+                                         std::make_unique<psapi::sfm::Sprite>(normal_sprite),
                                          std::make_unique<psapi::sfm::Sprite>(hover_sprite),
                                          std::make_unique<psapi::sfm::Sprite>(press_sprite),
-                                         std::make_unique<psapi::sfm::Sprite>(normal_sprite));
+                                         std::make_unique<psapi::sfm::Sprite>(release_sprite));
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
@@ -116,14 +124,16 @@ psapi::ChildInfo ToolBar::getNextChildInfo() const
 
 ToolBar::ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
+            std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
             std::unique_ptr<psapi::sfm::ISprite> pressed,
-            std::unique_ptr<psapi::sfm::ISprite> normal) :
+            std::unique_ptr<psapi::sfm::ISprite> released) :
     pos_(pos), size_(size),
     background_(std::move(background)),
     hovered_(std::move(hovered)),
     pressed_(std::move(pressed)),
-    normal_(std::move(normal))
+    normal_(std::move(normal)),
+    released_(std::move(released))
 {
     parent_ = nullptr;
     is_active_ = true;
@@ -157,6 +167,8 @@ void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const ps
     switch (button->getState())
     {
         case psapi::IBarButton::State::Normal:
+            normal_.get()->setPosition(pos.x, pos.y);
+            normal_.get()->draw(desktop);
             break;
         case psapi::IBarButton::State::Hover:
             hovered_.get()->setPosition(pos.x, pos.y);
@@ -167,8 +179,8 @@ void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const ps
             pressed_.get()->draw(desktop);
             break;
         case psapi::IBarButton::State::Released:
-            normal_.get()->setPosition(pos.x, pos.y);
-            normal_.get()->draw(desktop);
+            released_.get()->setPosition(pos.x, pos.y);
+            released_.get()->draw(desktop);
             break;
     }
 }

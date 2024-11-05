@@ -100,9 +100,9 @@ makedirs:
 	mkdir -p $(BUILD_DIR)
 
 plugins:
-	$(CXX) -dynamiclib plugins/canvas.cpp -o canvas.dll $(CXXFLAGS) build/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/toolbar.cpp -o toolbar.dll $(CXXFLAGS) build/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/brush.cpp -o brush.dll $(CXXFLAGS) build/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/canvas.cpp -o $(BUILD_DIR)/canvas.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/brush.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
 
 
 

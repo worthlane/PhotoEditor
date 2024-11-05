@@ -1,6 +1,6 @@
 ---
 triple:          'arm64-apple-darwin'
-binary-path:     canvas.dll
+binary-path:     'build/canvas.dll'
 relocations:
   - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x6443C, symBinAddr: 0x8000, symSize: 0x0 }
   - { offsetInCU: 0x12A, offset: 0x12A, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x6443C, symBinAddr: 0x8000, symSize: 0x0 }

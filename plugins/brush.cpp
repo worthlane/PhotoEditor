@@ -6,7 +6,7 @@
 
 static psapi::sfm::Texture btn;
 
-static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
+static const psapi::sfm::IntRect BUTTON_RECT = {19, 19, 90, 90};
 
 static const char* BUTTON_TEXTURE = "assets/textures/white.jpg";
 
@@ -18,11 +18,11 @@ bool loadPlugin()
     btn.loadFromFile(BUTTON_TEXTURE);
 
     psapi::sfm::Sprite btn_sprite;
-    //btn_sprite.setTextureRect(BUTTON_RECT);
+    btn_sprite.setTextureRect(BUTTON_RECT);
     //btn_sprite.setTexture(&btn);
 
-    auto brush = std::make_unique<BrushButton>(psapi::vec2i(0, 0),
-                                               psapi::vec2u(128, 32),
+    auto brush = std::make_unique<BrushButton>(psapi::vec2i(BUTTON_RECT.top_x, BUTTON_RECT.top_y),
+                                               psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::make_unique<psapi::sfm::Sprite>(btn_sprite));
 
 
@@ -52,6 +52,7 @@ BrushButton::BrushButton(const psapi::vec2i& pos, const psapi::vec2u& size,
 
 void BrushButton::setState(BrushButton::State state)
 {
+    prev_state_ = state_;
     state_ = state;
 }
 
@@ -79,38 +80,69 @@ bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
 
     bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
 
+    updateState(renderWindow, event, mouse_pos, LMB_down);
+
+    return true;
+}
+
+void BrushButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
+                              const psapi::vec2i& mouse_pos, const bool LMB_down)
+{
     bool is_hovered = (mouse_pos.x >= pos_.x) && (mouse_pos.x < pos_.x + size_.x) &&
                       (mouse_pos.y >= pos_.y) && (mouse_pos.y < pos_.y + size_.y);
 
-    std::cout << "hovered: " << is_hovered << " LMB down: " << LMB_down << std::endl;
-
+    //std::cout << "hovered: " << is_hovered << " LMB down: " << LMB_down << std::endl;
 
     switch (state_)
     {
         case BrushButton::State::Normal:
 
-            if (is_hovered && LMB_down)
+            if (is_hovered)
+                setState(BrushButton::State::Hover);
+
+            break;
+
+        case BrushButton::State::Hover:
+
+            if (LMB_down)
                 state_ = BrushButton::State::Press;
-            else if (is_hovered)
-                state_ = BrushButton::State::Hover;
+            else if (!is_hovered)
+                state_ = BrushButton::State::Normal;
+
             break;
 
         case BrushButton::State::Press:
 
             if (is_hovered && !LMB_down)
-                state_ = BrushButton::State::Released;
-            else if (!is_hovered)
-                state_ = BrushButton::State::Normal;
+            {
+                if (prev_state_ == BrushButton::State::Normal)
+                    state_ = BrushButton::State::Released;
+                else if (prev_state_ == BrushButton::State::Released)
+                    state_ = BrushButton::State::Normal;
+            }
+
+            if (!is_hovered)
+            {
+                setState(prev_state_);
+            }
+
             break;
 
         case BrushButton::State::Released:
 
-            if (is_hovered)
-                state_ = BrushButton::State::Hover;
+            if (prev_state_ == BrushButton::State::Press)
+            {
+                if (!LMB_down)
+                    prev_state_ = BrushButton::State::Released;
+            }
+            else
+            {
+                if (is_hovered && LMB_down)
+                    setState(BrushButton::State::Press);
+            }
+
             break;
     }
-
-    return true;
 }
 
 psapi::IWindow* BrushButton::getWindowById(psapi::wid_t id)
