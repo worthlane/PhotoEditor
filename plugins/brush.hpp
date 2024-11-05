@@ -3,6 +3,7 @@
 
 #include "standard/api_bar.hpp"
 #include "graphics/my_sfml.hpp"
+#include "standard/api_canvas.hpp"
 
 extern "C"
 {
@@ -19,7 +20,8 @@ class BrushButton : public psapi::IBarButton
 public:
     BrushButton(const psapi::vec2i& pos,
                 const psapi::vec2u& size,
-                std::unique_ptr<psapi::sfm::ISprite> sprite);
+                std::unique_ptr<psapi::sfm::ISprite> sprite,
+                psapi::ICanvas* canvas);
 
     virtual psapi::wid_t getId() const override { return kBrushButtonId; };
 
@@ -57,7 +59,7 @@ private:
     const psapi::IWindow* parent_ = nullptr;
     bool is_active_ = true;
 
-    
+    psapi::ICanvas* canvas_ = nullptr;
 
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
                      const psapi::vec2i& mouse_pos, const bool LMB_down);

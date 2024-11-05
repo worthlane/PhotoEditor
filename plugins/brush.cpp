@@ -10,6 +10,8 @@ static const psapi::sfm::IntRect BUTTON_RECT = {19, 19, 90, 90};
 
 static const char* BUTTON_TEXTURE = "assets/textures/white.jpg";
 
+static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos);
+
 
 bool loadPlugin()
 {
@@ -21,12 +23,15 @@ bool loadPlugin()
     btn_sprite.setTextureRect(BUTTON_RECT);
     //btn_sprite.setTexture(&btn);
 
+    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+
+    auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
+
     auto brush = std::make_unique<BrushButton>(psapi::vec2i(BUTTON_RECT.top_x, BUTTON_RECT.top_y),
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
-                                               std::make_unique<psapi::sfm::Sprite>(btn_sprite));
+                                               std::make_unique<psapi::sfm::Sprite>(btn_sprite),
+                                               canvas);
 
-
-    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
@@ -44,9 +49,9 @@ void unloadPlugin()
 // ======================================================
 
 BrushButton::BrushButton(const psapi::vec2i& pos, const psapi::vec2u& size,
-                         std::unique_ptr<psapi::sfm::ISprite> sprite) :
+                         std::unique_ptr<psapi::sfm::ISprite> sprite, psapi::ICanvas* canvas) :
     state_(BrushButton::State::Normal), size_(size), pos_(pos),
-    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true)
+    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true), canvas_(canvas)
 {
 }
 
@@ -82,7 +87,41 @@ bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
 
     updateState(renderWindow, event, mouse_pos, LMB_down);
 
+    if (state_ != BrushButton::State::Released)
+        return true;
+
+    psapi::vec2i canvas_pos  = canvas_->getPos();
+    psapi::vec2u canvas_size = canvas_->getSize();
+
+    bool mouse_in_canvas = (mouse_pos.x >= canvas_pos.x) && (mouse_pos.x < canvas_pos.x + canvas_size.x) &&
+                           (mouse_pos.y >= canvas_pos.y) && (mouse_pos.y < canvas_pos.y + canvas_size.y);
+
+    if (LMB_down && mouse_in_canvas)
+    {
+        psapi::ILayer* layer = canvas_->getLayer(0);
+
+        if (layer)
+        {
+            set_point(layer, mouse_pos - canvas_pos);
+            //layer->setPixel(mouse_pos - canvas_pos, psapi::sfm::RED);
+        }
+    }
+
     return true;
+}
+
+static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos)
+{
+    layer->setPixel(pos, psapi::sfm::RED);
+
+    layer->setPixel(pos + psapi::vec2i(1, 0), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(0, 1), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(1, 1), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(1, -1), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(0, -1), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(-1, 0), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(-1, 1), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(-1, -1), psapi::sfm::RED);
 }
 
 void BrushButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
