@@ -5,10 +5,10 @@
 
 bool loadPlugin()
 {
-    std::cout << "aue\n";
+    std::cout << "canvas loaded\n";
 
-    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i((1280 - 900) / 2, 150),
-                                           psapi::sfm::vec2i(900, 500),
+    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(128, 20),
+                                           psapi::sfm::vec2i(1072, 780),
                                            psapi::sfm::vec2f(1, 1));
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
@@ -44,7 +44,7 @@ void Layer::setPixel(psapi::sfm::vec2i pos, psapi::sfm::Color pixel)
 {
     if (pos.x < 0 || pos.y < 0 || pos.x >= image_.getSize().x || pos.y >= image_.getSize().y)
         return;
-    
+
     image_.setPixel(pos.x, pos.y, pixel);
 }
 

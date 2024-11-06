@@ -17,7 +17,7 @@ static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos);
 
 bool loadPlugin()
 {
-    std::cout << "aue3\n";
+    std::cout << "brush loaded\n";
 
     btn.loadFromFile(BUTTON_TEXTURE);
 

@@ -10,10 +10,10 @@ static psapi::sfm::Texture hover;
 static psapi::sfm::Texture press;
 static psapi::sfm::Texture normal;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {0, 0, 128, 800};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {900, 0, 128, 800};
 static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* BACKGROUND_TEXTURE = "assets/textures/gradient2.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -22,7 +22,7 @@ static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 
 bool loadPlugin()
 {
-    std::cout << "aue2\n";
+    std::cout << "toolbar loaded\n";
 
     back.loadFromFile(BACKGROUND_TEXTURE);
     hover.loadFromFile(HOVER_TEXTURE);
@@ -32,7 +32,7 @@ bool loadPlugin()
     psapi::sfm::Sprite back_sprite;
     back_sprite.setTextureRect(BACKGROUND_RECT);
     back_sprite.setTexture(&back);
-    back_sprite.setColor(psapi::sfm::Color(213, 34, 124, 255));
+    //back_sprite.setColor(psapi::sfm::Color(213, 34, 124, 255));
 
     psapi::sfm::Sprite release_sprite;
     release_sprite.setTextureRect(BUTTON_RECT);

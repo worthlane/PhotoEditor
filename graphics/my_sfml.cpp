@@ -72,6 +72,11 @@ void Sprite::draw(IRenderWindow *window) const
     desktop->window_.draw(sprite_);
 }
 
+std::unique_ptr<ISprite> ISprite::create()
+{
+    return std::make_unique<Sprite>();
+}
+
 // *************************************************************************
 //                              RENDERWINDOW
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -216,6 +221,11 @@ float RenderWindow::getFps() const
     // TODO implement
 }
 
+std::unique_ptr<IRenderWindow> IRenderWindow::create(unsigned int width, unsigned int height, const std::string& name)
+{
+    return std::make_unique<RenderWindow>(width, height, name);
+}
+
 // *************************************************************************
 //                              TEXT
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -263,6 +273,11 @@ void Text::draw(IRenderWindow *window) const
     desktop->window_.draw(text_);
 }
 
+std::unique_ptr<IText> IText::create()
+{
+    return std::make_unique<Text>();
+}
+
 // *************************************************************************
 //                              FONT
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -270,6 +285,11 @@ void Text::draw(IRenderWindow *window) const
 bool Font::loadFromFile(const std::string& filename)
 {
     return font_.loadFromFile(filename);
+}
+
+std::unique_ptr<IFont> IFont::create()
+{
+    return std::make_unique<Font>();
 }
 
 // *************************************************************************
@@ -384,6 +404,11 @@ Color Image::getPixel(vec2u pos) const
     return getPixel(pos.x, pos.y);
 }
 
+std::unique_ptr<IImage> IImage::create()
+{
+    return std::make_unique<Image>();
+}
+
 // *************************************************************************
 //                          TEXTURE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -434,6 +459,11 @@ void Texture::update(const Color *pixels, unsigned int width, unsigned int heigh
                                           unsigned int x,     unsigned int y)
 {
     // TODO implement
+}
+
+std::unique_ptr<ITexture> ITexture::create()
+{
+    return std::make_unique<Texture>();
 }
 
 // *************************************************************************
