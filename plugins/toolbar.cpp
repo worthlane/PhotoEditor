@@ -14,10 +14,10 @@ static const psapi::sfm::IntRect BACKGROUND_RECT = {900, 0, 128, 800};
 static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/gradient2.jpg";
-static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
-static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
-static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
-static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
+static const char* HOVER_TEXTURE      = "assets/textures/hovered_icon.png";
+static const char* RELEASE_TEXTURE    = "assets/textures/active_icon.png";
+static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
+static const char* NORMAL_TEXTURE     = "assets/textures/normal_icon.png";
 
 
 bool loadPlugin()
@@ -28,6 +28,7 @@ bool loadPlugin()
     hover.loadFromFile(HOVER_TEXTURE);
     press.loadFromFile(PRESS_TEXTURE);
     normal.loadFromFile(NORMAL_TEXTURE);
+    release.loadFromFile(RELEASE_TEXTURE);
 
     psapi::sfm::Sprite back_sprite;
     back_sprite.setTextureRect(BACKGROUND_RECT);
@@ -36,23 +37,23 @@ bool loadPlugin()
 
     psapi::sfm::Sprite release_sprite;
     release_sprite.setTextureRect(BUTTON_RECT);
-    release_sprite.setTexture(&normal);
-    release_sprite.setColor(psapi::sfm::Color(255, 255, 255, 255));
+    release_sprite.setTexture(&release);
+    //release_sprite.setColor(psapi::sfm::Color(255, 255, 255, 255));
 
     psapi::sfm::Sprite hover_sprite;
     hover_sprite.setTextureRect(BUTTON_RECT);
     hover_sprite.setTexture(&hover);
-    hover_sprite.setColor(psapi::sfm::RED);
+    //hover_sprite.setColor(psapi::sfm::RED);
 
     psapi::sfm::Sprite press_sprite;
     press_sprite.setTextureRect(BUTTON_RECT);
     press_sprite.setTexture(&press);
-    press_sprite.setColor(psapi::sfm::GREEN);
+    //press_sprite.setColor(psapi::sfm::GREEN);
 
     psapi::sfm::Sprite normal_sprite;
     normal_sprite.setTextureRect(BUTTON_RECT);
     normal_sprite.setTexture(&normal);
-    normal_sprite.setColor(psapi::sfm::BLUE);
+    //normal_sprite.setColor(psapi::sfm::BLUE);
 
     auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
                                          psapi::vec2u(128, 32),
