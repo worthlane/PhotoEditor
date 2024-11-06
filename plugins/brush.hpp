@@ -5,6 +5,8 @@
 #include "graphics/my_sfml.hpp"
 #include "standard/api_canvas.hpp"
 
+#include "plugins/catmull.hpp"
+
 extern "C"
 {
 
@@ -60,6 +62,8 @@ private:
     bool is_active_ = true;
 
     psapi::ICanvas* canvas_ = nullptr;
+
+    InterpolationArray array_;
 
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
                      const psapi::vec2i& mouse_pos, const bool LMB_down);

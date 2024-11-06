@@ -10,6 +10,8 @@ static const psapi::sfm::IntRect BUTTON_RECT = {19, 19, 90, 90};
 
 static const char* BUTTON_TEXTURE = "assets/textures/white.jpg";
 
+static const size_t CATMULL_LEN = 4;
+
 static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos);
 
 
@@ -51,7 +53,7 @@ void unloadPlugin()
 BrushButton::BrushButton(const psapi::vec2i& pos, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite, psapi::ICanvas* canvas) :
     state_(BrushButton::State::Normal), size_(size), pos_(pos),
-    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true), canvas_(canvas)
+    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true), canvas_(canvas), array_()
 {
 }
 
@@ -88,7 +90,10 @@ bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
     updateState(renderWindow, event, mouse_pos, LMB_down);
 
     if (state_ != BrushButton::State::Released)
+    {
+        array_.clear();
         return true;
+    }
 
     psapi::vec2i canvas_pos  = canvas_->getPos();
     psapi::vec2u canvas_size = canvas_->getSize();
@@ -100,11 +105,30 @@ bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
     {
         psapi::ILayer* layer = canvas_->getLayer(0);
 
-        if (layer)
+        if (!layer)
+            return false;
+
+        psapi::vec2i pos = mouse_pos - canvas_pos;
+
+        if (array_.size() < CATMULL_LEN)
         {
-            set_point(layer, mouse_pos - canvas_pos);
+            array_.push_back(pos);
+        }
+        else
+        {
+            array_.queue_push(pos);
+
+            for (double i = 1; i < 2; i += 0.001)
+            {
+                set_point(layer, array_.getInterpolated(i));
+            }
+
             //layer->setPixel(mouse_pos - canvas_pos, psapi::sfm::RED);
         }
+    }
+    else
+    {
+        array_.clear();
     }
 
     return true;

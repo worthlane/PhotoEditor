@@ -42,6 +42,9 @@ psapi::sfm::Color Layer::getPixel(psapi::sfm::vec2i pos) const
 
 void Layer::setPixel(psapi::sfm::vec2i pos, psapi::sfm::Color pixel)
 {
+    if (pos.x < 0 || pos.y < 0 || pos.x >= image_.getSize().x || pos.y >= image_.getSize().y)
+        return;
+    
     image_.setPixel(pos.x, pos.y, pixel);
 }
 

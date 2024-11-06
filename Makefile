@@ -102,7 +102,7 @@ makedirs:
 plugins:
 	$(CXX) -dynamiclib plugins/canvas.cpp -o $(BUILD_DIR)/canvas.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/brush.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/brush.cpp plugins/catmull.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(BUILD_DIR)/libapi_photoshop.dll
 
 
 
