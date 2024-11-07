@@ -23,7 +23,7 @@ public:
     virtual void       setPixel(psapi::sfm::vec2i pos, psapi::sfm::Color pixel) override;
 
 private:
-    psapi::sfm::Image image_;
+    psapi::sfm::IImage* image_;
 
     void resize(const size_t width, const size_t height);
 

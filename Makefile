@@ -96,7 +96,7 @@ $(API_TARGET_DLL): $(DLL_API_SOURCES)
 .PHONY: clean makedirs plugins
 
 clean:
-	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o *.dll *.so *.dylib
+	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.dll $(BUILD_DIR)/*.so $(BUILD_DIR)/*.dSYM
 
 makedirs:
 	mkdir -p $(BUILD_DIR)

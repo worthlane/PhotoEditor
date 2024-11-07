@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 
+//#include "../plugins/colors.hpp"
 #include "../plugins/canvas.hpp"
 
 bool loadPlugin()
@@ -27,25 +28,27 @@ void unloadPlugin()
 
 Layer::Layer(const size_t width, const size_t height)
 {
-    image_.create(width, height);
+    image_ = psapi::sfm::IImage::create().release();
+    image_->create(width, height, psapi::sfm::WHITE);
 }
 
 Layer::Layer(const size_t width, const size_t height, const psapi::sfm::Color& color)
 {
-    image_.create(width, height, color);
+    image_ = psapi::sfm::IImage::create().release();
+    image_->create(width, height, color);
 }
 
 psapi::sfm::Color Layer::getPixel(psapi::sfm::vec2i pos) const
 {
-    return image_.getPixel(pos.x, pos.y);
+    return image_->getPixel(pos.x, pos.y);
 }
 
 void Layer::setPixel(psapi::sfm::vec2i pos, psapi::sfm::Color pixel)
 {
-    if (pos.x < 0 || pos.y < 0 || pos.x >= image_.getSize().x || pos.y >= image_.getSize().y)
+    if (pos.x < 0 || pos.y < 0 || pos.x >= image_->getSize().x || pos.y >= image_->getSize().y)
         return;
 
-    image_.setPixel(pos.x, pos.y, pixel);
+    image_->setPixel(pos.x, pos.y, pixel);
 }
 
 void Layer::resize(const size_t width, const size_t height)
@@ -112,7 +115,7 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     {
         Layer* layer = layers_[i].get();
 
-        texture.update(&(layer->image_));
+        texture.update(layer->image_);
         sprite.setTexture(&texture);
 
         sprite.draw(desktop);
