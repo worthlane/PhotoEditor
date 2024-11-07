@@ -29,7 +29,7 @@ void unloadPlugin()
 Layer::Layer(const size_t width, const size_t height)
 {
     image_ = psapi::sfm::IImage::create().release();
-    image_->create(width, height, psapi::sfm::WHITE);
+    image_->create(width, height, sfm::WHITE);
 }
 
 Layer::Layer(const size_t width, const size_t height, const psapi::sfm::Color& color)
@@ -68,7 +68,7 @@ Canvas::Canvas(const psapi::sfm::vec2i& pos,
     size_ = {size.x, size.y};
     scale_ = {scale.x, scale.y};
 
-    layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, psapi::sfm::WHITE));
+    layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, sfm::WHITE));
 }
 
 psapi::ILayer* Canvas::getLayer(size_t index)
@@ -148,7 +148,7 @@ void Canvas::cleanTempLayer()
     {
         for (size_t x = 0; x < size_.x; x++)
         {
-            temp_layer_->setPixel({x, y}, psapi::sfm::WHITE);
+            temp_layer_->setPixel({x, y}, sfm::WHITE);
         }
     }
 }

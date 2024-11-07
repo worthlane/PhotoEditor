@@ -2,7 +2,6 @@
 #define BRUSH_PLUGIN_HPP
 
 #include "standard/api_bar.hpp"
-#include "graphics/my_sfml.hpp"
 #include "standard/api_canvas.hpp"
 
 #include "../plugins/catmull.hpp"

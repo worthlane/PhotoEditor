@@ -2,36 +2,37 @@
 #include <iostream>
 
 #include "../plugins/brush.hpp"
-#include "api/root_window.hpp"
+#include "../plugins/colors.hpp"
 
-static psapi::sfm::Texture btn;
+static psapi::sfm::ITexture* btn = nullptr;
 
 static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
-
 static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
 
-static const size_t CATMULL_LEN = 4;
-
 static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos);
+
+static const size_t CATMULL_LEN = 4;
 
 
 bool loadPlugin()
 {
     std::cout << "brush loaded\n";
 
-    btn.loadFromFile(BUTTON_TEXTURE);
+    btn = psapi::sfm::ITexture::create().release();
 
-    psapi::sfm::Sprite btn_sprite;
-    btn_sprite.setTextureRect(BUTTON_RECT);
-    btn_sprite.setTexture(&btn);
+    btn->loadFromFile(BUTTON_TEXTURE);
 
-    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+    std::unique_ptr<psapi::sfm::ISprite> btn_sprite = psapi::sfm::ISprite::create();
+    btn_sprite.get()->setTextureRect(BUTTON_RECT);
+    btn_sprite.get()->setTexture(btn);
+
+    auto root = psapi::getRootWindow();
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
     auto brush = std::make_unique<BrushButton>(psapi::vec2i(19, 19),
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
-                                               std::make_unique<psapi::sfm::Sprite>(btn_sprite),
+                                               std::move(btn_sprite),
                                                canvas);
 
 
@@ -45,6 +46,7 @@ bool loadPlugin()
 
 void unloadPlugin()
 {
+    delete btn;
 }
 
 
@@ -73,10 +75,8 @@ void BrushButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
-    psapi::sfm::RenderWindow* desktop = static_cast<psapi::sfm::RenderWindow*>(renderWindow);
-
     sprite_->setPosition(pos_.x, pos_.y);
-    sprite_->draw(desktop);
+    sprite_->draw(renderWindow);
 }
 
 bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
@@ -135,12 +135,12 @@ bool BrushButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
 
 static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos)
 {
-    layer->setPixel(pos, psapi::sfm::RED);
+    layer->setPixel(pos, sfm::RED);
 
-    layer->setPixel(pos + psapi::vec2i(1, 0), psapi::sfm::RED);
-    layer->setPixel(pos + psapi::vec2i(0, 1), psapi::sfm::RED);
-    layer->setPixel(pos + psapi::vec2i(0, -1), psapi::sfm::RED);
-    layer->setPixel(pos + psapi::vec2i(-1, 0), psapi::sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(1, 0), sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(0, 1), sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(0, -1), sfm::RED);
+    layer->setPixel(pos + psapi::vec2i(-1, 0), sfm::RED);
 }
 
 void BrushButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
