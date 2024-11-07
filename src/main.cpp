@@ -69,9 +69,7 @@ int main()
         bool (*unloadPlugin)() = (bool (*)()) dlsym(so_lib, UNLOAD_PLUGIN);
         DLL_CHECK(unloadPlugin);
 
-        //unloadPlugin();
-
-        //dlclose(so_lib);
+        unloadPlugin();
     }
 
 

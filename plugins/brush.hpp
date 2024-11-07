@@ -5,7 +5,7 @@
 #include "graphics/my_sfml.hpp"
 #include "standard/api_canvas.hpp"
 
-#include "plugins/catmull.hpp"
+#include "../plugins/catmull.hpp"
 
 extern "C"
 {

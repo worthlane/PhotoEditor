@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "plugins/canvas.hpp"
+#include "../plugins/canvas.hpp"
 
 bool loadPlugin()
 {

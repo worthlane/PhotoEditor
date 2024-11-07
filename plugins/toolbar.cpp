@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "plugins/toolbar.hpp"
+#include "../plugins/toolbar.hpp"
 #include "api/root_window.hpp"
 
 static psapi::sfm::Texture back;
@@ -87,7 +87,6 @@ void ToolBar::draw(psapi::sfm::IRenderWindow* renderWindow)
         finishButtonDraw(renderWindow, button.get());
         button.get()->draw(renderWindow);
     }
-
 
 }
 bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi::sfm::Event& event)

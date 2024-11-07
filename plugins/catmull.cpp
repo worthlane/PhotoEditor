@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "plugins/catmull.hpp"
+#include "../plugins/catmull.hpp"
 
 static psapi::sfm::vec2i mul(const psapi::sfm::vec2i& x, const double cf)
 {
