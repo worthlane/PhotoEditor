@@ -2,13 +2,12 @@
 #include <iostream>
 
 #include "../plugins/toolbar.hpp"
-#include "api/root_window.hpp"
 
-static psapi::sfm::Texture back;
-static psapi::sfm::Texture release;
-static psapi::sfm::Texture hover;
-static psapi::sfm::Texture press;
-static psapi::sfm::Texture normal;
+static psapi::sfm::ITexture* back    = nullptr;
+static psapi::sfm::ITexture* release = nullptr;
+static psapi::sfm::ITexture* hover   = nullptr;
+static psapi::sfm::ITexture* press   = nullptr;
+static psapi::sfm::ITexture* normal  = nullptr;
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {900, 0, 128, 800};
 static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
@@ -24,63 +23,70 @@ bool loadPlugin()
 {
     std::cout << "toolbar loaded\n";
 
-    back.loadFromFile(BACKGROUND_TEXTURE);
-    hover.loadFromFile(HOVER_TEXTURE);
-    press.loadFromFile(PRESS_TEXTURE);
-    normal.loadFromFile(NORMAL_TEXTURE);
-    release.loadFromFile(RELEASE_TEXTURE);
+    back = psapi::sfm::ITexture::create().release();
+    back->loadFromFile(BACKGROUND_TEXTURE);
 
-    psapi::sfm::Sprite back_sprite;
-    back_sprite.setTextureRect(BACKGROUND_RECT);
-    back_sprite.setTexture(&back);
-    //back_sprite.setColor(psapi::sfm::Color(213, 34, 124, 255));
+    hover = psapi::sfm::ITexture::create().release();
+    hover->loadFromFile(HOVER_TEXTURE);
 
-    psapi::sfm::Sprite release_sprite;
-    release_sprite.setTextureRect(BUTTON_RECT);
-    release_sprite.setTexture(&release);
-    //release_sprite.setColor(psapi::sfm::Color(255, 255, 255, 255));
+    press = psapi::sfm::ITexture::create().release();
+    press->loadFromFile(PRESS_TEXTURE);
 
-    psapi::sfm::Sprite hover_sprite;
-    hover_sprite.setTextureRect(BUTTON_RECT);
-    hover_sprite.setTexture(&hover);
-    //hover_sprite.setColor(psapi::sfm::RED);
+    normal = psapi::sfm::ITexture::create().release();
+    normal->loadFromFile(NORMAL_TEXTURE);
 
-    psapi::sfm::Sprite press_sprite;
-    press_sprite.setTextureRect(BUTTON_RECT);
-    press_sprite.setTexture(&press);
-    //press_sprite.setColor(psapi::sfm::GREEN);
+    release = psapi::sfm::ITexture::create().release();
+    release->loadFromFile(RELEASE_TEXTURE);
 
-    psapi::sfm::Sprite normal_sprite;
-    normal_sprite.setTextureRect(BUTTON_RECT);
-    normal_sprite.setTexture(&normal);
-    //normal_sprite.setColor(psapi::sfm::BLUE);
+    std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
+    back_sprite.get()->setTextureRect(BACKGROUND_RECT);
+    back_sprite.get()->setTexture(back);
+
+    std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
+    release_sprite.get()->setTextureRect(BUTTON_RECT);
+    release_sprite.get()->setTexture(release);
+
+    std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
+    hover_sprite.get()->setTextureRect(BUTTON_RECT);
+    hover_sprite.get()->setTexture(hover);
+
+    std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
+    press_sprite.get()->setTextureRect(BUTTON_RECT);
+    press_sprite.get()->setTexture(press);
+
+    std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
+    normal_sprite.get()->setTextureRect(BUTTON_RECT);
+    normal_sprite.get()->setTexture(normal);
 
     auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
                                          psapi::vec2u(128, 32),
-                                         std::make_unique<psapi::sfm::Sprite>(back_sprite),
-                                         std::make_unique<psapi::sfm::Sprite>(normal_sprite),
-                                         std::make_unique<psapi::sfm::Sprite>(hover_sprite),
-                                         std::make_unique<psapi::sfm::Sprite>(press_sprite),
-                                         std::make_unique<psapi::sfm::Sprite>(release_sprite));
+                                         std::move(back_sprite),
+                                         std::move(normal_sprite),
+                                         std::move(hover_sprite),
+                                         std::move(press_sprite),
+                                         std::move(release_sprite));
 
-    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+    auto root = psapi::getRootWindow();
 
     root->addWindow(std::move(bar));
 }
 
 void unloadPlugin()
 {
+    delete back;
+    delete release;
+    delete hover;
+    delete press;
+    delete normal;
 }
 
-// ********************* TOOLBAR *********************
+// ********************* TOOLBAR *********************/
 
 
 void ToolBar::draw(psapi::sfm::IRenderWindow* renderWindow)
 {
-    psapi::sfm::RenderWindow* desktop = static_cast<psapi::sfm::RenderWindow*>(renderWindow);
-
     background_.get()->setPosition(pos_.x, pos_.y);
-    background_.get()->draw(desktop);
+    background_.get()->draw(renderWindow);
 
     for (auto& button : buttons_)
     {
@@ -162,25 +168,24 @@ void ToolBar::removeWindow(psapi::wid_t id)
 void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const psapi::IBarButton* button) const
 {
     psapi::vec2i pos = button->getPos();
-    psapi::sfm::RenderWindow* desktop = static_cast<psapi::sfm::RenderWindow*>(renderWindow);
 
     switch (button->getState())
     {
         case psapi::IBarButton::State::Normal:
             normal_.get()->setPosition(pos.x, pos.y);
-            normal_.get()->draw(desktop);
+            normal_.get()->draw(renderWindow);
             break;
         case psapi::IBarButton::State::Hover:
             hovered_.get()->setPosition(pos.x, pos.y);
-            hovered_.get()->draw(desktop);
+            hovered_.get()->draw(renderWindow);
             break;
         case psapi::IBarButton::State::Press:
             pressed_.get()->setPosition(pos.x, pos.y);
-            pressed_.get()->draw(desktop);
+            pressed_.get()->draw(renderWindow);
             break;
         case psapi::IBarButton::State::Released:
             released_.get()->setPosition(pos.x, pos.y);
-            released_.get()->draw(desktop);
+            released_.get()->draw(renderWindow);
             break;
     }
 }

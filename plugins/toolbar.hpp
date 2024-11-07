@@ -2,7 +2,6 @@
 #define TOOLBAR_PLUGIN_HPP
 
 #include "standard/api_bar.hpp"
-#include "graphics/my_sfml.hpp"
 
 extern "C"
 {
