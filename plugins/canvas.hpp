@@ -1,9 +1,7 @@
 #ifndef CANVAS_PLUGIN_HPP
 #define CANVAS_PLUGIN_HPP
 
-#include "graphics/my_sfml.hpp"
 #include "standard/api_canvas.hpp"
-#include "api/root_window.hpp"
 
 extern "C" {
 

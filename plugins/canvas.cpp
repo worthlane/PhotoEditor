@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-//#include "../plugins/colors.hpp"
+#include "../plugins/colors.hpp"
 #include "../plugins/canvas.hpp"
 
 bool loadPlugin()
@@ -12,7 +12,7 @@ bool loadPlugin()
                                            psapi::sfm::vec2i(1072, 780),
                                            psapi::sfm::vec2f(1, 1));
 
-    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+    auto root = psapi::getRootWindow();
 
     root->addWindow(std::move(canvas));
 }
@@ -103,23 +103,24 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
 {
     size_t layers_amount = layers_.size();
 
-    psapi::sfm::RenderWindow* desktop = static_cast<psapi::sfm::RenderWindow*>(renderWindow);
+    psapi::sfm::ITexture* texture = psapi::sfm::ITexture::create().release();
+    psapi::sfm::ISprite* sprite = psapi::sfm::ISprite::create().release();
 
-    psapi::sfm::Texture texture;
-    psapi::sfm::Sprite sprite;
-
-    sprite.setPosition(pos_.x, pos_.y);
-    sprite.setScale(scale_.x, scale_.y);
+    sprite->setPosition(pos_.x, pos_.y);
+    sprite->setScale(scale_.x, scale_.y);
 
     for (int i = layers_amount - 1; i >= 0; i--)
     {
         Layer* layer = layers_[i].get();
 
-        texture.update(layer->image_);
-        sprite.setTexture(&texture);
+        texture->update(layer->image_);
+        sprite->setTexture(texture);
 
-        sprite.draw(desktop);
+        sprite->draw(renderWindow);
     }
+
+    delete texture;
+    delete sprite;
 }
 
 bool Canvas::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
