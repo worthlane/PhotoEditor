@@ -32,5 +32,6 @@ private:
 };
 
 static const psapi::wid_t kBrushButtonId = 228;
+static const psapi::wid_t kEraserButtonId = 229;
 
 #endif // BRUSH_PLUGIN_HPP

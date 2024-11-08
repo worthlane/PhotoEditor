@@ -47,6 +47,9 @@ bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi:
 
     updateState(renderWindow, event);
 
+    if (state_ != SwitchButton::State::Released)
+        return false;
+
     return (*(action_.get()))(renderWindow, event, canvas_);
 }
 

@@ -18,6 +18,8 @@ static const char* RELEASE_TEXTURE    = "assets/textures/active_icon.png";
 static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
 static const char* NORMAL_TEXTURE     = "assets/textures/normal_icon.png";
 
+static const psapi::sfm::vec2i START_BUTTON_OFFSET = {19, 19};
+
 
 bool loadPlugin()
 {
@@ -106,6 +108,44 @@ bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi:
     {
         flag |= button.get()->update(renderWindow, event);
     }
+
+    /*for (auto& button : buttons_)
+    {
+        IBarButton::State state = button.get()->getState();
+
+        if
+    }*/
+
+    /*psapi::sfm::vec2i free_pos = START_BUTTON_OFFSET + pos_;
+
+    int right_bound = pos_.x + size_.x;
+    int left_bound  = pos_.x;
+    int upper_bound = pos_.y;
+    int lower_bound = pos_.y + size_.y;
+
+    for (; next_child_ < buttons_.size(); ++next_child_)
+    {
+        psapi::ChildInfo info = getNextChildInfo();
+
+        psapi::vec2i pos = info.pos;
+        psapi::vec2u size = {info.size.x, info.size.y};
+
+        if (free_pos.x + pos.x + size.x > right_bound)
+        {
+            free_pos.x = START_BUTTON_OFFSET.x + pos_.x;
+            free_pos.y += START_BUTTON_OFFSET.y + size.y;
+        }
+
+        if (free_pos.y + pos.y + size.y > lower_bound)
+        {
+            free_pos.x += START_BUTTON_OFFSET.x + size.x;
+            free_pos.y = START_BUTTON_OFFSET.y + pos_.y;
+        }
+
+        buttons_[next_child_]->setPosition(free_pos + pos);
+    }
+
+    next_child_ = 0;*/
 
     return flag;
 }

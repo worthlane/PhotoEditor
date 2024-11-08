@@ -9,7 +9,7 @@ static psapi::sfm::ITexture* btn = nullptr;
 static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
 static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
 
-static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
+void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
                       const psapi::sfm::Color& color, const int radius);
 
 static const size_t CATMULL_LEN = 4;
@@ -38,12 +38,23 @@ bool loadPlugin()
                                                canvas,
                                                std::make_unique<PaintAction>(sfm::RED, 3));
 
+    std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
+    ers_sprite.get()->setTextureRect(BUTTON_RECT);
+
+    auto eraser = std::make_unique<SwitchButton>(kEraserButtonId,
+                                                psapi::vec2i(19, 128),
+                                               psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
+                                               std::move(ers_sprite),
+                                               canvas,
+                                               std::make_unique<PaintAction>(sfm::WHITE, 20));
+
 
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
     if (tool_bar)
     {
         tool_bar->addWindow(std::move(brush));
+        tool_bar->addWindow(std::move(eraser));
     }
 }
 
@@ -97,7 +108,9 @@ bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psa
 
             double delta = 0.001 * static_cast<double>(radius_);
 
-            for (double i = 1; i < 2; i += delta)
+            double max_point = static_cast<double>(CATMULL_LEN - 2);
+
+            for (double i = 1; i < max_point; i += delta)
             {
                 set_point(layer, array_.getInterpolated(i), color_, radius_);
             }
@@ -111,7 +124,7 @@ bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psa
     return true;
 }
 
-static void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
+void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
                       const psapi::sfm::Color& color, const int radius)
 {
     int rad2 = radius * radius;
