@@ -510,6 +510,206 @@ void Mouse::setPosition(const vec2i& position, const IRenderWindow* relative_to)
     }
 }
 
+// *************************************************************************
+//                          RECTANGLE SHAPE
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+/*void setTexture(const ITexture *texture)
+{
+    shape_.setTexture(static_cast<const Texture*>(texture)->texture_);
+}
+
+void setFillColor(const Color &color)
+{
+    shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+
+void setPosition(const vec2i &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setPosition(const vec2f &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setPosition(const vec2d &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setScale(const vec2f &scale)
+{
+    shape_.setScale(scale.x, scale.y);
+}
+
+void setSize(const vec2u &size)
+{
+    shape_.setSize(sf::Vector2f(size.x, size.y));
+}
+void setRotation(float angle)
+{
+    shape_.setRotation(angle);
+}
+void setOutlineColor(const Color &color)
+{
+    shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+void setOutlineThickness(float thickness)
+{
+    shape_.setOutlineThickness(thickness);
+}
+
+float getRotation() const
+{
+    return shape_.getRotation();
+}
+
+vec2f getScale() const
+{
+    return {shape_.getScale().x, shape_.getScale().y};
+}
+
+vec2f getPosition() const
+{
+    return {shape_.getPosition().x, shape_.getPosition().y};
+}
+const Color &getFillColor() const
+{
+    sf::Color color = shape_.getFillColor();
+
+    return {color.r, color.g, color.b, color.a};
+}
+vec2u getSize() const
+{
+    sf::Vector2f size = shape_.getSize();
+
+    return {size.x, size.y};
+}
+
+float getOutlineThickness() const
+{
+    return shape_.getOutlineThickness();
+}
+
+const Color &getOutlineColor() const
+{
+    sf::Color color = shape_.getOutlineColor();
+
+    return {color.r, color.g, color.b, color.a};
+}
+
+const IImage* getImage() const
+{
+    // TODO
+}
+
+void draw(IRenderWindow *window) const
+{
+    // TODO implement
+}
+
+// *************************************************************************
+//                          ELLIPSE SHAPE
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+void setTexture(const ITexture *texture)
+{
+    shape_.setTexture(static_cast<const Texture*>(texture)->texture_);
+}
+
+void setFillColor(const Color &color)
+{
+    shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+
+void setPosition(const vec2i &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setPosition(const vec2f &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setPosition(const vec2d &pos)
+{
+    shape_.setPosition(pos.x, pos.y);
+}
+
+void setScale(const vec2f &scale)
+{
+    shape_.setScale(scale.x, scale.y);
+}
+
+void setSize(const vec2u &size)
+{
+    shape_.setSize(sf::Vector2f(size.x, size.y));
+}
+void setRotation(float angle)
+{
+    shape_.setRotation(angle);
+}
+void setOutlineColor(const Color &color)
+{
+    shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
+}
+void setOutlineThickness(float thickness)
+{
+    shape_.setOutlineThickness(thickness);
+}
+
+float getRotation() const
+{
+    return shape_.getRotation();
+}
+
+vec2f getScale() const
+{
+    return {shape_.getScale().x, shape_.getScale().y};
+}
+
+vec2f getPosition() const
+{
+    return {shape_.getPosition().x, shape_.getPosition().y};
+}
+const Color &getFillColor() const
+{
+    sf::Color color = shape_.getFillColor();
+
+    return {color.r, color.g, color.b, color.a};
+}
+vec2u getSize() const
+{
+    sf::Vector2f size = shape_.getSize();
+
+    return {size.x, size.y};
+}
+
+float getOutlineThickness() const
+{
+    return shape_.getOutlineThickness();
+}
+
+const Color &getOutlineColor() const
+{
+    sf::Color color = shape_.getOutlineColor();
+
+    return {color.r, color.g, color.b, color.a};
+}
+
+const IImage* getImage() const
+{
+    // TODO
+}
+
+void draw(IRenderWindow *window) const
+{
+    // TODO implement
+}*/
+
 } // sfm
 
 } // psapi

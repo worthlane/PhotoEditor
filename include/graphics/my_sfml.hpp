@@ -182,7 +182,28 @@ class RectangleShape : public IRectangleShape
 public:
     virtual ~RectangleShape() = default;
 
-    virtual void draw(IRenderWindow *window) const override;
+    /*virtual void setTexture(const ITexture *texture) override;
+    virtual void setFillColor(const Color &color) override;
+
+    virtual void setPosition(const vec2i &pos) override;
+    virtual void setPosition(const vec2f &pos) override;
+    virtual void setPosition(const vec2d &pos) override;
+    virtual void setScale(const vec2f &scale) override;
+    virtual void setSize(const vec2u &size) override;
+    virtual void setRotation(float angle) override;
+    virtual void setOutlineColor(const Color &color) override;
+    virtual void setOutlineThickness(float thickness) override;
+
+    virtual float getRotation() const override;
+    virtual vec2f getScale() const override;
+    virtual vec2f getPosition() const override;
+    virtual const Color &getFillColor() const override;
+    virtual vec2u getSize() const override;
+    virtual float getOutlineThickness() const override;
+    virtual const Color &getOutlineColor() const override;
+    virtual const IImage* getImage() const override;
+
+    virtual void draw(IRenderWindow *window) const override;*/
 
 private:
     sf::RectangleShape shape_;
@@ -194,7 +215,28 @@ class EllipseShape : public IEllipseShape
 public:
     virtual ~EllipseShape() = default;
 
-    virtual void draw(IRenderWindow *window) const override;
+    /*virtual void setTexture(const ITexture *texture) override;
+    virtual void setFillColor(const Color &color) override;
+
+    virtual void setPosition(const vec2i &pos) override;
+    virtual void setPosition(const vec2f &pos) override;
+    virtual void setPosition(const vec2d &pos) override;
+    virtual void setScale(const vec2f &scale) override;
+    virtual void setSize(const vec2u &size) override;
+    virtual void setRotation(float angle) override;
+    virtual void setOutlineColor(const Color &color) override;
+    virtual void setOutlineThickness(float thickness) override;
+
+    virtual float getRotation() const override;
+    virtual vec2f getScale() const override;
+    virtual vec2f getPosition() const override;
+    virtual const Color &getFillColor() const override;
+    virtual vec2u getSize() const override;
+    virtual float getOutlineThickness() const override;
+    virtual const Color &getOutlineColor() const override;
+    virtual const IImage* getImage() const override;
+
+    virtual void draw(IRenderWindow *window) const override;*/
 private:
     sf::CircleShape shape_;
 };

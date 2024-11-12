@@ -46,7 +46,7 @@ bool loadPlugin()
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(ers_sprite),
                                                canvas,
-                                               std::make_unique<PaintAction>(sfm::WHITE, 20));
+                                               std::make_unique<PaintAction>(sfm::WHITE, 20, true));
 
 
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
@@ -65,29 +65,19 @@ void unloadPlugin()
 
 // ======================================================
 
-PaintAction::PaintAction(const psapi::sfm::Color& color, size_t radius) :
-color_(color), radius_(radius), array_()
+PaintAction::PaintAction(const psapi::sfm::Color& color, const size_t radius, const bool scale_related) :
+color_(color), radius_(radius), array_(), scale_related_(scale_related)
 {}
 
 bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
                              psapi::ICanvas* canvas)
 {
-    psapi::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
+    psapi::vec2i mouse_pos = canvas->getMousePosition();
     bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
 
-    /*
-    if (state != BrushButton::State::Released)
-    {
-        array_.clear();
-        return true;
-    }
-    */
+    //psapi::vec2f scale = canvas->getScale();
 
-    psapi::vec2i canvas_pos  = canvas->getPos();
     psapi::vec2u canvas_size = canvas->getSize();
-
-    bool mouse_in_canvas = (mouse_pos.x >= canvas_pos.x) && (mouse_pos.x < canvas_pos.x + canvas_size.x) &&
-                           (mouse_pos.y >= canvas_pos.y) && (mouse_pos.y < canvas_pos.y + canvas_size.y);
 
     if (LMB_down)
     {
@@ -96,19 +86,19 @@ bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psa
         if (!layer)
             return false;
 
-        psapi::vec2i pos = mouse_pos - canvas_pos;
+        psapi::vec2i pos = mouse_pos;
+
 
         if (array_.size() < CATMULL_LEN)
-        {
             array_.push_back(pos);
-        }
         else
         {
             array_.queue_push(pos);
 
             double delta = 0.001 * static_cast<double>(radius_);
-
             double max_point = static_cast<double>(CATMULL_LEN - 2);
+
+            //int radius = static_cast<int>(scale_related_ ? static_cast<double>(radius_) / scale.x : radius_);
 
             for (double i = 1; i < max_point; i += delta)
             {

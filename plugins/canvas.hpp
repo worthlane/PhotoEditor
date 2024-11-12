@@ -33,7 +33,7 @@ class Canvas : public psapi::ICanvas
 public:
     Canvas(const psapi::sfm::vec2i& pos,
            const psapi::sfm::vec2i& size,
-           const psapi::sfm::vec2f& scale);
+           const psapi::sfm::vec2f& scale = {1, 1});
 
     virtual psapi::wid_t getId() const override { return psapi::kCanvasWindowId; }
 
@@ -81,7 +81,6 @@ public:
 protected:
     psapi::sfm::vec2i pos_;
     psapi::sfm::vec2i size_;
-    psapi::sfm::vec2f scale_;
 
     std::vector<std::unique_ptr<Layer> > layers_;
     std::unique_ptr<Layer> temp_layer_;
@@ -91,6 +90,10 @@ protected:
 
     size_t     active_layer_ = 0;
     bool       is_active_ = true;
+
+    psapi::sfm::vec2i coord_start_ = {0, 0};
+    psapi::sfm::vec2f scale_;
+
 };
 
 
