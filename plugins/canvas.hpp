@@ -3,6 +3,8 @@
 
 #include "standard/api_canvas.hpp"
 
+#include "../plugins/scrollbar.hpp"
+
 extern "C" {
 
 bool   loadPlugin();
@@ -28,7 +30,7 @@ private:
     friend class Canvas;
 };
 
-class Canvas : public psapi::ICanvas
+class Canvas : public psapi::ICanvas, public Scrollable
 {
 public:
     Canvas(const psapi::sfm::vec2i& pos,
@@ -58,14 +60,15 @@ public:
     virtual size_t getNumLayers() const override { return layers_.size(); };
 
     virtual void setPos  (psapi::sfm::vec2i pos)   override { pos_ = pos; };
-    virtual void setScale(psapi::sfm::vec2f scale) override { scale_ = scale; };
+    virtual void setScale(psapi::sfm::vec2f scale) override { Scrollable::setScale(scale); };
     virtual void setSize (psapi::sfm::vec2i size)  override;
 
     virtual psapi::sfm::vec2i getMousePosition() const override { return mouse_pos_; };
     virtual bool       isPressed()        const override { return pressed_; };
 
-    virtual psapi::vec2i getPos() const override { return pos_; }
-    virtual psapi::vec2u getSize() const override { return {size_.x, size_.y}; }
+    virtual psapi::sfm::vec2i getPos() const override { return pos_; }
+    virtual psapi::sfm::vec2u getSize() const override { return {size_.x, size_.y}; }
+    virtual psapi::sfm::vec2u getObjectSize() const override { return {size_.x, size_.y}; }
 
     virtual void setParent(const psapi::IWindow* parent) override;
 
@@ -78,9 +81,9 @@ public:
 
     virtual bool isWindowContainer() const override { return false; }
 
+    virtual bool updateScale(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+
 protected:
-    psapi::sfm::vec2i pos_;
-    psapi::sfm::vec2i size_;
 
     std::vector<std::unique_ptr<Layer> > layers_;
     std::unique_ptr<Layer> temp_layer_;
@@ -91,9 +94,8 @@ protected:
     size_t     active_layer_ = 0;
     bool       is_active_ = true;
 
-    psapi::sfm::vec2i coord_start_ = {0, 0};
-    psapi::sfm::vec2f scale_;
-
+    psapi::sfm::vec2i pos_;
+    psapi::sfm::vec2i size_;
 };
 
 

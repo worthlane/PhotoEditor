@@ -4,17 +4,13 @@
 #include "../plugins/colors.hpp"
 #include "../plugins/canvas.hpp"
 
-static psapi::sfm::vec2i operator/(const psapi::sfm::vec2i& self, const psapi::sfm::vec2f& other)
-{
-    return {static_cast<int>(static_cast<double>(self.x) / other.x),
-            static_cast<int>(static_cast<double>(self.y) / other.y)};
-}
 
-static psapi::sfm::vec2i operator*(const psapi::sfm::vec2i& self, const psapi::sfm::vec2f& other)
-{
-    return {static_cast<int>(static_cast<double>(self.x) * other.x),
-            static_cast<int>(static_cast<double>(self.y) * other.y)};
-}
+static const char* BACKGROUND_TEXTURE = "assets/textures/light_gray.jpg";
+static const char* NORMAL_TEXTURE = "assets/textures/mid_gray.jpg";
+static const char* ACTIVE_TEXTURE = "assets/textures/dark_gray.jpg";
+
+static const psapi::wid_t kCanvasHorizontalScrollBar = 230;
+static const psapi::wid_t kCanvasVerticalScrollBar = 231;
 
 
 bool loadPlugin()
@@ -22,12 +18,30 @@ bool loadPlugin()
     std::cout << "canvas loaded\n";
 
     auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(128, 20),
-                                           psapi::sfm::vec2i(1072, 780),
+                                           psapi::sfm::vec2i(1032, 740),
                                            psapi::sfm::vec2f(1, 1));
+
+    std::unique_ptr<psapi::sfm::ITexture> back = psapi::sfm::ITexture::create();
+    back->loadFromFile(BACKGROUND_TEXTURE);
+
+    std::unique_ptr<psapi::sfm::ITexture> normal = psapi::sfm::ITexture::create();
+    normal->loadFromFile(NORMAL_TEXTURE);
+
+    std::unique_ptr<psapi::sfm::ITexture> active = psapi::sfm::ITexture::create();
+    active->loadFromFile(ACTIVE_TEXTURE);
+
+    auto scrollbar = std::make_unique<HorizontalScrollBar>(kCanvasHorizontalScrollBar,
+                                                           psapi::sfm::vec2i(128, 760),
+                                                           psapi::sfm::vec2u(1032, 40),
+                                                           std::move(back), std::move(normal), std::move(active),
+                                                           canvas.get());
 
     auto root = psapi::getRootWindow();
 
     root->addWindow(std::move(canvas));
+    root->addWindow(std::move(scrollbar));
+
+    return true;
 }
 
 void unloadPlugin()
@@ -75,11 +89,12 @@ Canvas::Canvas(const psapi::sfm::vec2i& pos,
                const psapi::sfm::vec2i& size,
                const psapi::sfm::vec2f& scale) :
     layers_(), temp_layer_(std::make_unique<Layer>(size_.x, size_.y)),
-    mouse_pos_(psapi::sfm::vec2i(0, 0)), pressed_(false), coord_start_(0, 0)
+    mouse_pos_(psapi::sfm::vec2i(0, 0)), pressed_(false)
 {
     pos_ = {pos.x, pos.y};
     size_ = {size.x, size.y};
-    scale_ = {scale.x, scale.y};
+
+    setScale({scale.x, scale.y});
 
     layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, sfm::WHITE));
 }
@@ -123,7 +138,9 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     final_image->create(size_.x, size_.y, sfm::WHITE);
 
     sprite->setPosition(pos_.x, pos_.y);
-    //sprite->setScale(scale_.x, scale_.y);
+
+    psapi::sfm::vec2f scale = getScale();
+    psapi::sfm::vec2i coord_start = getCoordStart();
 
     for (int i = layers_amount - 1; i >= 0; i--)
     {
@@ -133,8 +150,7 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
         {
             for (size_t x = 0; x < size_.x; x++)
             {
-                //psapi::sfm::vec2i coord = {x / scale_.x, y / scale_.y};
-                final_image->setPixel({x, y}, layer->getPixel(coord_start_ + psapi::sfm::vec2i(x, y) / scale_));
+                final_image->setPixel({x, y}, layer->getPixel(coord_start + psapi::sfm::vec2i(x, y) / scale));
             }
         }
     }
@@ -151,40 +167,40 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
 
 bool Canvas::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
+    return updateScale(renderWindow, event);
+}
+
+bool Canvas::updateScale(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
     psapi::sfm::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow) - pos_;
+    psapi::sfm::vec2f scale = getScale();
+    psapi::sfm::vec2i coord_start = getCoordStart();
 
     if (event.type == psapi::sfm::Event::MouseWheelScrolled)
     {
-        /*if (event.mouseWheel.wheel == psapi::sfm::Mouse::Wheel::Vertical)
-        {
-            std::cout << "----------------------------------\n";
-        }
+        psapi::sfm::vec2i old_mouse_pos = mouse_pos / scale;
 
-        if (event.mouseWheel.wheel == psapi::sfm::Mouse::Wheel::Horizontal)
-        {
-            std::cout << "************************************\n";
-        }*/
+        scale += psapi::sfm::vec2f(0.05f * scale.x, 0.05f * scale.y) * event.mouseWheel.delta;
 
-        psapi::sfm::vec2i old_mouse_pos = mouse_pos / scale_;
+        if (scale.x < 1)   scale.x = 1;
+        if (scale.y < 1)   scale.y = 1;
 
-        scale_ += psapi::sfm::vec2f(0.1f * scale_.x, 0.1f * scale_.y) * event.mouseWheel.delta;
+        psapi::sfm::vec2i new_mouse_pos = mouse_pos / scale;
 
-        if (scale_.x < 1)   scale_.x = 1;
-        if (scale_.y < 1)   scale_.y = 1;
+        coord_start += old_mouse_pos - new_mouse_pos;
 
-        psapi::sfm::vec2i new_mouse_pos = mouse_pos / scale_;
+        psapi::sfm::vec2i right_lower_corner = coord_start + psapi::sfm::vec2i(size_.x, size_.y) / scale;
 
-        coord_start_ += old_mouse_pos - new_mouse_pos;
-
-        psapi::sfm::vec2i right_lower_corner = coord_start_ + psapi::sfm::vec2i(size_.x, size_.y) / scale_;
-
-        if (right_lower_corner.x > size_.x - 1) coord_start_.x = size_.x - (size_.x / scale_.x);
-        if (right_lower_corner.y > size_.y - 1) coord_start_.y = size_.y - (size_.y / scale_.y);
-        if (coord_start_.x < 0) coord_start_.x = 0;
-        if (coord_start_.y < 0) coord_start_.y = 0;
+        if (right_lower_corner.x > size_.x - 1) coord_start.x = size_.x - (size_.x / scale.x);
+        if (right_lower_corner.y > size_.y - 1) coord_start.y = size_.y - (size_.y / scale.y);
+        if (coord_start.x < 0)                  coord_start.x = 0;
+        if (coord_start.y < 0)                  coord_start.y = 0;
     }
 
-    mouse_pos_ = coord_start_ + mouse_pos / scale_;
+    mouse_pos_ = coord_start + mouse_pos / scale;
+
+    setScale(scale);
+    setCoordStart(coord_start);
 
     return true;
 }
