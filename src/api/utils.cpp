@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "api/utils.hpp"
 
 namespace psapi
