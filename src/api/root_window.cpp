@@ -51,7 +51,8 @@ vec2u RootWindow::getSize() const
     return {MAX_SIZE, MAX_SIZE};
 }
 void RootWindow::setParent(const IWindow* parent)
-{}
+{
+}
 
 void RootWindow::forceDeactivate()
 {}
