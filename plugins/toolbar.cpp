@@ -104,9 +104,22 @@ bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi:
 
     bool flag = false;
 
-    for (auto& button : buttons_)
+    for (size_t i = 0; i < buttons_.size(); ++i)
     {
+        auto& button = buttons_[i];
+
+        psapi::IBarButton::State prev_state = button.get()->getState();
+
         flag |= button.get()->update(renderWindow, event);
+
+        psapi::IBarButton::State cur_state = button.get()->getState();
+
+        if (cur_state == psapi::IBarButton::State::Released &&
+            prev_state != psapi::IBarButton::State::Released)
+        {
+            for (size_t j = 0; j < buttons_.size(); ++j)
+                if (j != i) buttons_[j].get()->setState(psapi::IBarButton::State::Normal);
+        }
     }
 
     /*for (auto& button : buttons_)

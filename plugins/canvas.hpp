@@ -25,7 +25,7 @@ public:
 private:
     psapi::sfm::IImage* image_;
 
-    void resize(const size_t width, const size_t height);
+    void dumpOnImage(psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);
 
     friend class Canvas;
 };

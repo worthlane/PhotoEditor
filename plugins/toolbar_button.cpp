@@ -6,10 +6,10 @@
 // ======================================================
 
 SwitchButton::SwitchButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-                         std::unique_ptr<psapi::sfm::ISprite> sprite, psapi::ICanvas* canvas,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite,
                          std::unique_ptr<Action> action) :
     id_(id), state_(SwitchButton::State::Normal), size_(size), pos_(pos),
-    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true), canvas_(canvas),
+    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true),
     action_(std::move(action))
 {
     assert(action_);
@@ -50,7 +50,7 @@ bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi:
     if (state_ != SwitchButton::State::Released)
         return false;
 
-    return (*(action_.get()))(renderWindow, event, canvas_);
+    return (*(action_.get()))(renderWindow, event);
 }
 
 void SwitchButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)

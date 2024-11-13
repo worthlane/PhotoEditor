@@ -13,7 +13,6 @@ static const char* ACTIVE_TEXTURE = "assets/textures/dark_gray.jpg";
 static const psapi::wid_t kCanvasHorizontalScrollBar = 230;
 static const psapi::wid_t kCanvasVerticalScrollBar = 231;
 
-
 bool loadPlugin()
 {
     std::cout << "canvas loaded\n";
@@ -100,9 +99,19 @@ void Layer::setPixel(psapi::sfm::vec2i pos, psapi::sfm::Color pixel)
     image_->setPixel(pos.x, pos.y, pixel);
 }
 
-void Layer::resize(const size_t width, const size_t height)
+void Layer::dumpOnImage(psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size)
 {
-    // TODO
+    for (size_t y = 0; y < size.y; y++)
+    {
+        for (size_t x = 0; x < size.x; x++)
+        {
+            psapi::sfm::Color pixel = getPixel(coord_start + psapi::sfm::vec2i(x, y) / scale);
+
+            if (pixel.a == 0) continue;
+
+            image->setPixel({x, y}, pixel);
+        }
+    }
 }
 
 // ****************** CANVAS *******************
@@ -110,13 +119,15 @@ void Layer::resize(const size_t width, const size_t height)
 Canvas::Canvas(const psapi::sfm::vec2i& pos,
                const psapi::sfm::vec2i& size,
                const psapi::sfm::vec2f& scale) :
-    layers_(), temp_layer_(std::make_unique<Layer>(size_.x, size_.y)),
+    layers_(),
     mouse_pos_(psapi::sfm::vec2i(0, 0)), pressed_(false)
 {
     pos_ = {pos.x, pos.y};
     size_ = {size.x, size.y};
 
     setScale({scale.x, scale.y});
+
+    temp_layer_ = std::make_unique<Layer>(size_.x, size_.y, psapi::sfm::Color(0, 0, 0, 0));
 
     layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, sfm::WHITE));
 }
@@ -167,15 +178,11 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     for (int i = layers_amount - 1; i >= 0; i--)
     {
         Layer* layer = layers_[i].get();
-
-        for (size_t y = 0; y < size_.y; y++)
-        {
-            for (size_t x = 0; x < size_.x; x++)
-            {
-                final_image->setPixel({x, y}, layer->getPixel(coord_start + psapi::sfm::vec2i(x, y) / scale));
-            }
-        }
+        layer->dumpOnImage(final_image, coord_start, scale, size_);
     }
+
+    Layer* temp_layer = temp_layer_.get();
+    temp_layer->dumpOnImage(final_image, coord_start, scale, size_);
 
     texture->update(final_image);
     sprite->setTexture(texture);
@@ -223,22 +230,24 @@ bool Canvas::updateScale(const psapi::IRenderWindow* renderWindow, const psapi::
 void Canvas::setSize(psapi::sfm::vec2i size)
 {
     size_ = size;
-
-    temp_layer_->resize(size.x, size.y);
-
-    for (auto& layer : layers_)
-    {
-        layer->resize(size.x, size.y);
-    }
 }
 
 void Canvas::cleanTempLayer()
 {
+    Layer* active_layer = layers_[active_layer_].get();
+    Layer* temp_layer = temp_layer_.get();
+
     for (size_t y = 0; y < size_.y; y++)
     {
         for (size_t x = 0; x < size_.x; x++)
         {
-            temp_layer_->setPixel({x, y}, sfm::WHITE);
+            psapi::sfm::Color temp_pixel = temp_layer->getPixel({x, y});
+
+            if (temp_pixel.a == 0)
+                continue;
+
+            active_layer->setPixel({x, y}, temp_pixel);
+            temp_layer->setPixel({x, y}, psapi::sfm::Color(0, 0, 0, 0));
         }
     }
 }

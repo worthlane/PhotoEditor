@@ -18,15 +18,16 @@ void unloadPlugin();
 class PaintAction : public Action
 {
 public:
-    PaintAction(const psapi::sfm::Color& color, const size_t radius, const bool scale_related = false);
+    PaintAction(const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, const bool scale_related = false);
     ~PaintAction() = default;
 
-    virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
-                            psapi::ICanvas* canvas) override;
+    virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     psapi::sfm::Color color_;
     size_t            radius_;
+
+    psapi::ICanvas* canvas_ = nullptr;
 
     bool scale_related_ = false;
 

@@ -35,8 +35,7 @@ bool loadPlugin()
                                                 psapi::vec2i(19, 19),
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(btn_sprite),
-                                               canvas,
-                                               std::make_unique<PaintAction>(sfm::RED, 3));
+                                               std::make_unique<PaintAction>(sfm::RED, 3, canvas));
 
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
@@ -45,8 +44,7 @@ bool loadPlugin()
                                                 psapi::vec2i(19, 128),
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(ers_sprite),
-                                               canvas,
-                                               std::make_unique<PaintAction>(sfm::WHITE, 20, true));
+                                               std::make_unique<PaintAction>(sfm::WHITE, 20, canvas, true));
 
 
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
@@ -65,32 +63,29 @@ void unloadPlugin()
 
 // ======================================================
 
-PaintAction::PaintAction(const psapi::sfm::Color& color, const size_t radius, const bool scale_related) :
-color_(color), radius_(radius), array_(), scale_related_(scale_related)
+PaintAction::PaintAction(const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, const bool scale_related) :
+color_(color), radius_(radius), array_(), scale_related_(scale_related), canvas_(canvas)
 {}
 
-bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
-                             psapi::ICanvas* canvas)
+bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
-    psapi::vec2i mouse_pos = canvas->getMousePosition();
+    psapi::vec2i mouse_pos = canvas_->getMousePosition();
     bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
 
-    //psapi::vec2f scale = canvas->getScale();
+    psapi::vec2u canvas_size = canvas_->getSize();
 
-    psapi::vec2u canvas_size = canvas->getSize();
+    psapi::ILayer* layer = canvas_->getTempLayer();
+    if (!layer)
+            return false;
 
     if (LMB_down)
     {
-        psapi::ILayer* layer = canvas->getLayer(0);
-
-        if (!layer)
-            return false;
-
         psapi::vec2i pos = mouse_pos;
 
-
         if (array_.size() < CATMULL_LEN)
+        {
             array_.push_back(pos);
+        }
         else
         {
             array_.queue_push(pos);
@@ -108,6 +103,9 @@ bool PaintAction::operator()(const psapi::IRenderWindow* renderWindow, const psa
     }
     else
     {
+        if (array_.size())
+            canvas_->cleanTempLayer();
+
         array_.clear();
     }
 

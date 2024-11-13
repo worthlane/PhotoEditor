@@ -421,7 +421,7 @@ bool Texture::loadFromFile(const std::string& filename, const IntRect& area)
 {
     return texture_.loadFromFile(filename);
 }
-bool Texture::loadFromMemory(const void* data, std::size_t size, const IntRect& area)
+bool Texture::loadFromMemory(const void* data, size_t size, const IntRect& area)
 {
     return texture_.loadFromMemory(data, size);
 }
@@ -514,98 +514,100 @@ void Mouse::setPosition(const vec2i& position, const IRenderWindow* relative_to)
 //                          RECTANGLE SHAPE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-/*void setTexture(const ITexture *texture)
+void RectangleShape::setTexture(const ITexture *texture)
 {
-    shape_.setTexture(static_cast<const Texture*>(texture)->texture_);
+    const Texture* tex = static_cast<const Texture*>(texture);
+
+    shape_.setTexture(&(tex->texture_));
 }
 
-void setFillColor(const Color &color)
+void RectangleShape::setFillColor(const Color &color)
 {
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
-void setPosition(const vec2i &pos)
+void RectangleShape::setPosition(const vec2i &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setPosition(const vec2f &pos)
+void RectangleShape::setPosition(const vec2f &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setPosition(const vec2d &pos)
+void RectangleShape::setPosition(const vec2d &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setScale(const vec2f &scale)
+void RectangleShape::setScale(const vec2f &scale)
 {
     shape_.setScale(scale.x, scale.y);
 }
 
-void setSize(const vec2u &size)
+void RectangleShape::setSize(const vec2u &size)
 {
     shape_.setSize(sf::Vector2f(size.x, size.y));
 }
-void setRotation(float angle)
+void RectangleShape::setRotation(float angle)
 {
     shape_.setRotation(angle);
 }
-void setOutlineColor(const Color &color)
+void RectangleShape::setOutlineColor(const Color &color)
 {
     shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
 }
-void setOutlineThickness(float thickness)
+void RectangleShape::setOutlineThickness(float thickness)
 {
     shape_.setOutlineThickness(thickness);
 }
 
-float getRotation() const
+float RectangleShape::getRotation() const
 {
     return shape_.getRotation();
 }
 
-vec2f getScale() const
+vec2f RectangleShape::getScale() const
 {
     return {shape_.getScale().x, shape_.getScale().y};
 }
 
-vec2f getPosition() const
+vec2f RectangleShape::getPosition() const
 {
     return {shape_.getPosition().x, shape_.getPosition().y};
 }
-const Color &getFillColor() const
+const Color& RectangleShape::getFillColor() const
 {
     sf::Color color = shape_.getFillColor();
 
     return {color.r, color.g, color.b, color.a};
 }
-vec2u getSize() const
+vec2u RectangleShape::getSize() const
 {
     sf::Vector2f size = shape_.getSize();
 
     return {size.x, size.y};
 }
 
-float getOutlineThickness() const
+float RectangleShape::getOutlineThickness() const
 {
     return shape_.getOutlineThickness();
 }
 
-const Color &getOutlineColor() const
+const Color& RectangleShape::getOutlineColor() const
 {
     sf::Color color = shape_.getOutlineColor();
 
     return {color.r, color.g, color.b, color.a};
 }
 
-const IImage* getImage() const
+const IImage* RectangleShape::getImage() const
 {
     // TODO
 }
 
-void draw(IRenderWindow *window) const
+void RectangleShape::draw(IRenderWindow *window) const
 {
     // TODO implement
 }
@@ -614,101 +616,106 @@ void draw(IRenderWindow *window) const
 //                          ELLIPSE SHAPE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-void setTexture(const ITexture *texture)
+void EllipseShape::setTexture(const ITexture *texture)
 {
-    shape_.setTexture(static_cast<const Texture*>(texture)->texture_);
+    const Texture* tex = static_cast<const Texture*>(texture);
+
+    shape_.setTexture(&(tex->texture_));
 }
 
-void setFillColor(const Color &color)
+void EllipseShape::setFillColor(const Color &color)
 {
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
-void setPosition(const vec2i &pos)
+void EllipseShape::setPosition(const vec2i &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setPosition(const vec2f &pos)
+void EllipseShape::setPosition(const vec2f &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setPosition(const vec2d &pos)
+void EllipseShape::setPosition(const vec2d &pos)
 {
     shape_.setPosition(pos.x, pos.y);
 }
 
-void setScale(const vec2f &scale)
+void EllipseShape::setScale(const vec2f &scale)
 {
     shape_.setScale(scale.x, scale.y);
 }
 
-void setSize(const vec2u &size)
+void EllipseShape::setSize(const vec2u &size)
 {
-    shape_.setSize(sf::Vector2f(size.x, size.y));
+    // TODO
+    //shape_.setSize(sf::Vector2f(size.x, size.y));
 }
-void setRotation(float angle)
+void EllipseShape::setRotation(float angle)
 {
     shape_.setRotation(angle);
 }
-void setOutlineColor(const Color &color)
+void EllipseShape::setOutlineColor(const Color &color)
 {
     shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
 }
-void setOutlineThickness(float thickness)
+void EllipseShape::setOutlineThickness(float thickness)
 {
     shape_.setOutlineThickness(thickness);
 }
 
-float getRotation() const
+float EllipseShape::getRotation() const
 {
     return shape_.getRotation();
 }
 
-vec2f getScale() const
+vec2f EllipseShape::getScale() const
 {
     return {shape_.getScale().x, shape_.getScale().y};
 }
 
-vec2f getPosition() const
+vec2f EllipseShape::getPosition() const
 {
     return {shape_.getPosition().x, shape_.getPosition().y};
 }
-const Color &getFillColor() const
+const Color& EllipseShape::getFillColor() const
 {
     sf::Color color = shape_.getFillColor();
 
     return {color.r, color.g, color.b, color.a};
 }
-vec2u getSize() const
+vec2u EllipseShape::getSize() const
 {
-    sf::Vector2f size = shape_.getSize();
+    // TODO
+    //sf::Vector2f size = shape_.getSize();
 
-    return {size.x, size.y};
+    //return {size.x, size.y};
 }
 
-float getOutlineThickness() const
+float EllipseShape::getOutlineThickness() const
 {
     return shape_.getOutlineThickness();
 }
 
-const Color &getOutlineColor() const
+const Color& EllipseShape::getOutlineColor() const
 {
     sf::Color color = shape_.getOutlineColor();
 
     return {color.r, color.g, color.b, color.a};
 }
 
-const IImage* getImage() const
+const IImage* EllipseShape::getImage() const
 {
-    // TODO
+
+
 }
 
-void draw(IRenderWindow *window) const
+void EllipseShape::draw(IRenderWindow *window) const
 {
     // TODO implement
-}*/
+}
 
 } // sfm
 

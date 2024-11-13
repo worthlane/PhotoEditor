@@ -7,15 +7,14 @@
 class Action
 {
     public:
-        virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event,
-                                psapi::ICanvas* canvas) = 0;
+        virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) = 0;
 };
 
 class SwitchButton : public psapi::IBarButton
 {
 public:
     SwitchButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite, psapi::ICanvas* canvas,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite,
                  std::unique_ptr<Action> action);
 
     virtual psapi::wid_t getId() const override;
@@ -56,8 +55,6 @@ private:
 
     const psapi::IWindow* parent_ = nullptr;
     bool is_active_ = true;
-
-    psapi::ICanvas* canvas_ = nullptr;
 
     std::unique_ptr<Action> action_;
 

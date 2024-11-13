@@ -81,6 +81,8 @@ private:
     sf::Texture texture_;
 
     friend class Sprite;
+    friend class RectangleShape;
+    friend class EllipseShape;
 };
 
 class Sprite : public ISprite
@@ -182,7 +184,7 @@ class RectangleShape : public IRectangleShape
 public:
     virtual ~RectangleShape() = default;
 
-    /*virtual void setTexture(const ITexture *texture) override;
+    virtual void setTexture(const ITexture *texture) override;
     virtual void setFillColor(const Color &color) override;
 
     virtual void setPosition(const vec2i &pos) override;
@@ -203,7 +205,7 @@ public:
     virtual const Color &getOutlineColor() const override;
     virtual const IImage* getImage() const override;
 
-    virtual void draw(IRenderWindow *window) const override;*/
+    virtual void draw(IRenderWindow *window) const override;
 
 private:
     sf::RectangleShape shape_;
@@ -215,7 +217,7 @@ class EllipseShape : public IEllipseShape
 public:
     virtual ~EllipseShape() = default;
 
-    /*virtual void setTexture(const ITexture *texture) override;
+    virtual void setTexture(const ITexture *texture) override;
     virtual void setFillColor(const Color &color) override;
 
     virtual void setPosition(const vec2i &pos) override;
@@ -236,7 +238,7 @@ public:
     virtual const Color &getOutlineColor() const override;
     virtual const IImage* getImage() const override;
 
-    virtual void draw(IRenderWindow *window) const override;*/
+    virtual void draw(IRenderWindow *window) const override;
 private:
     sf::CircleShape shape_;
 };
