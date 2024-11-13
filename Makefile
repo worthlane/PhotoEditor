@@ -105,7 +105,7 @@ plugins:
 	$(CXX) -dynamiclib plugins/canvas.cpp plugins/scrollbar.cpp -o $(BUILD_DIR)/canvas.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/brush.cpp plugins/catmull.cpp plugins/toolbar_button.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-
+	$(CXX) -dynamiclib plugins/geometry.cpp plugins/toolbar_button.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 
 
 

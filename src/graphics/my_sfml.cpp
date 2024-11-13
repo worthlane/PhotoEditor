@@ -165,6 +165,7 @@ bool RenderWindow::pollEvent(Event& event)
             event.mouseWheel.delta = sfml_event.mouseWheelScroll.delta;
             event.mouseWheel.x     = sfml_event.mouseWheelScroll.x;
             event.mouseWheel.y     = sfml_event.mouseWheelScroll.y;
+            event.mouseWheel.wheel = static_cast<Mouse::Wheel>(sfml_event.mouseWheelScroll.wheel);
             break;
 
         case sf::Event::MouseButtonPressed:
@@ -612,9 +613,49 @@ void RectangleShape::draw(IRenderWindow *window) const
     // TODO implement
 }
 
+std::unique_ptr<IRectangleShape> IRectangleShape::create(unsigned int width, unsigned int height)
+{
+    return std::make_unique<RectangleShape>(width, height);
+}
+std::unique_ptr<IRectangleShape> IRectangleShape::create(const vec2u& size)
+{
+    return std::make_unique<RectangleShape>(size.x, size.y);
+}
+
+RectangleShape::RectangleShape(unsigned int width, unsigned int height)
+{
+    shape_.setSize(sf::Vector2f(width, height));
+}
+
+void RectangleShape::move(const vec2f &offset)
+{
+    // TODO
+}
+
 // *************************************************************************
 //                          ELLIPSE SHAPE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+EllipseShape::EllipseShape(unsigned int width, unsigned int height)
+{
+    // TODO
+    //shape_.setSize(sf::Vector2f(width, height));
+}
+
+
+std::unique_ptr<IEllipseShape> IEllipseShape::create(unsigned int width, unsigned int height)
+{
+    return std::make_unique<EllipseShape>(width, height);
+}
+
+std::unique_ptr<IEllipseShape> IEllipseShape::create(const vec2u &size)
+{
+    return std::make_unique<EllipseShape>(size.x, size.y);
+}
+std::unique_ptr<IEllipseShape> IEllipseShape::create(unsigned int radius)
+{
+    return std::make_unique<EllipseShape>(radius, radius);
+}
 
 void EllipseShape::setTexture(const ITexture *texture)
 {
@@ -715,6 +756,11 @@ const IImage* EllipseShape::getImage() const
 void EllipseShape::draw(IRenderWindow *window) const
 {
     // TODO implement
+}
+
+void EllipseShape::move(const vec2f &offset)
+{
+    // TODO
 }
 
 } // sfm

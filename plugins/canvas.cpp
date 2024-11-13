@@ -205,11 +205,12 @@ bool Canvas::updateScale(const psapi::IRenderWindow* renderWindow, const psapi::
     psapi::sfm::vec2f scale = getScale();
     psapi::sfm::vec2i coord_start = getCoordStart();
 
-    if (event.type == psapi::sfm::Event::MouseWheelScrolled)
+    if (event.type == psapi::sfm::Event::MouseWheelScrolled &&
+        event.mouseWheel.wheel == psapi::sfm::Mouse::Wheel::Vertical)
     {
         psapi::sfm::vec2i old_mouse_pos = mouse_pos / scale;
 
-        scale += psapi::sfm::vec2f(0.05f * scale.x, 0.05f * scale.y) * event.mouseWheel.delta;
+        scale += psapi::sfm::vec2f(0.03f * scale.x, 0.03f * scale.y) * event.mouseWheel.delta;
 
         setScale(scale);
         scale = getScale();
@@ -247,6 +248,7 @@ void Canvas::cleanTempLayer()
                 continue;
 
             active_layer->setPixel({x, y}, temp_pixel);
+
             temp_layer->setPixel({x, y}, psapi::sfm::Color(0, 0, 0, 0));
         }
     }

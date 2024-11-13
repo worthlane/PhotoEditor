@@ -176,12 +176,23 @@ class Shape : public IShape
 {
 public:
     virtual ~Shape() = default;
+
+protected:
+    /*vec2i pos_;
+    vec2u size_;
+    vec2f scale_;
+
+    Color color_;
+    Color outline_color_;
+
+    std::unique_ptr<IImage> image_;*/
 };
 
 
 class RectangleShape : public IRectangleShape
 {
 public:
+    RectangleShape(unsigned int width, unsigned int height);
     virtual ~RectangleShape() = default;
 
     virtual void setTexture(const ITexture *texture) override;
@@ -205,6 +216,8 @@ public:
     virtual const Color &getOutlineColor() const override;
     virtual const IImage* getImage() const override;
 
+    virtual void move(const vec2f &offset) override;
+
     virtual void draw(IRenderWindow *window) const override;
 
 private:
@@ -215,6 +228,7 @@ private:
 class EllipseShape : public IEllipseShape
 {
 public:
+    EllipseShape(unsigned int width, unsigned int height);
     virtual ~EllipseShape() = default;
 
     virtual void setTexture(const ITexture *texture) override;
@@ -237,6 +251,8 @@ public:
     virtual float getOutlineThickness() const override;
     virtual const Color &getOutlineColor() const override;
     virtual const IImage* getImage() const override;
+
+    virtual void move(const vec2f &offset) override;
 
     virtual void draw(IRenderWindow *window) const override;
 private:
