@@ -41,6 +41,7 @@ void Scrollable::setScale(psapi::sfm::vec2f scale)
 AScrollBar::AScrollBar(const psapi::wid_t id, const psapi::sfm::vec2i& pos, const psapi::sfm::vec2u& size,
             std::unique_ptr<psapi::sfm::ITexture> background,
             std::unique_ptr<psapi::sfm::ITexture> normal,
+            std::unique_ptr<psapi::sfm::ITexture> hover,
             std::unique_ptr<psapi::sfm::ITexture> active,
             Scrollable* object) :
     id_(id),
@@ -48,6 +49,7 @@ AScrollBar::AScrollBar(const psapi::wid_t id, const psapi::sfm::vec2i& pos, cons
     size_(size.x, size.y), scroller_size_(size.x, size.y),
     background_(std::move(background)),
     normal_(std::move(normal)),
+    hover_(std::move(hover)),
     active_(std::move(active)),
     object_(object)
 {}
@@ -103,19 +105,15 @@ void AScrollBar::loadStateTexture(psapi::sfm::ISprite* sprite) const
         case State::Normal:
             sprite->setTexture(normal_.get());
             break;
+
+        case State::Hover:
+            sprite->setTexture(hover_.get());
+            break;
+            
         case State::Active:
             sprite->setTexture(active_.get());
             break;
     }
-}
-
-HorizontalScrollBar::HorizontalScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-                                        std::unique_ptr<psapi::sfm::ITexture> background,
-                                        std::unique_ptr<psapi::sfm::ITexture> normal,
-                                        std::unique_ptr<psapi::sfm::ITexture> active,
-                                        Scrollable* object) :
-    AScrollBar(id, pos, size, std::move(background), std::move(normal), std::move(active), object)
-{
 }
 
 void AScrollBar::draw(psapi::IRenderWindow* renderWindow)
@@ -155,17 +153,27 @@ void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psa
     switch (state_)
     {
         case AScrollBar::State::Normal:
-            if (pressed && scroller_hovered)
-            {
-                state_ = AScrollBar::State::Active;
-                catch_pos_ = {mouse_pos.x - pos_.x - scroller_pos_.x, mouse_pos.y - pos_.y - scroller_pos_.y};
-            }
+            if (scroller_hovered)
+                state_ = AScrollBar::State::Hover;
 
             if (pressed && bar_hovered && !scroller_hovered)
             {
                 state_ = AScrollBar::State::Active;
                 setScrollerPos({mouse_pos.x - pos_.x - scroller_size_.x / 2, mouse_pos.y - pos_.y - scroller_size_.y / 2});
             }
+
+            break;
+
+        case AScrollBar::State::Hover:
+            if (pressed)
+            {
+                state_ = AScrollBar::State::Active;
+                catch_pos_ = {mouse_pos.x - pos_.x - scroller_pos_.x, mouse_pos.y - pos_.y - scroller_pos_.y};
+            }
+
+            if (!scroller_hovered)
+                state_ = AScrollBar::State::Normal;
+
 
             break;
 
@@ -195,6 +203,17 @@ bool AScrollBar::update(const psapi::IRenderWindow* renderWindow, const psapi::E
 
     return true;
 }
+
+// =============== HORIZONTAL SCROLLBAR ===============
+
+HorizontalScrollBar::HorizontalScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+                                        std::unique_ptr<psapi::sfm::ITexture> background,
+                                        std::unique_ptr<psapi::sfm::ITexture> normal,
+                                        std::unique_ptr<psapi::sfm::ITexture> hover,
+                                        std::unique_ptr<psapi::sfm::ITexture> active,
+                                        Scrollable* object) :
+    AScrollBar(id, pos, size, std::move(background), std::move(normal), std::move(hover), std::move(active), object)
+{}
 
 void HorizontalScrollBar::setScrollerPos(psapi::sfm::vec2i pos)
 {
@@ -229,4 +248,46 @@ void HorizontalScrollBar::updateScroller()
     scroller_pos_  = {static_cast<int>(part * size_.x), 0};
 }
 
+// ========== VERTICAL SCROLLBAR ==========
 
+VerticalScrollBar::VerticalScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+                                        std::unique_ptr<psapi::sfm::ITexture> background,
+                                        std::unique_ptr<psapi::sfm::ITexture> normal,
+                                        std::unique_ptr<psapi::sfm::ITexture> hover,
+                                        std::unique_ptr<psapi::sfm::ITexture> active,
+                                        Scrollable* object) :
+    AScrollBar(id, pos, size, std::move(background), std::move(normal), std::move(hover), std::move(active), object)
+{}
+
+void VerticalScrollBar::setScrollerPos(psapi::sfm::vec2i pos)
+{
+    if (pos.y < 0)
+        pos.y = 0;
+
+    if (pos.y > size_.y - scroller_size_.y)
+        pos.y = size_.y - scroller_size_.y;
+
+    double delta = (static_cast<double>(pos.y) / static_cast<double>(size_.y));
+
+    psapi::sfm::vec2i coord_start = object_->getCoordStart();
+    psapi::sfm::vec2u obj_size   = object_->getObjectSize();
+
+    coord_start = {coord_start.x, static_cast<int>(delta * static_cast<double>(obj_size.y))};
+
+    object_->setCoordStart(coord_start);
+
+    scroller_pos_ = pos;
+}
+
+void VerticalScrollBar::updateScroller()
+{
+    psapi::sfm::vec2f scale       = object_->getScale();
+    psapi::sfm::vec2i coord_start = object_->getCoordStart();
+    psapi::sfm::vec2u obj_size    = object_->getObjectSize();
+
+    scroller_size_ = {size_.x, size_.y / scale.y};
+
+    double part = (static_cast<double>(coord_start.y) / static_cast<double>(obj_size.y));
+
+    scroller_pos_  = {0, static_cast<int>(part * size_.y)};
+}

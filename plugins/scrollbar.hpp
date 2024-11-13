@@ -27,12 +27,14 @@ public:
     enum class State
     {
         Normal,
+        Hover,
         Active,
     };
 
     AScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
                std::unique_ptr<psapi::sfm::ITexture> background,
                std::unique_ptr<psapi::sfm::ITexture> normal,
+               std::unique_ptr<psapi::sfm::ITexture> hover,
                std::unique_ptr<psapi::sfm::ITexture> active,
                Scrollable* object);
 
@@ -70,6 +72,7 @@ protected:
     std::unique_ptr<psapi::sfm::ITexture> background_;
 
     std::unique_ptr<psapi::sfm::ITexture> normal_;
+    std::unique_ptr<psapi::sfm::ITexture> hover_;
     std::unique_ptr<psapi::sfm::ITexture> active_;
 
     State state_ = State::Normal;
@@ -87,6 +90,7 @@ public:
     HorizontalScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
                         std::unique_ptr<psapi::sfm::ITexture> background,
                         std::unique_ptr<psapi::sfm::ITexture> normal,
+                        std::unique_ptr<psapi::sfm::ITexture> hover,
                         std::unique_ptr<psapi::sfm::ITexture> active,
                         Scrollable* object);
 
@@ -96,17 +100,21 @@ protected:
 
 };
 
-/*class VerticalScrollBar : public AScrollBar
+class VerticalScrollBar : public AScrollBar
 {
 public:
-    VerticalScrollBar();
+    VerticalScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+                        std::unique_ptr<psapi::sfm::ITexture> background,
+                        std::unique_ptr<psapi::sfm::ITexture> normal,
+                        std::unique_ptr<psapi::sfm::ITexture> hover,
+                        std::unique_ptr<psapi::sfm::ITexture> active,
+                        Scrollable* object);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+protected:
+    virtual void updateScroller();
+    virtual void setScrollerPos(psapi::sfm::vec2i pos) override;
 
-private:
-
-};*/
+};
 
 static psapi::sfm::vec2i operator/(const psapi::sfm::vec2i& self, const psapi::sfm::vec2f& other)
 {
