@@ -1,12 +1,50 @@
 #include "../plugins/scrollbar.hpp"
 
-AScrollBar::AScrollBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+static const double MAX_SCALE = 80;
+static const double MIN_SCALE = 1;
+
+psapi::sfm::vec2i Scrollable::getCoordStart() const
+{
+    return coord_start_;
+}
+
+psapi::sfm::vec2f Scrollable::getScale() const
+{
+    return scale_;
+}
+
+void Scrollable::setCoordStart(psapi::sfm::vec2i coord_start)
+{
+    psapi::sfm::vec2u size = getObjectSize();
+
+    psapi::sfm::vec2i right_lower_corner = coord_start + psapi::sfm::vec2i(size.x, size.y) / scale_;
+
+    if (right_lower_corner.x > size.x - 1) coord_start.x = size.x - (size.x / scale_.x);
+    if (right_lower_corner.y > size.y - 1) coord_start.y = size.y - (size.y / scale_.y);
+    if (coord_start.x < 0)                 coord_start.x = 0;
+    if (coord_start.y < 0)                 coord_start.y = 0;
+
+    coord_start_ = coord_start;
+}
+
+void Scrollable::setScale(psapi::sfm::vec2f scale)
+{
+    scale_ = scale;
+
+    if (scale_.x < MIN_SCALE) scale_.x = MIN_SCALE;
+    if (scale_.y < MIN_SCALE) scale_.y = MIN_SCALE;
+
+    if (scale_.x > MAX_SCALE) scale_.x = MAX_SCALE;
+    if (scale_.y > MAX_SCALE) scale_.y = MAX_SCALE;
+}
+
+AScrollBar::AScrollBar(const psapi::wid_t id, const psapi::sfm::vec2i& pos, const psapi::sfm::vec2u& size,
             std::unique_ptr<psapi::sfm::ITexture> background,
             std::unique_ptr<psapi::sfm::ITexture> normal,
             std::unique_ptr<psapi::sfm::ITexture> active,
             Scrollable* object) :
     id_(id),
-    pos_(pos), scroller_pos_(pos),
+    pos_(pos), scroller_pos_(0, 0),
     size_(size.x, size.y), scroller_size_(size.x, size.y),
     background_(std::move(background)),
     normal_(std::move(normal)),
@@ -78,10 +116,9 @@ HorizontalScrollBar::HorizontalScrollBar(const psapi::wid_t id, const psapi::vec
                                         Scrollable* object) :
     AScrollBar(id, pos, size, std::move(background), std::move(normal), std::move(active), object)
 {
-
 }
 
-void HorizontalScrollBar::draw(psapi::IRenderWindow* renderWindow)
+void AScrollBar::draw(psapi::IRenderWindow* renderWindow)
 {
     if (!isActive())
         return;
@@ -93,7 +130,7 @@ void HorizontalScrollBar::draw(psapi::IRenderWindow* renderWindow)
 
     psapi::sfm::ISprite* scroller = psapi::sfm::ISprite::create().release();
     scroller->setTextureRect({0, 0, scroller_size_.x, scroller_size_.y});
-    scroller->setPosition(scroller_pos_.x, scroller_pos_.y);
+    scroller->setPosition(pos_.x + scroller_pos_.x, pos_.y + scroller_pos_.y);
     loadStateTexture(scroller);
 
     background->draw(renderWindow);
@@ -103,19 +140,8 @@ void HorizontalScrollBar::draw(psapi::IRenderWindow* renderWindow)
     delete scroller;
 }
 
-bool HorizontalScrollBar::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
-    if (!isActive())
-        return false;
-
-    psapi::sfm::vec2f scale = object_->getScale();
-    psapi::sfm::vec2i coord_start = object_->getCoordStart();
-    psapi::sfm::vec2u obj_size = object_->getObjectSize();
-
-    scroller_size_ = {size_.x / scale.x, size_.y};
-    double part = (static_cast<double>(coord_start.x) / static_cast<double>(obj_size.x));
-    scroller_pos_  = {pos_.x + static_cast<int>(part * size_.x), pos_.y};
-
     psapi::sfm::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
 
     bool pressed = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
@@ -123,22 +149,84 @@ bool HorizontalScrollBar::update(const psapi::IRenderWindow* renderWindow, const
     bool bar_hovered = (mouse_pos.x >= pos_.x && mouse_pos.x <= pos_.x + size_.x) &&
                        (mouse_pos.y >= pos_.y && mouse_pos.y <= pos_.y + size_.y);
 
-    bool scroller_hovered = (mouse_pos.x >= scroller_pos_.x && mouse_pos.x <= scroller_pos_.x + scroller_size_.x) &&
-                            (mouse_pos.y >= scroller_pos_.y && mouse_pos.y <= scroller_pos_.y + scroller_size_.y);
-
+    bool scroller_hovered = (mouse_pos.x >= pos_.x + scroller_pos_.x && mouse_pos.x <= pos_.x + scroller_pos_.x + scroller_size_.x) &&
+                            (mouse_pos.y >= pos_.y + scroller_pos_.y && mouse_pos.y <= pos_.y + scroller_pos_.y + scroller_size_.y);
 
     switch (state_)
     {
         case AScrollBar::State::Normal:
             if (pressed && scroller_hovered)
+            {
                 state_ = AScrollBar::State::Active;
+                catch_pos_ = {mouse_pos.x - pos_.x - scroller_pos_.x, mouse_pos.y - pos_.y - scroller_pos_.y};
+            }
+
+            if (pressed && bar_hovered && !scroller_hovered)
+            {
+                state_ = AScrollBar::State::Active;
+                setScrollerPos({mouse_pos.x - pos_.x - scroller_size_.x / 2, mouse_pos.y - pos_.y - scroller_size_.y / 2});
+            }
+
             break;
 
         case AScrollBar::State::Active:
             if (!pressed)
+            {
                 state_ = AScrollBar::State::Normal;
+                catch_pos_ = {scroller_size_.x / 2, scroller_size_.y / 2};
+            }
+            else
+            {
+                setScrollerPos({mouse_pos.x - pos_.x - catch_pos_.x, mouse_pos.y - pos_.y - catch_pos_.y});
+            }
+
             break;
     }
-
-    return false;
 }
+
+bool AScrollBar::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return false;
+
+    updateState(renderWindow, event);
+
+    updateScroller();
+
+    return true;
+}
+
+void HorizontalScrollBar::setScrollerPos(psapi::sfm::vec2i pos)
+{
+    if (pos.x < 0)
+        pos.x = 0;
+
+    if (pos.x > size_.x - scroller_size_.x)
+        pos.x = size_.x - scroller_size_.x;
+
+    double delta = (static_cast<double>(pos.x) / static_cast<double>(size_.x));
+
+    psapi::sfm::vec2i coord_start = object_->getCoordStart();
+    psapi::sfm::vec2u obj_size   = object_->getObjectSize();
+
+    coord_start = {static_cast<int>(delta * static_cast<double>(obj_size.x)), coord_start.y};
+
+    object_->setCoordStart(coord_start);
+
+    scroller_pos_ = pos;
+}
+
+void HorizontalScrollBar::updateScroller()
+{
+    psapi::sfm::vec2f scale       = object_->getScale();
+    psapi::sfm::vec2i coord_start = object_->getCoordStart();
+    psapi::sfm::vec2u obj_size    = object_->getObjectSize();
+
+    scroller_size_ = {size_.x / scale.x, size_.y};
+
+    double part = (static_cast<double>(coord_start.x) / static_cast<double>(obj_size.x));
+
+    scroller_pos_  = {static_cast<int>(part * size_.x), 0};
+}
+
+

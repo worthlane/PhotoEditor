@@ -18,7 +18,7 @@ bool loadPlugin()
     std::cout << "canvas loaded\n";
 
     auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(128, 20),
-                                           psapi::sfm::vec2i(1032, 740),
+                                           psapi::sfm::vec2i(1052, 760),
                                            psapi::sfm::vec2f(1, 1));
 
     std::unique_ptr<psapi::sfm::ITexture> back = psapi::sfm::ITexture::create();
@@ -31,8 +31,8 @@ bool loadPlugin()
     active->loadFromFile(ACTIVE_TEXTURE);
 
     auto scrollbar = std::make_unique<HorizontalScrollBar>(kCanvasHorizontalScrollBar,
-                                                           psapi::sfm::vec2i(128, 760),
-                                                           psapi::sfm::vec2u(1032, 40),
+                                                           psapi::sfm::vec2i(128, 780),
+                                                           psapi::sfm::vec2u(1052, 20),
                                                            std::move(back), std::move(normal), std::move(active),
                                                            canvas.get());
 
@@ -182,25 +182,18 @@ bool Canvas::updateScale(const psapi::IRenderWindow* renderWindow, const psapi::
 
         scale += psapi::sfm::vec2f(0.05f * scale.x, 0.05f * scale.y) * event.mouseWheel.delta;
 
-        if (scale.x < 1)   scale.x = 1;
-        if (scale.y < 1)   scale.y = 1;
+        setScale(scale);
+        scale = getScale();
 
         psapi::sfm::vec2i new_mouse_pos = mouse_pos / scale;
 
         coord_start += old_mouse_pos - new_mouse_pos;
 
-        psapi::sfm::vec2i right_lower_corner = coord_start + psapi::sfm::vec2i(size_.x, size_.y) / scale;
-
-        if (right_lower_corner.x > size_.x - 1) coord_start.x = size_.x - (size_.x / scale.x);
-        if (right_lower_corner.y > size_.y - 1) coord_start.y = size_.y - (size_.y / scale.y);
-        if (coord_start.x < 0)                  coord_start.x = 0;
-        if (coord_start.y < 0)                  coord_start.y = 0;
+        setCoordStart(coord_start);
+        coord_start = getCoordStart();
     }
 
     mouse_pos_ = coord_start + mouse_pos / scale;
-
-    setScale(scale);
-    setCoordStart(coord_start);
 
     return true;
 }
