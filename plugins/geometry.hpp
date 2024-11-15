@@ -17,17 +17,16 @@ void unloadPlugin();
 class GeometryAction : public Action
 {
 public:
-    GeometryAction(psapi::ICanvas* canvas, psapi::sfm::IShape* shape);
+    GeometryAction(psapi::ICanvas* canvas, std::unique_ptr<psapi::sfm::IShape> shape);
     ~GeometryAction() = default;
 
     virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
-    psapi::sfm::IShape* shape_ = nullptr;
+    std::unique_ptr<psapi::sfm::IShape> shape_;
     psapi::ICanvas* canvas_    = nullptr;
 
     psapi::sfm::vec2i catch_pos_;
-    psapi::sfm::IntRect shape_rect_;
 };
 
 static const psapi::wid_t kRectangleButtonId = 228;

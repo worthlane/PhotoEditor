@@ -61,6 +61,9 @@ private:
     sf::Image image_;
 
     friend class Texture;
+
+    friend class RectangleShape;
+    friend class EllipseShape;
 };
 
 class Texture : public ITexture
@@ -81,6 +84,7 @@ private:
     sf::Texture texture_;
 
     friend class Sprite;
+
     friend class RectangleShape;
     friend class EllipseShape;
 };
@@ -178,6 +182,8 @@ public:
     virtual ~Shape() = default;
 
 protected:
+
+    std::unique_ptr<Image> cached_image_;
     /*vec2i pos_;
     vec2u size_;
     vec2f scale_;
@@ -189,7 +195,7 @@ protected:
 };
 
 
-class RectangleShape : public IRectangleShape
+class RectangleShape : public IRectangleShape, public Shape
 {
 public:
     RectangleShape(unsigned int width, unsigned int height);
@@ -225,7 +231,7 @@ private:
 };
 
 
-class EllipseShape : public IEllipseShape
+class EllipseShape : public IEllipseShape, public Shape
 {
 public:
     EllipseShape(unsigned int width, unsigned int height);

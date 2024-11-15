@@ -31,6 +31,18 @@ int main()
 
     psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
+    psapi::sfm::RectangleShape rect(100, 200);
+    //rect.setPosition(psapi::sfm::vec2i(400, 400));
+
+    rect.setFillColor({0, 255, 0, 255});
+
+    /*const psapi::sfm::IImage* img = rect.getImage();
+    psapi::sfm::Texture texture;
+    texture.update(img);
+    psapi::sfm::Sprite sprite;
+    sprite.setTexture(&texture, true);
+    sprite.setPosition(0, 0);*/
+
     for (auto& plugin_name : PLUGIN_NAMES)
     {
         void* so_lib = dlopen(plugin_name, RTLD_NOW);
@@ -58,6 +70,8 @@ int main()
 
         root->update(&window, event);
         root->draw(&window);
+
+        //sprite.draw(&window);
 
         window.display();
         window.clear();

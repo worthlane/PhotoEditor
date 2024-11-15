@@ -6,6 +6,8 @@ namespace psapi
 namespace sfm
 {
 
+static const vec2u SCREEN = {1280, 960};
+
 // *************************************************************************
 //                              SPRITE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -605,7 +607,25 @@ const Color& RectangleShape::getOutlineColor() const
 
 const IImage* RectangleShape::getImage() const
 {
-    // TODO
+    vec2u size = getSize();
+
+    if (size.x <= 0 || size.y <= 0)
+        return cached_image_.get();
+
+    sf::RenderTexture render_texture;
+    if (!render_texture.create(SCREEN.x, SCREEN.y))
+        return nullptr;
+
+    render_texture.clear(sf::Color::Transparent);
+    render_texture.draw(shape_);
+    render_texture.display();
+
+    sf::Image image = render_texture.getTexture().copyToImage();
+
+    cached_image_->create(image.getSize().x, image.getSize().y,
+                        reinterpret_cast<const Color*>(image.getPixelsPtr()));
+
+    return cached_image_.get();
 }
 
 void RectangleShape::draw(IRenderWindow *window) const
@@ -625,6 +645,7 @@ std::unique_ptr<IRectangleShape> IRectangleShape::create(const vec2u& size)
 RectangleShape::RectangleShape(unsigned int width, unsigned int height)
 {
     shape_.setSize(sf::Vector2f(width, height));
+    cached_image_ = std::make_unique<Image>();
 }
 
 void RectangleShape::move(const vec2f &offset)
@@ -639,7 +660,12 @@ void RectangleShape::move(const vec2f &offset)
 EllipseShape::EllipseShape(unsigned int width, unsigned int height)
 {
     // TODO
-    //shape_.setSize(sf::Vector2f(width, height));
+    shape_.setRadius(width);
+
+    psapi::sfm::vec2f scale = psapi::sfm::vec2f(1, static_cast<float>(height) / static_cast<float>(width));
+
+    shape_.setScale(sf::Vector2f(scale.x, scale.y));
+    cached_image_ = std::make_unique<Image>();
 }
 
 
@@ -692,7 +718,13 @@ void EllipseShape::setScale(const vec2f &scale)
 void EllipseShape::setSize(const vec2u &size)
 {
     // TODO
-    //shape_.setSize(sf::Vector2f(size.x, size.y));
+    shape_.setRadius(size.x);
+
+    psapi::sfm::vec2f scale = getScale();
+
+    scale = psapi::sfm::vec2f(1, static_cast<float>(size.y) / static_cast<float>(size.x)) * scale;
+
+    shape_.setScale(sf::Vector2f(scale.x, scale.y));
 }
 void EllipseShape::setRotation(float angle)
 {
@@ -730,9 +762,9 @@ const Color& EllipseShape::getFillColor() const
 vec2u EllipseShape::getSize() const
 {
     // TODO
-    //sf::Vector2f size = shape_.getSize();
+    psapi::sfm::vec2f scale = getScale();
 
-    //return {size.x, size.y};
+    return {static_cast<unsigned int>(shape_.getRadius() * scale.x), static_cast<unsigned int>(shape_.getRadius() * scale.y)};
 }
 
 float EllipseShape::getOutlineThickness() const
@@ -749,8 +781,25 @@ const Color& EllipseShape::getOutlineColor() const
 
 const IImage* EllipseShape::getImage() const
 {
+    vec2u size = getSize();
 
+    if (size.x <= 0 || size.y <= 0)
+        return cached_image_.get();
 
+    sf::RenderTexture render_texture;
+    if (!render_texture.create(SCREEN.x, SCREEN.y))
+        return nullptr;
+
+    render_texture.clear(sf::Color::Transparent);
+    render_texture.draw(shape_);
+    render_texture.display();
+
+    sf::Image image = render_texture.getTexture().copyToImage();
+
+    cached_image_->create(image.getSize().x, image.getSize().y,
+                        reinterpret_cast<const Color*>(image.getPixelsPtr()));
+
+    return cached_image_.get();
 }
 
 void EllipseShape::draw(IRenderWindow *window) const
