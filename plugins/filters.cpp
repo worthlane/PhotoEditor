@@ -9,8 +9,7 @@ static psapi::sfm::ITexture* btn = nullptr;
 static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
 
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
-static int apply_filter(const int color, const double k);
-static void clear_bool_array(std::vector<std::vector<bool>>& array);
+static int apply_contrast(const int color, const double k);
 
 static const size_t CATMULL_LEN = 4;
 
@@ -27,11 +26,11 @@ bool loadPlugin()
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
-    auto negative = std::make_unique<SwitchButton>(kNegativeFilterButtonId,
+    auto negative = std::make_unique<PressButton>(kNegativeFilterButtonId,
                                                 psapi::vec2i(19, 346),
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(neg_sprite),
-                                               std::make_unique<NegativeAction>(-1, 40, canvas));
+                                               std::make_unique<ContrastAction>(-1, canvas));
 
 
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
@@ -49,71 +48,45 @@ void unloadPlugin()
 
 // ======================================================
 
-NegativeAction::NegativeAction(const double k, const size_t radius, psapi::ICanvas* canvas, const bool scale_related) :
-k_(k), radius_(radius), array_(), scale_related_(scale_related), canvas_(canvas)
+ContrastAction::ContrastAction(const double k, psapi::ICanvas* canvas) :
+k_(k), canvas_(canvas)
 {
-    auto size = canvas_->getSize();
-    changed_.resize(size.x, std::vector<bool>(size.y));
-
-    for (size_t i = 0; i < size.x; i++)
-    {
-        for (size_t j = 0; j < size.y; j++)
-        {
-            changed_[i][j] = false;
-        }
-    }
 }
 
-bool NegativeAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+bool ContrastAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
-    psapi::vec2i mouse_pos = canvas_->getMousePosition();
-    bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
-
     psapi::vec2u canvas_size = canvas_->getSize();
 
     auto layer_id = canvas_->getActiveLayerIndex();
     auto layer = canvas_->getLayer(layer_id);
     auto temp_layer = canvas_->getTempLayer();
+    auto size = canvas_->getSize();
 
-    if (LMB_down)
+    for (int x = 0; x < size.x; x++)
     {
-        psapi::vec2i pos = mouse_pos;
-
-        if (array_.size() < CATMULL_LEN)
+        for (int y = 0; y < size.y; y++)
         {
-            array_.push_back(pos);
-        }
-        else
-        {
-            array_.queue_push(pos);
+            psapi::vec2i pos = {x, y};
+            auto pixel = layer->getPixel(pos);
 
-            double delta = 0.001 * static_cast<double>(radius_);
-            double max_point = static_cast<double>(CATMULL_LEN - 2);
+            pixel.r = apply_contrast(pixel.r, k_);
+            pixel.g = apply_contrast(pixel.g, k_);
+            pixel.b = apply_contrast(pixel.b, k_);
 
-            //int radius = static_cast<int>(scale_related_ ? static_cast<double>(radius_) / scale.x : radius_);
+            temp_layer->setPixel(pos, pixel);
 
-            for (double i = 1; i < max_point; i += delta)
-            {
-                update_point(layer, temp_layer, changed_, array_.getInterpolated(i), k_, radius_);
-            }
+            //update_point(temp_layer, layer, psapi::vec2i(x, y), k_);
         }
     }
-    else
-    {
-        array_.clear();
-        if (array_.size())
-            canvas_->cleanTempLayer();
 
-        clear_bool_array(changed_);
-    }
+    canvas_->cleanTempLayer();
 
     return true;
 }
 
-void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos,
-                      const double k, const int radius)
+void update_point(psapi::ILayer* temp_layer, psapi::ILayer* layer, const psapi::vec2i& pos, const double k)
 {
-    int rad2 = radius * radius;
+    /*int rad2 = radius * radius;
 
     for (int i = -radius; i <= radius; i++)
     {
@@ -166,10 +139,10 @@ void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<s
                 changed[pos.x + i][pos.y + j] = true;
             }
         }
-    }
+    }*/
 }
 
-static int apply_filter(const int color, const double k)
+static int apply_contrast(const int color, const double k)
 {
     int new_color = (color - 128) * k + 128;
 
@@ -180,15 +153,4 @@ static int apply_filter(const int color, const double k)
         new_color = 255;
 
     return new_color;
-}
-
-static void clear_bool_array(std::vector<std::vector<bool>>& array)
-{
-    for (size_t i = 0; i < array.size(); i++)
-    {
-        for (size_t j = 0; j < array[i].size(); j++)
-        {
-            array[i][j] = false;
-        }
-    }
 }
