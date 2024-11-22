@@ -1,5 +1,5 @@
-#ifndef TOOLBAR_PLUGIN_HPP
-#define TOOLBAR_PLUGIN_HPP
+#ifndef BAR_PLUGIN_HPP
+#define BAR_PLUGIN_HPP
 
 #include "standard/api_bar.hpp"
 

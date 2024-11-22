@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "../plugins/bar.hpp"
+#include "../plugins/design.hpp"
 
 static psapi::sfm::ITexture* back    = nullptr;
 static psapi::sfm::ITexture* release = nullptr;
@@ -19,7 +20,6 @@ static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
 static const char* NORMAL_TEXTURE     = "assets/textures/normal_icon.png";
 
 static const psapi::sfm::vec2i START_BUTTON_OFFSET = {19, 19};
-
 
 bool loadPlugin()
 {
@@ -41,8 +41,9 @@ bool loadPlugin()
     release->loadFromFile(RELEASE_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
-    back_sprite.get()->setTextureRect(BACKGROUND_RECT);
-    back_sprite.get()->setTexture(back);
+    set_round_texture(back_sprite.get(), back, BACKGROUND_RECT, STD_GUI_RADIUS);
+    //back_sprite.get()->setTextureRect(BACKGROUND_RECT);
+    //back_sprite.get()->setTexture(back);
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
     release_sprite.get()->setTextureRect(BUTTON_RECT);
