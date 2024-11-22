@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/toolbar.hpp"
+#include "../plugins/bar.hpp"
 
 static psapi::sfm::ITexture* back    = nullptr;
 static psapi::sfm::ITexture* release = nullptr;

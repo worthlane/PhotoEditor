@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/toolbar_button.hpp"
+#include "../plugins/bar_button.hpp"
 
 // ======================================================
 

@@ -4,7 +4,7 @@
 #include "standard/api_bar.hpp"
 #include "standard/api_canvas.hpp"
 
-#include "../plugins/toolbar_button.hpp"
+#include "../plugins/bar_button.hpp"
 #include "../plugins/catmull.hpp"
 
 extern "C"
