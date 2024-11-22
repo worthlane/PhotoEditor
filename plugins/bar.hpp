@@ -11,20 +11,20 @@ void unloadPlugin();
 
 }
 
-class ToolBar : public psapi::IBar
+class ABar : public psapi::IBar
 {
 public:
-    ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
+    ABar(const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual psapi::wid_t getId() const override { return psapi::kToolBarWindowId; };
+    virtual psapi::wid_t getId() const override;
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+// virtual void draw(psapi::IRenderWindow* renderWindow) override;
+// virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
     virtual psapi::ChildInfo getNextChildInfo() const override;
     virtual void finishButtonDraw(psapi::IRenderWindow* renderWindow, const psapi::IBarButton* button) const override;
@@ -44,8 +44,9 @@ public:
     virtual void addWindow(std::unique_ptr<psapi::IWindow> window) override;
     virtual void removeWindow(psapi::wid_t id) override;
 
-    virtual bool isWindowContainer() const override { return true; };
-private:
+    virtual bool isWindowContainer() const override;
+
+protected:
     psapi::vec2i pos_;
     psapi::vec2u size_;
 
@@ -63,6 +64,20 @@ private:
     bool is_active_ = true;
     size_t next_child_ = 0;
 
+};
+
+class ToolBar : public ABar
+{
+public:
+    ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
+            std::unique_ptr<psapi::sfm::ISprite> background,
+            std::unique_ptr<psapi::sfm::ISprite> normal,
+            std::unique_ptr<psapi::sfm::ISprite> hovered,
+            std::unique_ptr<psapi::sfm::ISprite> pressed,
+            std::unique_ptr<psapi::sfm::ISprite> released);
+
+    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 };
 
 #endif // TOOLBAR_PLUGIN_HPP

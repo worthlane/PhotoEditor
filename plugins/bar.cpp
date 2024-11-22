@@ -84,6 +84,20 @@ void unloadPlugin()
 
 // ********************* TOOLBAR *********************/
 
+ToolBar::ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
+            std::unique_ptr<psapi::sfm::ISprite> background,
+            std::unique_ptr<psapi::sfm::ISprite> normal,
+            std::unique_ptr<psapi::sfm::ISprite> hovered,
+            std::unique_ptr<psapi::sfm::ISprite> pressed,
+            std::unique_ptr<psapi::sfm::ISprite> released) :
+    ABar(pos, size, std::move(background),
+                    std::move(normal),
+                    std::move(hovered),
+                    std::move(pressed),
+                    std::move(released))
+{
+}
+
 
 void ToolBar::draw(psapi::sfm::IRenderWindow* renderWindow)
 {
@@ -163,7 +177,9 @@ bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi:
     return flag;
 }
 
-psapi::ChildInfo ToolBar::getNextChildInfo() const
+// ******************** ABAR ***********************
+
+psapi::ChildInfo ABar::getNextChildInfo() const
 {
     if (next_child_ < buttons_.size())
     {
@@ -181,7 +197,12 @@ psapi::ChildInfo ToolBar::getNextChildInfo() const
     }
 }
 
-ToolBar::ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
+psapi::wid_t ABar::getId() const
+{
+    return psapi::kToolBarWindowId;
+}
+
+ABar::ABar(const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
@@ -199,14 +220,14 @@ ToolBar::ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
     next_child_ = 0;
 }
 
-void ToolBar::addWindow(std::unique_ptr<psapi::IWindow> window)
+void ABar::addWindow(std::unique_ptr<psapi::IWindow> window)
 {
     psapi::IBarButton* button = dynamic_cast<psapi::IBarButton*>(window.release());
 
     buttons_.push_back(std::unique_ptr<psapi::IBarButton>(button));
 }
 
-void ToolBar::removeWindow(psapi::wid_t id)
+void ABar::removeWindow(psapi::wid_t id)
 {
     for (size_t i = 0; i < buttons_.size(); ++i)
     {
@@ -218,7 +239,7 @@ void ToolBar::removeWindow(psapi::wid_t id)
     }
 }
 
-void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const psapi::IBarButton* button) const
+void ABar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const psapi::IBarButton* button) const
 {
     psapi::vec2i pos = button->getPos();
 
@@ -243,7 +264,7 @@ void ToolBar::finishButtonDraw(psapi::sfm::IRenderWindow* renderWindow, const ps
     }
 }
 
-psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id)
+psapi::IWindow* ABar::getWindowById(psapi::wid_t id)
 {
     if (id == getId())
         return this;
@@ -257,7 +278,7 @@ psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id)
     return nullptr;
 };
 
-const psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id) const
+const psapi::IWindow* ABar::getWindowById(psapi::wid_t id) const
 {
     if (id == getId())
         return this;
@@ -271,29 +292,34 @@ const psapi::IWindow* ToolBar::getWindowById(psapi::wid_t id) const
     return nullptr;
 };
 
-psapi::vec2i ToolBar::getPos() const
+psapi::vec2i ABar::getPos() const
 {
     return pos_;
 }
-psapi::vec2u ToolBar::getSize() const
+psapi::vec2u ABar::getSize() const
 {
     return size_;
 }
 
-void ToolBar::setParent(const psapi::IWindow* parent)
+void ABar::setParent(const psapi::IWindow* parent)
 {
     parent_ = parent;
 }
 
-void ToolBar::forceActivate()
+void ABar::forceActivate()
 {
     is_active_ = true;
 }
-void ToolBar::forceDeactivate()
+void ABar::forceDeactivate()
 {
     is_active_ = false;
 }
-bool ToolBar::isActive() const
+bool ABar::isActive() const
 {
     return is_active_;
+}
+
+bool ABar::isWindowContainer() const
+{
+    return true;
 }
