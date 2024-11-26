@@ -6,7 +6,6 @@
 
 static psapi::sfm::ITexture* btn = nullptr;
 
-static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
 static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
 
 void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
@@ -30,9 +29,9 @@ bool loadPlugin()
     auto root = psapi::getRootWindow();
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
+    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
-    auto brush = std::make_unique<SwitchButton>(kBrushButtonId,
-                                                psapi::vec2i(19, 19),
+    auto brush = std::make_unique<SwitchButton>(kBrushButtonId, tool_bar,
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(btn_sprite),
                                                std::make_unique<PaintAction>(sfm::RED, 3, canvas));
@@ -40,14 +39,11 @@ bool loadPlugin()
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
 
-    auto eraser = std::make_unique<SwitchButton>(kEraserButtonId,
-                                                psapi::vec2i(19, 128),
+    auto eraser = std::make_unique<SwitchButton>(kEraserButtonId, tool_bar,
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(ers_sprite),
                                                std::make_unique<PaintAction>(sfm::WHITE, 20, canvas, true));
 
-
-    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
     if (tool_bar)
     {

@@ -17,8 +17,8 @@ bool loadPlugin()
 {
     std::cout << "canvas loaded\n";
 
-    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(128, 20),
-                                           psapi::sfm::vec2i(1052, 760),
+    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(0, 0),
+                                           psapi::sfm::vec2i(1180, 780),
                                            psapi::sfm::vec2f(1, 1));
 
     std::unique_ptr<psapi::sfm::ITexture> back_hor = psapi::sfm::ITexture::create();
@@ -33,8 +33,8 @@ bool loadPlugin()
 
 
     auto hor_scrollbar = std::make_unique<HorizontalScrollBar>(kCanvasHorizontalScrollBar,
-                                                                psapi::sfm::vec2i(128, 780),
-                                                                psapi::sfm::vec2u(1052, 20),
+                                                                psapi::sfm::vec2i(0, 780),
+                                                                psapi::sfm::vec2u(1180, 20),
                                                                 std::move(back_hor), std::move(normal_hor),
                                                                 std::move(hover_hor), std::move(active_hor),
                                                                 canvas.get());
@@ -50,8 +50,8 @@ bool loadPlugin()
     hover_ver->loadFromFile(HOVER_TEXTURE);
 
     auto ver_scrollbar = std::make_unique<VerticalScrollBar>(kCanvasVerticalScrollBar,
-                                                           psapi::sfm::vec2i(1180, 20),
-                                                           psapi::sfm::vec2u(20, 760),
+                                                           psapi::sfm::vec2i(1180, 0),
+                                                           psapi::sfm::vec2u(20, 780),
                                                            std::move(back_ver), std::move(normal_ver),
                                                            std::move(hover_ver), std::move(active_ver),
                                                            canvas.get());

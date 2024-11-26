@@ -3,6 +3,7 @@
 
 #include "../plugins/bar.hpp"
 #include "../plugins/design.hpp"
+#include "../plugins/bar_button.hpp"
 
 static psapi::sfm::ITexture* back    = nullptr;
 static psapi::sfm::ITexture* release = nullptr;
@@ -10,16 +11,13 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {900, 0, 128, 800};
-static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {0, 0, 128, 700};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/hovered_icon.png";
 static const char* RELEASE_TEXTURE    = "assets/textures/active_icon.png";
 static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
 static const char* NORMAL_TEXTURE     = "assets/textures/normal_icon.png";
-
-static const psapi::sfm::vec2i START_BUTTON_OFFSET = {19, 19};
 
 bool loadPlugin()
 {
@@ -57,8 +55,8 @@ bool loadPlugin()
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1);
 
-    auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
-                                         psapi::vec2u(128, 32),
+    auto bar = std::make_unique<ToolBar>(psapi::vec2i(20, 20),
+                                         psapi::vec2u(BACKGROUND_RECT.width, BACKGROUND_RECT.height),
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
                                          std::move(hover_sprite),
@@ -133,44 +131,6 @@ bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi:
         }
     }
 
-    /*for (auto& button : buttons_)
-    {
-        IBarButton::State state = button.get()->getState();
-
-        if
-    }*/
-
-    /*psapi::sfm::vec2i free_pos = START_BUTTON_OFFSET + pos_;
-
-    int right_bound = pos_.x + size_.x;
-    int left_bound  = pos_.x;
-    int upper_bound = pos_.y;
-    int lower_bound = pos_.y + size_.y;
-
-    for (; next_child_ < buttons_.size(); ++next_child_)
-    {
-        psapi::ChildInfo info = getNextChildInfo();
-
-        psapi::vec2i pos = info.pos;
-        psapi::vec2u size = {info.size.x, info.size.y};
-
-        if (free_pos.x + pos.x + size.x > right_bound)
-        {
-            free_pos.x = START_BUTTON_OFFSET.x + pos_.x;
-            free_pos.y += START_BUTTON_OFFSET.y + size.y;
-        }
-
-        if (free_pos.y + pos.y + size.y > lower_bound)
-        {
-            free_pos.x += START_BUTTON_OFFSET.x + size.x;
-            free_pos.y = START_BUTTON_OFFSET.y + pos_.y;
-        }
-
-        buttons_[next_child_]->setPosition(free_pos + pos);
-    }
-
-    next_child_ = 0;*/
-
     return flag;
 }
 
@@ -178,20 +138,38 @@ bool ToolBar::update(const psapi::sfm::IRenderWindow* renderWindow, const psapi:
 
 psapi::ChildInfo ABar::getNextChildInfo() const
 {
-    if (next_child_ < buttons_.size())
-    {
-        psapi::vec2u size = buttons_[next_child_]->getSize();
-        psapi::vec2i pos = buttons_[next_child_]->getPos();
-
-        psapi::ChildInfo info = {{pos.x,  pos.y},
-                                 {size.x, size.y}};
-
-        return info;
-    }
-    else
+    if (curr_child_ >= buttons_.size())
     {
         return {{0, 0}, {0, 0}};
     }
+
+    psapi::vec2u size = buttons_[curr_child_]->getSize();
+    psapi::vec2i pos = buttons_[curr_child_]->getPos();
+
+    if (curr_child_ == 0)
+    {
+        curr_child_++;
+        curr_child_ = curr_child_ % buttons_.size();
+
+        return {{pos_.x + gap_.x, pos_.y + gap_.y}, {size.x, size.y}};
+    }
+
+    psapi::vec2u prev_size = buttons_[curr_child_ - 1]->getSize();
+    psapi::vec2i prev_pos = buttons_[curr_child_ - 1]->getPos();
+
+    psapi::ChildInfo info = {{prev_pos.x + prev_size.x + gap_.x,  prev_pos.y},
+                             {size.x, size.y}};
+
+    if (info.pos.x + gap_.x > pos_.x + size_.x)
+    {
+        info.pos = {pos_.x + gap_.x, prev_pos.y + gap_.y + prev_size.y};
+    }
+
+    curr_child_++;
+    curr_child_ = curr_child_ % buttons_.size();
+
+    return info;
+
 }
 
 psapi::wid_t ABar::getId() const
@@ -214,12 +192,13 @@ ABar::ABar(const psapi::vec2i& pos, const psapi::vec2u& size,
 {
     parent_ = nullptr;
     is_active_ = true;
-    next_child_ = 0;
+    curr_child_ = 0;
 }
 
 void ABar::addWindow(std::unique_ptr<psapi::IWindow> window)
 {
     psapi::IBarButton* button = dynamic_cast<psapi::IBarButton*>(window.release());
+    button->setParent(this);
 
     buttons_.push_back(std::unique_ptr<psapi::IBarButton>(button));
 }

@@ -62,7 +62,10 @@ protected:
     std::vector<std::unique_ptr<psapi::IBarButton> > buttons_;
 
     bool is_active_ = true;
-    size_t next_child_ = 0;
+
+    psapi::sfm::vec2i gap_ = {18, 18};
+
+    mutable size_t curr_child_ = 0;
 
 };
 

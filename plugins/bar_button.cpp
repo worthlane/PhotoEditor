@@ -5,11 +5,11 @@
 
 // ======================================================
 
-ABarButton::ABarButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+ABarButton::ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite,
                          std::unique_ptr<Action> action) :
-    id_(id), state_(ABarButton::State::Normal), size_(size), pos_(pos),
-    sprite_(std::move(sprite)), parent_(nullptr), is_active_(true),
+    id_(id), state_(ABarButton::State::Normal), size_(size),
+    sprite_(std::move(sprite)), parent_(bar), is_active_(true),
     action_(std::move(action))
 {
     assert(action_);
@@ -35,7 +35,13 @@ void ABarButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
+    psapi::ChildInfo info = parent_->getNextChildInfo();
+
+    pos_ = info.pos;
+    size_ = {info.size.x, info.size.y};
+
     sprite_->setPosition(pos_.x, pos_.y);
+
     sprite_->draw(renderWindow);
 }
 
@@ -67,7 +73,6 @@ void ABarButton::setPos(const psapi::vec2i pos)
 
 void ABarButton::setParent(const psapi::IWindow* parent)
 {
-    parent_ = parent;
 }
 
 void ABarButton::forceActivate()
@@ -92,10 +97,10 @@ bool ABarButton::isWindowContainer() const
 
 // ==================== SWITCH BUTTON =======================
 
-SwitchButton::SwitchButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+SwitchButton::SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite,
                          std::unique_ptr<Action> action) :
-    ABarButton(id, pos, size, std::move(sprite), std::move(action))
+    ABarButton(id, bar, size, std::move(sprite), std::move(action))
 {
     assert(action_);
 }
@@ -181,10 +186,10 @@ void SwitchButton::updateState(const psapi::IRenderWindow* renderWindow, const p
 
 // ====================== PRESS BUTTON =======================
 
-PressButton::PressButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+PressButton::PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite,
                          std::unique_ptr<Action> action) :
-    ABarButton(id, pos, size, std::move(sprite), std::move(action))
+    ABarButton(id, bar, size, std::move(sprite), std::move(action))
 {
     assert(action_);
 }

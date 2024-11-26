@@ -1,8 +1,10 @@
-#ifndef TOOLBAR_BUTTON_PLUGIN_HPP
-#define TOOLBAR_BUTTON_PLUGIN_HPP
+#ifndef BAR_BUTTON_PLUGIN_HPP
+#define BAR_BUTTON_PLUGIN_HPP
 
 #include "standard/api_bar.hpp"
 #include "standard/api_canvas.hpp"
+
+static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
 
 class Action
 {
@@ -13,7 +15,7 @@ class Action
 class ABarButton : public psapi::IBarButton
 {
 public:
-    ABarButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+    ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                std::unique_ptr<psapi::sfm::ISprite> sprite,
                std::unique_ptr<Action> action);
 
@@ -50,7 +52,7 @@ protected:
 
     std::unique_ptr<psapi::sfm::ISprite> sprite_;
 
-    const psapi::IWindow* parent_ = nullptr;
+    const psapi::IBar* parent_ = nullptr;
     bool is_active_ = true;
 
     std::unique_ptr<Action> action_;
@@ -59,7 +61,7 @@ protected:
 class SwitchButton : public ABarButton
 {
 public:
-    SwitchButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+    SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  std::unique_ptr<Action> action);
 
@@ -76,7 +78,7 @@ private:
 class PressButton : public ABarButton
 {
 public:
-    PressButton(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+    PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  std::unique_ptr<Action> action);
 

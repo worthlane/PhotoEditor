@@ -6,8 +6,6 @@
 
 static psapi::sfm::ITexture* btn = nullptr;
 
-static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
-
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
 static int apply_contrast(const int color, const double k);
 
@@ -26,14 +24,13 @@ bool loadPlugin()
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
-    auto negative = std::make_unique<PressButton>(kNegativeFilterButtonId,
-                                                psapi::vec2i(19, 346),
+    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
+
+    auto negative = std::make_unique<PressButton>(kNegativeFilterButtonId, tool_bar,
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(neg_sprite),
                                                std::make_unique<ContrastAction>(-1, canvas));
 
-
-    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
     if (tool_bar)
     {

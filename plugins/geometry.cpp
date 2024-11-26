@@ -5,8 +5,6 @@
 
 static const psapi::sfm::vec2i NO_CATCH = {-1, -1};
 
-static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
-
 bool loadPlugin()
 {
     std::cout << "geometry loaded\n";
@@ -20,14 +18,13 @@ bool loadPlugin()
     std::unique_ptr<psapi::sfm::IRectangleShape> rect = psapi::sfm::IRectangleShape::create(0, 0);
     rect.get()->setFillColor(sfm::BLUE);
 
-    auto rectangle = std::make_unique<SwitchButton>(kRectangleButtonId,
-                                                psapi::vec2i(19, 237),
+    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
+
+    auto rectangle = std::make_unique<SwitchButton>(kRectangleButtonId, tool_bar,
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
                                                std::move(rec_sprite),
                                                std::make_unique<GeometryAction>(canvas, std::move(rect)));
 
-
-    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
 
     if (tool_bar)
     {
