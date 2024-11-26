@@ -13,7 +13,7 @@ static psapi::sfm::ITexture* normal  = nullptr;
 static const psapi::sfm::IntRect BACKGROUND_RECT = {900, 0, 128, 800};
 static const psapi::sfm::IntRect BUTTON_RECT     = {0, 0, 90, 90};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/gradient2.jpg";
+static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/hovered_icon.png";
 static const char* RELEASE_TEXTURE    = "assets/textures/active_icon.png";
 static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
@@ -41,25 +41,21 @@ bool loadPlugin()
     release->loadFromFile(RELEASE_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
-    set_round_texture(back_sprite.get(), back, BACKGROUND_RECT, STD_GUI_RADIUS);
+    make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT);
     //back_sprite.get()->setTextureRect(BACKGROUND_RECT);
     //back_sprite.get()->setTexture(back);
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
-    release_sprite.get()->setTextureRect(BUTTON_RECT);
-    release_sprite.get()->setTexture(release);
+    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1);
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
-    hover_sprite.get()->setTextureRect(BUTTON_RECT);
-    hover_sprite.get()->setTexture(hover);
+    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1);
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
-    press_sprite.get()->setTextureRect(BUTTON_RECT);
-    press_sprite.get()->setTexture(press);
+    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1);
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
-    normal_sprite.get()->setTextureRect(BUTTON_RECT);
-    normal_sprite.get()->setTexture(normal);
+    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1);
 
     auto bar = std::make_unique<ToolBar>(psapi::vec2i(0, 0),
                                          psapi::vec2u(128, 32),
