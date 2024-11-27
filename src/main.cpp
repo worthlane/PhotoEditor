@@ -17,7 +17,7 @@
 
 static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
                                                       "build/brush.dll", "build/geometry.dll",
-                                                      "build/filters.dll"};
+                                                      "build/filters_bar.dll", "build/filters.dll"};
 static       std::vector<void*> dll_ptrs;
 
 static const char* LOAD_PLUGIN   = "loadPlugin";

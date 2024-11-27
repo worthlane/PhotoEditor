@@ -3,18 +3,11 @@
 
 #include "standard/api_bar.hpp"
 
-extern "C"
-{
-
-bool   loadPlugin();
-void unloadPlugin();
-
-}
 
 class ABar : public psapi::IBar
 {
 public:
-    ABar(const psapi::vec2i& pos, const psapi::vec2u& size,
+    ABar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
@@ -47,6 +40,7 @@ public:
     virtual bool isWindowContainer() const override;
 
 protected:
+    psapi::wid_t id_;
     psapi::vec2i pos_;
     psapi::vec2u size_;
 
@@ -72,7 +66,7 @@ protected:
 class ToolBar : public ABar
 {
 public:
-    ToolBar(const psapi::vec2i& pos, const psapi::vec2u& size,
+    ToolBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,

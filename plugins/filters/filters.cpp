@@ -24,7 +24,7 @@ bool loadPlugin()
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
-    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
+    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
 
     auto negative = std::make_unique<PressButton>(kNegativeFilterButtonId, tool_bar,
                                                psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
