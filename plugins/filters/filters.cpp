@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/filters.hpp"
+#include "../plugins/filters/filters.hpp"
 #include "../plugins/colors.hpp"
 
 static psapi::sfm::ITexture* btn = nullptr;

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../plugins/geometry.hpp"
+#include "../plugins/geometry/geometry.hpp"
 #include "../plugins/colors.hpp"
 
 static const psapi::sfm::vec2i NO_CATCH = {-1, -1};

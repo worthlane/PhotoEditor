@@ -4,8 +4,8 @@
 #include "standard/api_bar.hpp"
 #include "standard/api_canvas.hpp"
 
-#include "../plugins/bar_button.hpp"
-#include "../plugins/catmull.hpp"
+#include "../plugins/bar_base/bar_button.hpp"
+#include "../plugins/brush/catmull.hpp"
 
 extern "C"
 {

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../plugins/design.hpp"
+#include "../plugins/style/design.hpp"
 
 static void darker_border(psapi::sfm::IImage* img, const psapi::sfm::IntRect& rect, const double dark_coef);
 static void round_corner(psapi::sfm::IImage* img,

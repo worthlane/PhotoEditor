@@ -1,9 +1,9 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/bar.hpp"
-#include "../plugins/design.hpp"
-#include "../plugins/bar_button.hpp"
+#include "../plugins/bar_base/bar.hpp"
+#include "../plugins/style/design.hpp"
+#include "../plugins/bar_base/bar_button.hpp"
 
 static psapi::sfm::ITexture* back    = nullptr;
 static psapi::sfm::ITexture* release = nullptr;

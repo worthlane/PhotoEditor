@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "../plugins/colors.hpp"
-#include "../plugins/canvas.hpp"
+#include "../plugins/canvas/canvas.hpp"
 
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/light_gray.jpg";

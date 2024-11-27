@@ -3,7 +3,7 @@
 
 #include "standard/api_canvas.hpp"
 
-#include "../plugins/scrollbar.hpp"
+#include "../plugins/canvas/scrollbar.hpp"
 
 extern "C" {
 

@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/brush.hpp"
+#include "../plugins/brush/brush.hpp"
 #include "../plugins/colors.hpp"
 
 static psapi::sfm::ITexture* btn = nullptr;

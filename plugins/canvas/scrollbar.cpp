@@ -1,4 +1,4 @@
-#include "../plugins/scrollbar.hpp"
+#include "../plugins/canvas/scrollbar.hpp"
 
 static const double MAX_SCALE = 80;
 static const double MIN_SCALE = 1;
@@ -109,7 +109,7 @@ void AScrollBar::loadStateTexture(psapi::sfm::ISprite* sprite) const
         case State::Hover:
             sprite->setTexture(hover_.get());
             break;
-            
+
         case State::Active:
             sprite->setTexture(active_.get());
             break;
