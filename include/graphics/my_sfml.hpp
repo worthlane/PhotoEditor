@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "standard/api_sfm.hpp"
+#include "api/api_sfm.hpp"
 
 namespace psapi
 {
@@ -57,6 +57,9 @@ public:
 
     virtual vec2u getSize() const override;
 
+    virtual vec2i getPos() const override;
+    virtual void setPos(const vec2i &pos) override;
+
 private:
     sf::Image image_;
 
@@ -104,6 +107,7 @@ public:
     virtual vec2u getSize() const override;
 
     virtual void setColor(const Color &color) override;
+    virtual Color getColor() const override;
 
     virtual void setRotation(float angle) override;
 
@@ -142,6 +146,11 @@ public:
     virtual void setOutlineThickness(float thickness) override;
 
     virtual void draw(IRenderWindow *window) const override;
+
+    virtual void setPos(const vec2f &pos) override;
+    virtual void setSize(const vec2f &size) override;
+
+    virtual IntRect getGlobalBounds() const override;
 
 private:
     sf::Text text_;

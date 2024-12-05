@@ -4,9 +4,6 @@
 #include <dlfcn.h>
 
 #include "graphics/my_sfml.hpp"
-#include "api/utils.hpp"
-#include "api/window_vector.hpp"
-#include "api/root_window.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -15,34 +12,32 @@
                                     }
 
 
-static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
+/*static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
                                                       "build/brush.dll", "build/geometry.dll",
-                                                      "build/filters_bar.dll", "build/filters.dll"};
+                                                      "build/filters_bar.dll", "build/filters.dll"};*/
+static const std::vector<const char*> PLUGIN_NAMES = {};
 static       std::vector<void*> dll_ptrs;
 
-static const char* LOAD_PLUGIN   = "loadPlugin";
-static const char* UNLOAD_PLUGIN = "unloadPlugin";
-
-static const size_t LENGTH = 1200;
-static const size_t WIDTH  = 800;
+static const char* LOAD_PLUGIN   = "onLoadPlugin";
+static const char* UNLOAD_PLUGIN = "onUnloadPlugin";
 
 int main()
 {
-    psapi::sfm::RenderWindow window(LENGTH, WIDTH, "PhotoRedactor");
+    psapi::sfm::RenderWindow window(1200, 800, "PhotoRedactor");
 
-    psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+    //psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
 
     for (auto& plugin_name : PLUGIN_NAMES)
     {
         void* so_lib = dlopen(plugin_name, RTLD_NOW);
         DLL_CHECK(so_lib);
 
-        bool (*loadPlugin)() = (bool (*)()) dlsym(so_lib, LOAD_PLUGIN);
-        DLL_CHECK(loadPlugin);
+        bool (*onLoadPlugin)() = (bool (*)()) dlsym(so_lib, LOAD_PLUGIN);
+        DLL_CHECK(onLoadPlugin);
 
         dll_ptrs.push_back(so_lib);
 
-        loadPlugin();
+        onLoadPlugin();
     }
 
     while (window.isOpen())
@@ -57,8 +52,8 @@ int main()
             }
         }
 
-        root->update(&window, event);
-        root->draw(&window);
+        //root->update(&window, event);
+        //root->draw(&window);
 
         //sprite.draw(&window);
 
@@ -70,10 +65,10 @@ int main()
     {
         void* so_lib = dll_ptrs[i];
 
-        bool (*unloadPlugin)() = (bool (*)()) dlsym(so_lib, UNLOAD_PLUGIN);
-        DLL_CHECK(unloadPlugin);
+        bool (*onUnloadPlugin)() = (bool (*)()) dlsym(so_lib, UNLOAD_PLUGIN);
+        DLL_CHECK(onUnloadPlugin);
 
-        unloadPlugin();
+        onUnloadPlugin();
     }
 
 

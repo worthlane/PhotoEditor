@@ -20,7 +20,7 @@ void Sprite::setTexture(const ITexture *texture, bool reset_rect)
 
 void Sprite::setTextureRect(const IntRect &rectangle)
 {
-    sprite_.setTextureRect(sf::IntRect(rectangle.top_x, rectangle.top_y, rectangle.width, rectangle.height));
+    sprite_.setTextureRect(sf::IntRect(rectangle.pos.x, rectangle.pos.y, rectangle.size.x, rectangle.size.y));
 }
 
 void Sprite::setPosition(float x, float y)
@@ -39,6 +39,11 @@ void Sprite::setScale(float factorX, float factorY)
 }
 
 vec2u Sprite::getSize() const
+{
+    // TODO implement
+}
+
+Color Sprite::getColor() const
 {
     // TODO implement
 }
@@ -64,8 +69,8 @@ IntRect Sprite::getGlobalBounds() const
 {
     sf::FloatRect rect = sprite_.getGlobalBounds();
 
-    return { static_cast<int>(rect.left),  static_cast<int>(rect.top),
-             static_cast<int>(rect.width), static_cast<int>(rect.height) };
+    return { {static_cast<int>(rect.left),  static_cast<int>(rect.top)},
+             {static_cast<int>(rect.width), static_cast<int>(rect.height)} };
 }
 
 void Sprite::draw(IRenderWindow *window) const
@@ -276,6 +281,24 @@ void Text::draw(IRenderWindow *window) const
     desktop->window_.draw(text_);
 }
 
+IntRect Text::getGlobalBounds() const
+{
+    sf::FloatRect rect = text_.getGlobalBounds();
+
+    return { {static_cast<int>(rect.left),  static_cast<int>(rect.top)},
+             {static_cast<int>(rect.width), static_cast<int>(rect.height)} };
+}
+
+void Text::setPos(const vec2f &pos)
+{
+    text_.setPosition(pos.x, pos.y);
+}
+
+void Text::setSize(const vec2f &size)
+{
+    text_.setCharacterSize(size.x);
+}
+
 std::unique_ptr<IText> IText::create()
 {
     return std::make_unique<Text>();
@@ -410,6 +433,18 @@ Color Image::getPixel(vec2u pos) const
 std::unique_ptr<IImage> IImage::create()
 {
     return std::make_unique<Image>();
+}
+
+vec2i Image::getPos() const
+{
+    //sf::Vector2i pos = image_.getPos();
+
+    //return {pos.x, pos.y};
+    return {0, 0};
+}
+void Image::setPos(const vec2i &pos)
+{
+    //image_.setPos(sf::Vector2i(pos.x, pos.y));
 }
 
 // *************************************************************************

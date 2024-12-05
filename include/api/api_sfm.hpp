@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 #include <memory>
-#include "standard/api_system.hpp"
+#include "api_system.hpp"
 
 namespace psapi
 {
@@ -62,22 +62,22 @@ public:
     virtual Color getPixel(unsigned int x, unsigned int y) const = 0;
     virtual Color getPixel(vec2u pos) const = 0;
 
+    virtual vec2i getPos() const = 0;
+    virtual void setPos(const vec2i &pos) = 0;
+
     static std::unique_ptr<IImage> create();
 };
 
 struct IntRect
 {
-    int top_x;
-    int top_y;
-    int width;
-    int height;
+    vec2i pos;
+    vec2u size;
 };
 
 class ITexture
 {
 public:
     virtual ~ITexture() = default;
-
 
     virtual bool create(unsigned int width, unsigned int height)                                     = 0;
     virtual bool loadFromFile  (const std::string& filename,        const IntRect& area = IntRect()) = 0;
@@ -107,11 +107,13 @@ public:
     virtual vec2u getSize() const = 0;
 
     virtual void setColor(const Color &color) = 0;
+    virtual Color getColor() const = 0;
 
     virtual void setRotation(float angle) = 0;
 
     virtual const vec2f getPosition() const = 0;
     virtual IntRect getGlobalBounds() const = 0;
+
 
     static std::unique_ptr<ISprite> create();
 };
@@ -140,10 +142,13 @@ public:
 
     virtual ~IText() = default;
 
+    virtual IntRect getGlobalBounds() const = 0;
     virtual void setString(const std::string& string) = 0;
     virtual void setFont(const IFont* font)           = 0;
     virtual void setCharacterSize(unsigned int size)  = 0;
     virtual void setStyle(uint32_t style)             = 0;
+    virtual void setPos(const vec2f &pos)             = 0;
+    virtual void setSize(const vec2f &size)           = 0;
     virtual void setFillColor(const Color* color)     = 0;
     virtual void setOutlineColor(const Color* color)  = 0;
     virtual void setOutlineThickness(float thickness) = 0;
@@ -198,7 +203,7 @@ public:
     virtual vec2u getSize() const = 0;
     virtual float getOutlineThickness() const = 0;
     virtual const Color &getOutlineColor() const = 0;
-    virtual const IImage* getImage() const = 0;
+    virtual const IImage *getImage() const = 0;
 
     virtual void move(const vec2f &offset) = 0;
 };
@@ -221,7 +226,7 @@ public:
 
     static std::unique_ptr<IEllipseShape> create(unsigned int width = 0, unsigned int height = 0);
     static std::unique_ptr<IEllipseShape> create(const vec2u &size = vec2u(0, 0));
-    static std::unique_ptr<IEllipseShape> create(unsigned int radius); // creates ellipse with width == height == raduis - circle
+    static std::unique_ptr<IEllipseShape> create(unsigned int radius); // creates ellipse with width == height == radius - circle
 };
 
 class Mouse
