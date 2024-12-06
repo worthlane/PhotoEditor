@@ -13,7 +13,7 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {0, 0, 128, 400};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {0, 0, 128, 500};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/hovered_icon.png";
