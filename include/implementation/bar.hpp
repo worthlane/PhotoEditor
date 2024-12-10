@@ -1,7 +1,33 @@
-#ifndef BAR_PLUGIN_HPP
-#define BAR_PLUGIN_HPP
+#ifndef BAR_HPP
+#define BAR_HPP
 
-#include "standard/api_bar.hpp"
+#include "api/api_bar.hpp"
+
+
+/*class IBar : public IWindowContainer
+{
+public:
+    //virtual void finishButtonDraw(IRenderWindow* renderWindow, const IBarButton* button) const = 0;
+
+    //virtual void addWindow(std::unique_ptr<IWindow> window) = 0;
+    //virtual void removeWindow(wid_t id) = 0;
+
+    virtual void draw(IRenderWindow* renderWindow) = 0;
+    virtual std::unique_ptr<IAction> createAction(const IRenderWindow* renderWindow, const Event& event) = 0;
+    //virtual wid_t getId() const = 0;
+    //virtual IWindow* getWindowById(wid_t id) = 0;
+    //virtual const IWindow* getWindowById(wid_t id) const = 0;
+
+    //virtual vec2i getPos() const = 0;
+    //virtual vec2u getSize() const = 0;
+    virtual void setSize(const vec2u& size) = 0;
+    virtual void setPos(const vec2i& pos) = 0;
+    virtual bool unPressAllButtons() = 0;
+    //virtual void setParent(const IWindow* parent) = 0;
+    //virtual void forceActivate() = 0;
+    //virtual void forceDeactivate() = 0;
+    //virtual bool isActive() const = 0;
+};*/
 
 
 class ABar : public psapi::IBar
@@ -14,9 +40,9 @@ public:
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual psapi::wid_t getId() const override;
 
-    virtual psapi::ChildInfo getNextChildInfo() const override;
+
+    virtual psapi::wid_t getId() const override;
     virtual void finishButtonDraw(psapi::IRenderWindow* renderWindow, const psapi::IBarButton* button) const override;
 
     virtual psapi::IWindow* getWindowById(psapi::wid_t id) override;
@@ -34,7 +60,9 @@ public:
     virtual void addWindow(std::unique_ptr<psapi::IWindow> window) override;
     virtual void removeWindow(psapi::wid_t id) override;
 
-    virtual bool isWindowContainer() const override;
+    virtual void setSize(const vec2u& size) override;
+    virtual void setPos(const vec2i& pos) override;
+    virtual bool unPressAllButtons() override;
 
 protected:
     psapi::wid_t id_;
@@ -60,18 +88,5 @@ protected:
 
 };
 
-class ToolBar : public ABar
-{
-public:
-    ToolBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-            std::unique_ptr<psapi::sfm::ISprite> background,
-            std::unique_ptr<psapi::sfm::ISprite> normal,
-            std::unique_ptr<psapi::sfm::ISprite> hovered,
-            std::unique_ptr<psapi::sfm::ISprite> pressed,
-            std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
-};
-
-#endif // TOOLBAR_PLUGIN_HPP
+#endif // BAR_HPP

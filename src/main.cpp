@@ -3,7 +3,8 @@
 #include <time.h>
 #include <dlfcn.h>
 
-#include "graphics/my_sfml.hpp"
+#include "implementation/sfm.hpp"
+#include "api/api_photoshop.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -25,7 +26,7 @@ int main()
 {
     psapi::sfm::RenderWindow window(1200, 800, "PhotoRedactor");
 
-    //psapi::RootWindow* root = static_cast<psapi::RootWindow*>(psapi::getRootWindow());
+    psapi::IRootWindow* root = psapi::getRootWindow();
 
     for (auto& plugin_name : PLUGIN_NAMES)
     {

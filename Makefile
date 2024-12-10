@@ -38,21 +38,17 @@ DOXYBUILD = doxygen $(DOXYFILE)
 SOURCES = main.cpp
 SOURCE_DIR = src
 
-GRAPHICS_SOURCES = my_sfml.cpp
-GRAPHICS_DIR = $(SOURCE_DIR)/graphics
+IMPLEMENTATION_SOURCES = actions.cpp bar.cpp canvas.cpp memento.cpp photoshop.cpp sfm.cpp
+IMPLEMENTATION_DIR = $(SOURCE_DIR)/implementation
 
-STANDARD_SOURCES = api_system.cpp api_windows.cpp
-STANDARD_DIR = $(SOURCE_DIR)/standard
-
-API_SOURCES = utils.cpp window_vector.cpp root_window.cpp
+API_SOURCES = api_system.cpp
 API_DIR = $(SOURCE_DIR)/api
 
 PLUGINS_SOURCES = canvas_plugin.cpp
 PLUGINS_DIR = $(SOURCE_DIR)/plugins
 
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-GRAPHICS_OBJECTS = $(GRAPHICS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-STANDARD_OBJECTS = $(STANDARD_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+IMPLEMENTATION_OBJECTS = $(IMPLEMENTATION_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 PLUGINS_OBJECTS = $(PLUGINS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 
@@ -62,8 +58,8 @@ API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 
 API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 
-DLL_API_SOURCES = src/api/api_system.cpp src/api/api_photoshop.cpp \
-				  src/graphics/my_sfml.cpp
+DLL_API_SOURCES = src/api/api_system.cpp \
+				  src/implementation/sfm.cpp src/implementation/photoshop.cpp
 
 # ==============================================================
 
@@ -78,14 +74,14 @@ $(EXECUTABLE): $(OBJECTS)
 $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+#$(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
+#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+#$(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
+#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+#$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
+#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
 $(API_TARGET_DLL): $(DLL_API_SOURCES)
 	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
