@@ -40,8 +40,6 @@ public:
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-
-
     virtual psapi::wid_t getId() const override;
     virtual void finishButtonDraw(psapi::IRenderWindow* renderWindow, const psapi::IBarButton* button) const override;
 

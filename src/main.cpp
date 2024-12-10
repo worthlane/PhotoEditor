@@ -5,6 +5,7 @@
 
 #include "implementation/sfm.hpp"
 #include "api/api_photoshop.hpp"
+#include "api/api_actions.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -27,6 +28,7 @@ int main()
     psapi::sfm::RenderWindow window(1200, 800, "PhotoRedactor");
 
     psapi::IRootWindow* root = psapi::getRootWindow();
+    psapi::AActionController* controller = psapi::getActionController();
 
     for (auto& plugin_name : PLUGIN_NAMES)
     {
@@ -53,8 +55,8 @@ int main()
             }
         }
 
-        //root->update(&window, event);
-        //root->draw(&window);
+        controller->execute(root->createAction(&window, event));
+        root->draw(&window);
 
         //sprite.draw(&window);
 

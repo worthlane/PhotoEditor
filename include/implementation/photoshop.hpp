@@ -2,6 +2,7 @@
 #define PHOTOSHOP_HPP
 
 #include "api/api_photoshop.hpp"
+#include "implementation/actions.hpp"
 
 class AWindow : public psapi::IWindow
 {
@@ -95,26 +96,16 @@ private:
     std::vector<std::unique_ptr<psapi::IWindow>> windows_;
 };
 
-//virtual layer_id_t getUpperLayerId() const = 0;
-//virtual layer_id_t increaseLayerId() = 0;
-//virtual layer_id_t decreaseLayerId() = 0;
-//virtual void addWindow(std::unique_ptr<IWindow> window) = 0;
-//virtual void removeWindow(wid_t id) = 0;
-//virtual bool isWindowContainer() const override;
-//virtual void draw(IRenderWindow* renderWindow) = 0;
-//virtual std::unique_ptr<IAction> createAction(const IRenderWindow* renderWindow, const Event& event) = 0;
-//virtual wid_t getId() const = 0;
-//virtual IWindow* getWindowById(wid_t id) = 0;
-//virtual const IWindow* getWindowById(wid_t id) const = 0;
-//virtual vec2i getPos() const = 0;
-//virtual vec2u getSize() const = 0;
-//virtual void setSize(const vec2u& size) = 0;
-//virtual void setPos(const vec2i& pos) = 0;
-//virtual void setParent(const IWindow* parent) = 0;
-//virtual void forceActivate() = 0;
-//virtual void forceDeactivate() = 0;
-//virtual bool isActive() const = 0;
-//virtual bool isWindowContainer() const = 0;
+class RootAction : public AAction
+{
+public:
+    RootAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, std::vector<std::unique_ptr<psapi::IWindow>>* windows);
+
+    virtual bool execute   (const Key& key) override;
+    virtual bool isUndoable(const Key& key) override;
+private:
+    std::vector<std::unique_ptr<psapi::IWindow>>* windows_;
+};
 
 
 #endif // PHOTOSHOP_HPP
