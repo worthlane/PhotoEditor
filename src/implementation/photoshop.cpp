@@ -229,7 +229,7 @@ void RootWindow::draw(psapi::IRenderWindow* renderWindow)
 
 std::unique_ptr<psapi::IAction> RootWindow::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
-    return std::make_unique<RootAction>(renderWindow, event, &windows_);
+    return std::make_unique<RootAction>(renderWindow, event, this);
 }
 
 psapi::layer_id_t RootWindow::getUpperLayerId() const
@@ -324,13 +324,13 @@ void RootWindow::removeWindow(psapi::wid_t id)
 
 // ******* ROOT ACTION **********
 
-RootAction::RootAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, std::vector<std::unique_ptr<psapi::IWindow>>* windows) :
-AAction(render_window, event), windows_(windows)
+RootAction::RootAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, RootWindow* root_window) :
+AAction(render_window, event), root_window_(root_window)
 {}
 
 bool RootAction::execute(const Key& key)
 {
-    for (auto& window : *windows_)
+    for (auto& window : root_window_->windows_)
     {
         psapi::getActionController()->execute(window->createAction(render_window_, event_));
     }

@@ -94,17 +94,19 @@ private:
     psapi::wid_t id_;
 
     std::vector<std::unique_ptr<psapi::IWindow>> windows_;
+
+    friend class RootAction;
 };
 
 class RootAction : public AAction
 {
 public:
-    RootAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, std::vector<std::unique_ptr<psapi::IWindow>>* windows);
+    RootAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, RootWindow* root_window);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
 private:
-    std::vector<std::unique_ptr<psapi::IWindow>>* windows_;
+    RootWindow* root_window_;
 };
 
 

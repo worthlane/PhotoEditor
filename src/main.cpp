@@ -6,6 +6,7 @@
 #include "implementation/sfm.hpp"
 #include "api/api_photoshop.hpp"
 #include "api/api_actions.hpp"
+#include "implementation/canvas.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \
@@ -29,6 +30,11 @@ int main()
 
     psapi::IRootWindow* root = psapi::getRootWindow();
     psapi::AActionController* controller = psapi::getActionController();
+
+    auto canvas = std::make_unique<Canvas>(psapi::sfm::vec2i(0, 0),
+                                           psapi::sfm::vec2u(1180, 780));
+
+    root->addWindow(std::move(canvas));
 
     for (auto& plugin_name : PLUGIN_NAMES)
     {

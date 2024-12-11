@@ -25,8 +25,6 @@ public:
 private:
     psapi::sfm::IImage* image_;
 
-    void dumpOnImage(psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);
-
     friend class Canvas;
 };
 
@@ -34,7 +32,7 @@ class Canvas : public psapi::ICanvas, public Scrollable
 {
 public:
     Canvas(const psapi::sfm::vec2i& pos,
-           const psapi::sfm::vec2i& size,
+           const psapi::sfm::vec2u& size,
            const psapi::sfm::vec2f& scale = {1, 1});
 
     virtual psapi::wid_t getId() const override { return psapi::kCanvasWindowId; }
