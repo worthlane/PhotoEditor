@@ -35,7 +35,7 @@ bool onLoadPlugin()
     auto toolbar_pos = tool_bar->getPos();
 
     auto brush = std::make_unique<PaintButton>(kBrushButtonId, tool_bar,
-                                               psapi::vec2i(toolbar_pos + psapi::vec2i(0, 18)),
+                                               psapi::vec2i(toolbar_pos + psapi::vec2i(18, 18)),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(btn_sprite),
                                                psapi::sfm::Color(255, 0, 0, 255), 3, canvas);
@@ -44,11 +44,12 @@ bool onLoadPlugin()
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
 
     auto eraser = std::make_unique<PaintButton>(kEraserButtonId, tool_bar,
-                                                psapi::vec2i(toolbar_pos + psapi::vec2i(0, 36 + BUTTON_RECT.size.y)),
+                                                psapi::vec2i(toolbar_pos + psapi::vec2i(18, 36 + BUTTON_RECT.size.y)),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(ers_sprite),
                                                canvas->getCanvasBaseColor(), 20, canvas);
 
+    psapi::sfm::Color col = canvas->getCanvasBaseColor();
 
     if (tool_bar)
     {
@@ -80,9 +81,11 @@ void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
 }
 
 PaintAction::PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event,
-                         const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas) :
-                        AAction(render_window, event), color_(color), radius_(radius), array_(), canvas_(canvas)
-{}
+                         const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, InterpolationArray* array) :
+                        AAction(render_window, event), color_(color), radius_(radius), canvas_(canvas), array_(array)
+{
+    //std::cout << (int) color_.r << " " << (int) color_.g << " " << (int) color_.b << " " << (int) color_.a << "\n";
+}
 
 bool PaintAction::execute(const Key& key)
 {
@@ -90,40 +93,19 @@ bool PaintAction::execute(const Key& key)
     bool LMB_down = canvas_->isPressedLeftMouseButton();
 
     psapi::vec2u canvas_size = canvas_->getSize();
-
     psapi::ILayer* layer = canvas_->getTempLayer();
     if (!layer)
             return false;
 
-    if (LMB_down)
+    if (canvas_->isPressedLeftMouseButton() && array_->size() >= CATMULL_LEN)
     {
-        psapi::vec2i pos = mouse_pos;
+        double delta = 0.001 * static_cast<double>(radius_);
+        double max_point = static_cast<double>(CATMULL_LEN - 2);
 
-        if (array_.size() < CATMULL_LEN)
+        for (double i = 1; i < max_point; i += delta)
         {
-            array_.push_back(pos);
+            set_point(layer, array_->getInterpolated(i), color_, radius_);
         }
-        else
-        {
-            array_.queue_push(pos);
-
-            double delta = 0.001 * static_cast<double>(radius_);
-            double max_point = static_cast<double>(CATMULL_LEN - 2);
-
-            //int radius = static_cast<int>(scale_related_ ? static_cast<double>(radius_) / scale.x : radius_);
-
-            for (double i = 1; i < max_point; i += delta)
-            {
-                set_point(layer, array_.getInterpolated(i), color_, radius_);
-            }
-        }
-    }
-    else
-    {
-        if (array_.size())
-            canvas_->cleanTempLayer();
-
-        array_.clear();
     }
 
     return true;
@@ -139,8 +121,9 @@ bool PaintAction::isUndoable(const Key& key)
 PaintButton::PaintButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas) :
-            SwitchButton(id, bar, pos, size, std::move(sprite)), color_(color), radius_(radius), canvas_(canvas)
-{}
+            SwitchButton(id, bar, pos, size, std::move(sprite)), color_(color), radius_(radius), canvas_(canvas), array_()
+{
+}
 
 std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
@@ -152,6 +135,22 @@ std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWi
     if (state_ != SwitchButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
 
-    return std::make_unique<PaintAction>(renderWindow, event, color_, radius_, canvas_);
+    if (canvas_->isPressedLeftMouseButton())
+    {
+
+        if (array_.size() < CATMULL_LEN)
+            array_.push_back(canvas_->getMousePosition());
+        else
+            array_.queue_push(canvas_->getMousePosition());
+    }
+    else
+    {
+        if (array_.size())
+            canvas_->cleanTempLayer();
+
+        array_.clear();
+    }
+
+    return std::make_unique<PaintAction>(renderWindow, event, color_, radius_, canvas_, &array_);
 }
 

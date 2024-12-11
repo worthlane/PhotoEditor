@@ -20,16 +20,16 @@ void onUnloadPlugin();
 class PaintAction : public AAction
 {
 public:
-    PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas);
+    PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, InterpolationArray* array);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
 private:
-    const psapi::sfm::Color& color_;
+    psapi::sfm::Color color_;
     size_t radius_;
     psapi::ICanvas* canvas_;
 
-    InterpolationArray array_;
+    InterpolationArray* array_;
 };
 
 class PaintButton : public SwitchButton
@@ -42,9 +42,11 @@ public:
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
-    const psapi::sfm::Color& color_;
+    psapi::sfm::Color color_;
     size_t radius_;
     psapi::ICanvas* canvas_;
+
+    InterpolationArray array_;
 };
 
 static const psapi::wid_t kBrushButtonId = 228;

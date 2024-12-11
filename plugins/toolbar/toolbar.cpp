@@ -143,7 +143,8 @@ bool ToolBarAction::execute(const Key& key)
         if (cur_state == psapi::IBarButton::State::Released &&
             prev_state != psapi::IBarButton::State::Released)
         {
-            //tool_bar_->unPressAllButtons();
+            for (size_t j = 0; j < tool_bar_->buttons_.size(); ++j)
+                if (j != i) tool_bar_->buttons_[j].get()->setState(psapi::IBarButton::State::Normal);
         }
     }
 

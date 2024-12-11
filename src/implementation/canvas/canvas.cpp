@@ -253,7 +253,7 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     psapi::sfm::ITexture* texture = psapi::sfm::ITexture::create().release();
     psapi::sfm::ISprite* sprite = psapi::sfm::ISprite::create().release();
 
-    final_image->create(size_.x, size_.y, psapi::sfm::Color{255, 255, 255, 255});
+    final_image->create(size_.x, size_.y, psapi::sfm::Color(0, 0, 0, 0));
 
     sprite->setPosition(pos_.x, pos_.y);
 
