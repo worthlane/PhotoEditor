@@ -16,9 +16,10 @@
 
 /*static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
                                                       "build/brush.dll", "build/geometry.dll",
-                                                      "build/filters_bar.dll", "build/filters.dll"};*/
+                                                      "build/optionbar.dll", "build/filters.dll"};*/
 static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
-                                                      "build/brush.dll", "build/geometry.dll"};
+                                                      "build/brush.dll", "build/geometry.dll",
+                                                      "build/optionbar.dll"};
 static       std::vector<void*> dll_ptrs;
 
 static const char* LOAD_PLUGIN   = "onLoadPlugin";

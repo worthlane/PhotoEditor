@@ -1,5 +1,5 @@
-#ifndef TOOLBAR_PLUGIN_HPP
-#define TOOLBAR_PLUGIN_HPP
+#ifndef OPTIONBAR_PLUGIN_HPP
+#define OPTIONBAR_PLUGIN_HPP
 
 #include "implementation/actions.hpp"
 #include "implementation/bar/bar_base.hpp"
@@ -14,10 +14,10 @@ void onUnloadPlugin();
 
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
 
-class ToolBar : public ABar
+class OptionBar : public ABar
 {
 public:
-    ToolBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+    OptionBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
@@ -28,18 +28,19 @@ public:
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
-    friend class ToolBarAction;
+    friend class OptionBarAction;
 };
 
-class ToolBarAction : public AAction
+class OptionBarAction : public AAction
 {
 public:
-    ToolBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ToolBar* tool_bar);
+    OptionBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, OptionBar* option_bar);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
 private:
-    ToolBar* tool_bar_;
+    OptionBar* option_bar_;
 };
 
-#endif // TOOLBAR_PLUGIN_HPP
+
+#endif // FILTERS_BAR_PLUGIN_HPP
