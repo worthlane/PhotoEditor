@@ -12,8 +12,6 @@ void onUnloadPlugin();
 
 }
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
-
 class ToolBar : public ABar
 {
 public:

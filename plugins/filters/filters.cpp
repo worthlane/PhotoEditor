@@ -2,16 +2,19 @@
 #include <iostream>
 
 #include "../plugins/filters/filters.hpp"
-#include "../plugins/colors.hpp"
 
 static psapi::sfm::ITexture* btn = nullptr;
+
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
 
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
 static int apply_contrast(const int color, const double k);
 
 static const size_t CATMULL_LEN = 4;
 
-bool loadPlugin()
+static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi::vec2u& size, const psapi::vec2i pos, const std::vector<std::vector<double>>& gauss_matrix);
+
+bool onLoadPlugin()
 {
     std::cout << "filters loaded\n";
 
@@ -20,44 +23,99 @@ bool loadPlugin()
     std::unique_ptr<psapi::sfm::ISprite> neg_sprite = psapi::sfm::ISprite::create();
     neg_sprite.get()->setTextureRect(BUTTON_RECT);
 
+    std::unique_ptr<psapi::sfm::ISprite> bar_sprite = psapi::sfm::ISprite::create();
+    bar_sprite.get()->setTextureRect(BUTTON_RECT);
+
+    std::unique_ptr<psapi::sfm::ISprite> sharp_sprite = psapi::sfm::ISprite::create();
+    sharp_sprite.get()->setTextureRect(BUTTON_RECT);
+
+    std::unique_ptr<psapi::sfm::ISprite> blur_sprite = psapi::sfm::ISprite::create();
+    blur_sprite.get()->setTextureRect(BUTTON_RECT);
+
     auto root = psapi::getRootWindow();
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
-    auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
+    auto bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
+    auto bar_pos = bar->getPos();
 
-    auto negative = std::make_unique<PressButton>(kNegativeFilterButtonId, tool_bar,
-                                               psapi::vec2u(BUTTON_RECT.width, BUTTON_RECT.height),
-                                               std::move(neg_sprite),
-                                               std::make_unique<ContrastAction>(-1, canvas));
+    std::cout << bar;
+
+    auto negative = std::make_unique<ContrastButton>(kNegativeFilterButtonId, bar,
+                                                    bar_pos + psapi::vec2i(18, 18),
+                                                    psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                                    std::move(neg_sprite),
+                                                    -1, canvas);
+
+    auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, bar,
+                                                  bar_pos + psapi::vec2i(18, 2 * 18 + BUTTON_RECT.size.y),
+                                                  psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                                  std::move(bar_sprite),
+                                                  -1, canvas);
+
+    auto blur = std::make_unique<BlurButton>(kBlurFilterButtonId, bar,
+                                            bar_pos + psapi::vec2i(18, 3 * 18 +  2 * BUTTON_RECT.size.y),
+                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                               std::move(blur_sprite),
+                                               canvas);
+
+    auto sharp = std::make_unique<SharpButton>(kSharpFilterButtonId, bar,
+                                              bar_pos + psapi::vec2i(18, 4 * 18 + 3 * BUTTON_RECT.size.y),
+                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                               std::move(sharp_sprite),
+                                               canvas);
 
 
-    if (tool_bar)
+    if (bar)
     {
-        tool_bar->addWindow(std::move(negative));
+        bar->addWindow(std::move(negative));
+        bar->addWindow(std::move(barel));
+        bar->addWindow(std::move(blur));
+        bar->addWindow(std::move(sharp));
     }
 }
 
-void unloadPlugin()
+void onUnloadPlugin()
 {
     delete btn;
 }
 
 // ======================================================
 
-ContrastAction::ContrastAction(const double k, psapi::ICanvas* canvas) :
-k_(k), canvas_(canvas)
+ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 const double k, psapi::ICanvas* canvas) :
+                 PressButton(id, bar, pos, size, std::move(sprite)), k_(k), canvas_(canvas)
+{}
+
+std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    updateState(renderWindow, event);
+
+    if (state_ != PressButton::State::Released)
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    return std::make_unique<ContrastAction>(renderWindow, event, this);
 }
 
-bool ContrastAction::operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
-{
-    psapi::vec2u canvas_size = canvas_->getSize();
+ContrastAction::ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter) :
+                                AAction(render_window, event), filter_(filter)
+{}
 
-    auto layer_id = canvas_->getActiveLayerIndex();
-    auto layer = canvas_->getLayer(layer_id);
-    auto temp_layer = canvas_->getTempLayer();
-    auto size = canvas_->getSize();
+bool ContrastAction::execute(const Key& key)
+{
+    auto canvas = filter_->canvas_;
+    auto k      = filter_->k_;
+
+    psapi::vec2u canvas_size = canvas->getSize();
+
+    auto layer_id = canvas->getActiveLayerIndex();
+    auto layer = canvas->getLayer(layer_id);
+    auto temp_layer = canvas->getTempLayer();
+    auto size = canvas->getSize();
 
     for (int x = 0; x < size.x; x++)
     {
@@ -66,77 +124,265 @@ bool ContrastAction::operator()(const psapi::IRenderWindow* renderWindow, const 
             psapi::vec2i pos = {x, y};
             auto pixel = layer->getPixel(pos);
 
-            pixel.r = apply_contrast(pixel.r, k_);
-            pixel.g = apply_contrast(pixel.g, k_);
-            pixel.b = apply_contrast(pixel.b, k_);
+            pixel.r = apply_contrast(pixel.r, k);
+            pixel.g = apply_contrast(pixel.g, k);
+            pixel.b = apply_contrast(pixel.b, k);
 
             temp_layer->setPixel(pos, pixel);
-
-            //update_point(temp_layer, layer, psapi::vec2i(x, y), k_);
         }
     }
 
-    canvas_->cleanTempLayer();
+    canvas->cleanTempLayer();
 
     return true;
 }
 
-void update_point(psapi::ILayer* temp_layer, psapi::ILayer* layer, const psapi::vec2i& pos, const double k)
+bool ContrastAction::isUndoable(const Key& key)
 {
-    /*int rad2 = radius * radius;
+    return false;
+}
 
-    for (int i = -radius; i <= radius; i++)
+BareliefButton::BareliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 const double k, psapi::ICanvas* canvas) :
+                 PressButton(id, bar, pos, size, std::move(sprite)), k_(k), canvas_(canvas)
+{}
+
+std::unique_ptr<psapi::IAction> BareliefButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    updateState(renderWindow, event);
+
+    if (state_ != PressButton::State::Released)
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    return std::make_unique<BareliefAction>(renderWindow, event, this);
+}
+
+BareliefAction::BareliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BareliefButton* filter) :
+                                AAction(render_window, event), filter_(filter)
+{}
+
+bool BareliefAction::execute(const Key& key)
+{
+    auto canvas = filter_->canvas_;
+    auto k = filter_->k_;
+
+    psapi::vec2u canvas_size = canvas->getSize();
+
+    auto layer_id = canvas->getActiveLayerIndex();
+    auto layer = canvas->getLayer(layer_id);
+    auto temp_layer = canvas->getTempLayer();
+    auto size = canvas->getSize();
+
+    const int offset = 1;
+
+    for (int x = 0; x < size.x; x++)
     {
-        for (int j = -radius; j <= radius; j++)
+        for (int y = 0; y < size.y; y++)
         {
-            if (pos.x + i < 1 || pos.y + j < 1 ||
-                pos.x + i > changed.size() - 1 || pos.y + j > changed[0].size() - 1)
-                continue;
+            psapi::vec2i pos = {x, y};
+            auto pixel = layer->getPixel(pos);
 
-            if (i * i + j * j <= rad2 && changed[pos.x + i][pos.y + j] == false)
-            {
-                psapi::sfm::Color old_pixel = layer->getPixel(pos + psapi::vec2i(i, j));
+            pixel.r = apply_contrast(pixel.r, k);
+            pixel.g = apply_contrast(pixel.g, k);
+            pixel.b = apply_contrast(pixel.b, k);
 
-                int r = 0, g = 0, b = 0;
+            auto offset_pixel = layer->getPixel({x, y});
+            if (x + offset < size.x && y + offset < size.y)
+                offset_pixel = layer->getPixel({x + offset, y + offset});
+            else if (x + offset < size.x)
+                offset_pixel = layer->getPixel({x + offset, y});
+            else if (y + offset < size.y)
+                offset_pixel = layer->getPixel({x, y + offset});
 
-                for (int x_coverage = -1; x_coverage <= 1; x_coverage++)
-                {
-                    for (int y_coverage = -1; y_coverage <= 1; y_coverage++)
-                    {
-                        auto pixel = layer->getPixel(pos + psapi::vec2i(i + x_coverage, j + y_coverage));
+            psapi::sfm::Color result = {(pixel.r + offset_pixel.r) / 2,
+                                        (pixel.g + offset_pixel.g) / 2,
+                                        (pixel.b + offset_pixel.b) / 2,
+                                        pixel.a};
 
-                        r += pixel.r;
-                        g += pixel.g;
-                        b += pixel.b;
-                    }
-                }
-
-                r /= 9;
-                g /= 9;
-                b /= 9;
-
-                r = old_pixel.r + (old_pixel.r - r) * 2;
-                g = old_pixel.g + (old_pixel.g - g) * 2;
-                b = old_pixel.b + (old_pixel.b - b) * 2;
-
-                if (r < 0) r = 0;
-                if (g < 0) g = 0;
-                if (b < 0) b = 0;
-
-                if (r > 255) r = 255;
-                if (g > 255) g = 255;
-                if (b > 255) b = 255;
-
-                psapi::sfm::Color new_pixel = {r, g, b, old_pixel.a};
-
-                std::cout << static_cast<int>(new_pixel.r) << " " << static_cast<int>(new_pixel.g) << " " << static_cast<int>(new_pixel.b) << " " << static_cast<int>(new_pixel.a) << std::endl;
-
-                temp_layer->setPixel(pos + psapi::vec2i(i, j), new_pixel);
-
-                changed[pos.x + i][pos.y + j] = true;
-            }
+            temp_layer->setPixel(pos, result);
         }
-    }*/
+    }
+
+    canvas->cleanTempLayer();
+
+    return true;
+}
+
+bool BareliefAction::isUndoable(const Key& key)
+{
+    return false;
+}
+
+BlurButton::BlurButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 psapi::ICanvas* canvas) :
+                 PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas)
+{}
+
+std::unique_ptr<psapi::IAction> BlurButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    updateState(renderWindow, event);
+
+    if (state_ != PressButton::State::Released)
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    return std::make_unique<BlurAction>(renderWindow, event, this);
+}
+
+BlurAction::BlurAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BlurButton* filter) :
+                                AAction(render_window, event), filter_(filter)
+{}
+
+bool BlurAction::execute(const Key& key)
+{
+    auto canvas = filter_->canvas_;
+
+    psapi::vec2u canvas_size = canvas->getSize();
+
+    auto layer_id = canvas->getActiveLayerIndex();
+    auto layer = canvas->getLayer(layer_id);
+    auto temp_layer = canvas->getTempLayer();
+    auto size = canvas->getSize();
+
+    static const std::vector<std::vector<double>> GAUSS_MATRIX = {{0.025, 0.1, 0.025},
+                                                                  {  0.1, 0.5,   0.1},
+                                                                  {0.025, 0.1, 0.025}};
+
+    for (int x = 0; x < size.x; x++)
+    {
+        for (int y = 0; y < size.y; y++)
+        {
+            psapi::vec2i pos = {x, y};
+
+            psapi::sfm::Color blur = calculate_gauss_blur(layer, canvas_size, pos, GAUSS_MATRIX);
+
+            temp_layer->setPixel({x, y}, blur);
+        }
+    }
+
+    canvas->cleanTempLayer();
+
+    return true;
+}
+
+bool BlurAction::isUndoable(const Key& key)
+{
+    return false;
+}
+
+SharpButton::SharpButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 psapi::ICanvas* canvas) :
+                 PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas)
+{}
+
+std::unique_ptr<psapi::IAction> SharpButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    updateState(renderWindow, event);
+
+    if (state_ != PressButton::State::Released)
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    return std::make_unique<SharpAction>(renderWindow, event, this);
+}
+
+SharpAction::SharpAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, SharpButton* filter) :
+                                AAction(render_window, event), filter_(filter)
+{}
+
+bool SharpAction::execute(const Key& key)
+{
+    auto canvas = filter_->canvas_;
+
+    psapi::vec2u canvas_size = canvas->getSize();
+
+    auto layer_id = canvas->getActiveLayerIndex();
+    auto layer = canvas->getLayer(layer_id);
+    auto temp_layer = canvas->getTempLayer();
+    auto size = canvas->getSize();
+
+    static const std::vector<std::vector<double>> GAUSS_MATRIX = {{0.025, 0.1, 0.025},
+                                                                  {  0.1, 0.5,   0.1},
+                                                                  {0.025, 0.1, 0.025}};
+
+    for (int x = 0; x < size.x; x++)
+    {
+        for (int y = 0; y < size.y; y++)
+        {
+            psapi::vec2i pos = {x, y};
+
+            psapi::sfm::Color blur = calculate_gauss_blur(layer, canvas_size, pos, GAUSS_MATRIX);
+            auto pixel = layer->getPixel(pos);
+
+            float r = static_cast<float>(pixel.r) + static_cast<float>(pixel.r - blur.r) * 2;
+            float g = static_cast<float>(pixel.g) + static_cast<float>(pixel.g - blur.g) * 2;
+            float b = static_cast<float>(pixel.b) + static_cast<float>(pixel.b - blur.b) * 2;
+
+            r = std::min(std::max(r, 0.0f), 255.0f);
+            g = std::min(std::max(g, 0.0f), 255.0f);
+            b = std::min(std::max(b, 0.0f), 255.0f);
+
+            temp_layer->setPixel({x, y}, {static_cast<uint8_t>(r),
+                                          static_cast<uint8_t>(g),
+                                          static_cast<uint8_t>(b),
+                                          blur.a});
+        }
+    }
+
+    canvas->cleanTempLayer();
+
+    return true;
+}
+
+bool SharpAction::isUndoable(const Key& key)
+{
+    return false;
+}
+
+static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi::vec2u& size, const psapi::vec2i pos, const std::vector<std::vector<double>>& gauss_matrix)
+{
+    double r = 0;
+    double g = 0;
+    double b = 0;
+
+    static const psapi::vec2u gauss_size = {gauss_matrix.size(), gauss_matrix[0].size()};
+    static const psapi::vec2i gauss_center = {gauss_size.x / 2, gauss_size.y / 2};
+
+    for (int x = 0; x < gauss_size.x; x++)
+    {
+        for (int y = 0; y < gauss_size.y; y++)
+        {
+            psapi::vec2i gauss_pos = psapi::vec2i(x + pos.x - gauss_center.x, y + pos.y - gauss_center.y);
+
+            psapi::sfm::Color pixel = {255, 255, 255, 255};
+
+            if (gauss_pos.x > 0 && gauss_pos.x < size.x && gauss_pos.y > 0 && gauss_pos.y < size.y)
+                pixel = layer->getPixel(gauss_pos);
+
+            r += pixel.r * gauss_matrix[x][y];
+            g += pixel.g * gauss_matrix[x][y];
+            b += pixel.b * gauss_matrix[x][y];
+        }
+    }
+
+    if (r > 255) r = 255;
+    if (g > 255) g = 255;
+    if (b > 255) b = 255;
+
+    return {static_cast<uint8_t>(r),
+            static_cast<uint8_t>(g),
+            static_cast<uint8_t>(b),
+            layer->getPixel(pos).a};
 }
 
 static int apply_contrast(const int color, const double k)
