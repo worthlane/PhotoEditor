@@ -1,4 +1,4 @@
-#include "implementation/scrollbar.hpp"
+#include "implementation/canvas/scrollbar.hpp"
 
 static const double MAX_SCALE = 80;
 static const double MIN_SCALE = 1;

@@ -6,7 +6,6 @@
 #include "implementation/sfm.hpp"
 #include "api/api_photoshop.hpp"
 #include "api/api_actions.hpp"
-#include "implementation/canvas.hpp"
 
 #define DLL_CHECK(pointer)          if (pointer == nullptr) \
                                     {                       \

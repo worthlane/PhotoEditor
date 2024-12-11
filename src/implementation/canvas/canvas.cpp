@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "implementation/canvas.hpp"
+#include "implementation/canvas/canvas.hpp"
 #include "implementation/utils.hpp"
 
 static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);

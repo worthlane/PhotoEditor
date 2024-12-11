@@ -60,7 +60,7 @@ API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 
 DLL_API_SOURCES = src/api/api_system.cpp \
 				  src/implementation/sfm.cpp src/implementation/photoshop.cpp src/implementation/actions.cpp \
-				  src/implementation/canvas.cpp src/implementation/scrollbar.cpp src/implementation/utils.cpp
+				  src/implementation/canvas/canvas.cpp src/implementation/canvas/scrollbar.cpp src/implementation/utils.cpp
 
 # ==============================================================
 

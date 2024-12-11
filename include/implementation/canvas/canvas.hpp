@@ -2,7 +2,7 @@
 #define CANVAS_HPP
 
 #include "api/api_canvas.hpp"
-#include "implementation/scrollbar.hpp"
+#include "implementation/canvas/scrollbar.hpp"
 
 class Layer : public psapi::ILayer
 {
