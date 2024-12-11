@@ -7,7 +7,7 @@ static const size_t SCREEN_WIDTH  = 800;
 
 psapi::sfm::IntRect psapi::getCanvasIntRect()
 {
-    return {{0, 0}, {SCREEN_LENGTH, SCREEN_WIDTH}};
+    return {{0, 0}, {SCREEN_LENGTH - 20, SCREEN_WIDTH - 20}};
 }
 
 psapi::sfm::IntRect psapi::getToolbarIntRect()
