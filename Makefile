@@ -103,5 +103,5 @@ plugins:
 	$(CXX) -dynamiclib plugins/toolbar/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/brush/brush.cpp plugins/brush/catmull.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 #	$(CXX) -dynamiclib plugins/filters/filters.cpp plugins/brush/catmull.cpp plugins/bar_base/bar_button.cpp -o $(BUILD_DIR)/filters.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-#	$(CXX) -dynamiclib plugins/geometry/geometry.cpp plugins/bar_base/bar_button.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 #	$(CXX) -dynamiclib plugins/filters/filters_bar.cpp plugins/bar_base/bar_button.cpp plugins/bar_base/bar.cpp plugins/style/design.cpp -o $(BUILD_DIR)/filters_bar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
