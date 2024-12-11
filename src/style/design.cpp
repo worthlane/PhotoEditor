@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../plugins/style/design.hpp"
+#include "style/design.hpp"
 
 static void darker_border(psapi::sfm::IImage* img, const psapi::sfm::IntRect& rect, const double dark_coef);
 static void round_corner(psapi::sfm::IImage* img,
@@ -16,34 +16,34 @@ void make_styled_sprite(psapi::sfm::ISprite* sprite, psapi::sfm::ITexture* textu
 
     std::unique_ptr<psapi::sfm::IImage> img = texture->copyToImage();
 
-    psapi::sfm::IntRect top_left_corner = {rect.top_x, rect.top_y, radius, radius};
-    psapi::sfm::vec2i   top_left_center = {top_left_corner.top_x + radius, top_left_corner.top_y + radius};
+    psapi::sfm::IntRect top_left_corner = {rect.pos, {radius, radius}};
+    psapi::sfm::vec2i   top_left_center = {top_left_corner.pos.x + radius, top_left_corner.pos.y + radius};
 
-    psapi::sfm::IntRect low_left_corner = {rect.top_x, rect.top_y + rect.height - radius, radius, radius};
-    psapi::sfm::vec2i   low_left_center = {low_left_corner.top_x + radius, low_left_corner.top_y};
+    psapi::sfm::IntRect low_left_corner = {{rect.pos.x, rect.pos.y + rect.size.y - radius}, {radius, radius}};
+    psapi::sfm::vec2i   low_left_center = {low_left_corner.pos.x + radius, low_left_corner.pos.y};
 
-    psapi::sfm::IntRect top_right_corner = {rect.top_x + rect.width - radius, rect.top_y, radius, radius};
-    psapi::sfm::vec2i   top_right_center = {top_right_corner.top_x, top_right_corner.top_y + radius};
+    psapi::sfm::IntRect top_right_corner = {{rect.pos.x + rect.size.x - radius, rect.pos.y}, {radius, radius}};
+    psapi::sfm::vec2i   top_right_center = {top_right_corner.pos.x, top_right_corner.pos.y + radius};
 
-    psapi::sfm::IntRect low_right_corner = {rect.top_x + rect.width - radius, rect.top_y + rect.height - radius, radius, radius};
-    psapi::sfm::vec2i   low_right_center = {low_right_corner.top_x, low_right_corner.top_y};
+    psapi::sfm::IntRect low_right_corner = {{rect.pos.x + rect.size.x - radius, rect.pos.y + rect.size.y - radius}, {radius, radius}};
+    psapi::sfm::vec2i   low_right_center = {low_right_corner.pos.x, low_right_corner.pos.y};
 
     round_corner(img.get(), top_left_corner, top_left_center, dark_coef, params);
     round_corner(img.get(), top_right_corner, top_right_center, dark_coef, params);
     round_corner(img.get(), low_left_corner, low_left_center, dark_coef, params);
     round_corner(img.get(), low_right_corner, low_right_center, dark_coef, params);
 
-    psapi::sfm::IntRect upper_border = {rect.top_x + radius, rect.top_y,
-                                        rect.width - (2 * radius),  width};
+    psapi::sfm::IntRect upper_border = {{rect.pos.x + radius, rect.pos.y},
+                                        {rect.size.x - (2 * radius),  width}};
 
-    psapi::sfm::IntRect lower_border = {rect.top_x + radius, rect.top_y + rect.height - width,
-                                        rect.width - (2 * radius),  width};
+    psapi::sfm::IntRect lower_border = {{rect.pos.x + radius, rect.pos.y + rect.size.y - width},
+                                        {rect.size.x - (2 * radius),  width}};
 
-    psapi::sfm::IntRect left_border  = {rect.top_x, rect.top_y + radius,
-                                        width, rect.height - (2 * radius)};
+    psapi::sfm::IntRect left_border  = {{rect.pos.x, rect.pos.y + radius},
+                                        {width, rect.size.y - (2 * radius)}};
 
-    psapi::sfm::IntRect right_border = {rect.top_x + rect.width - width,  rect.top_y + radius,
-                                        width, rect.height - (2 * radius)};
+    psapi::sfm::IntRect right_border = {{rect.pos.x + rect.size.x - width,  rect.pos.y + radius},
+                                        {width, rect.size.y - (2 * radius)}};
 
     darker_border(img.get(), upper_border, dark_coef);
     darker_border(img.get(), lower_border, dark_coef);
@@ -58,12 +58,12 @@ void make_styled_sprite(psapi::sfm::ISprite* sprite, psapi::sfm::ITexture* textu
 
 static void darker_border(psapi::sfm::IImage* img, const psapi::sfm::IntRect& rect, const double dark_coef)
 {
-    int y_limit = rect.top_y + rect.height;
-    int x_limit = rect.top_x + rect.width;
+    int y_limit = rect.pos.y + rect.size.y;
+    int x_limit = rect.pos.x + rect.size.x;
 
-    for (int y = rect.top_y; y < y_limit; y++)
+    for (int y = rect.pos.y; y < y_limit; y++)
     {
-        for (int x = rect.top_x; x < x_limit; x++)
+        for (int x = rect.pos.x; x < x_limit; x++)
         {
             darker_pixel(img, psapi::sfm::vec2u(x, y), dark_coef);
         }
@@ -80,12 +80,12 @@ static void round_corner(psapi::sfm::IImage* img,
     int outer_radius2 = outer_radius * outer_radius;
     int inner_radius2 = inner_radius * inner_radius;
 
-    int y_limit = corner.top_y + corner.height;
-    int x_limit = corner.top_x + corner.width;
+    int y_limit = corner.pos.y + corner.size.y;
+    int x_limit = corner.pos.x + corner.size.x;
 
-    for (int y = corner.top_y; y < y_limit; y++)
+    for (int y = corner.pos.y; y < y_limit; y++)
     {
-        for (int x = corner.top_x; x < x_limit; x++)
+        for (int x = corner.pos.x; x < x_limit; x++)
         {
             int x_dist = x - center_pos.x;
             int y_dist = y - center_pos.y;

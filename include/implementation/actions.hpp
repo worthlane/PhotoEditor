@@ -16,6 +16,15 @@ protected:
     const psapi::Event& event_;
 };
 
+class IdleAction : public AAction
+{
+public:
+    IdleAction(const psapi::IRenderWindow* render_window, const psapi::Event& event);
+
+    virtual bool execute   (const Key& key) override;
+    virtual bool isUndoable(const Key& key) override;
+};
+
 class AUndoableAction : public psapi::IUndoableAction
 {
 public:

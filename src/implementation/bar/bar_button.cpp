@@ -1,23 +1,31 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/bar_base/bar_button.hpp"
+#include "implementation/bar/bar_button.hpp"
 
 // ======================================================
 
-ABarButton::ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-                         std::unique_ptr<psapi::sfm::ISprite> sprite,
-                         std::unique_ptr<Action> action) :
+ABarButton::ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite) :
     id_(id), state_(ABarButton::State::Normal), size_(size),
-    sprite_(std::move(sprite)), parent_(bar), is_active_(true),
-    action_(std::move(action))
+    sprite_(std::move(sprite)), parent_(bar), is_active_(true), pos_(pos)
 {
-    assert(action_);
 }
 
 psapi::wid_t ABarButton::getId() const
 {
     return id_;
+}
+
+void ABarButton::setSize(const psapi::vec2u& size)
+{
+    size_ = size;
+}
+
+void ABarButton::setPos(const psapi::vec2i& pos)
+{
+    pos_ = pos;
+    sprite_->setPosition(pos.x, pos.y);
 }
 
 void ABarButton::setState(ABarButton::State state)
@@ -35,10 +43,10 @@ void ABarButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
-    psapi::ChildInfo info = parent_->getNextChildInfo();
+    //psapi::sfm::IntRect info = parent_->getNextChildInfo();
 
-    pos_ = info.pos;
-    size_ = {info.size.x, info.size.y};
+    //pos_ = info.pos;
+    //size_ = {info.size.x, info.size.y};
 
     sprite_->setPosition(pos_.x, pos_.y);
 
@@ -63,12 +71,6 @@ psapi::vec2i ABarButton::getPos() const
 psapi::vec2u ABarButton::getSize() const
 {
     return size_;
-}
-
-void ABarButton::setPos(const psapi::vec2i pos)
-{
-    pos_ = pos;
-    sprite_->setPosition(pos.x, pos.y);
 }
 
 void ABarButton::setParent(const psapi::IWindow* parent)
@@ -97,12 +99,10 @@ bool ABarButton::isWindowContainer() const
 
 // ==================== SWITCH BUTTON =======================
 
-SwitchButton::SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-                         std::unique_ptr<psapi::sfm::ISprite> sprite,
-                         std::unique_ptr<Action> action) :
-    ABarButton(id, bar, size, std::move(sprite), std::move(action))
+SwitchButton::SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite) :
+    ABarButton(id, bar, pos, size, std::move(sprite))
 {
-    assert(action_);
 }
 
 void SwitchButton::setState(ABarButton::State state)
@@ -111,7 +111,7 @@ void SwitchButton::setState(ABarButton::State state)
     state_ = state;
 }
 
-bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+/*bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return false;
@@ -122,7 +122,7 @@ bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi:
         return false;
 
     return (*(action_.get()))(renderWindow, event);
-}
+}*/
 
 void SwitchButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
@@ -186,15 +186,13 @@ void SwitchButton::updateState(const psapi::IRenderWindow* renderWindow, const p
 
 // ====================== PRESS BUTTON =======================
 
-PressButton::PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-                         std::unique_ptr<psapi::sfm::ISprite> sprite,
-                         std::unique_ptr<Action> action) :
-    ABarButton(id, bar, size, std::move(sprite), std::move(action))
+PressButton::PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite) :
+    ABarButton(id, bar, pos, size, std::move(sprite))
 {
-    assert(action_);
 }
 
-bool PressButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+/*bool PressButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return false;
@@ -205,7 +203,7 @@ bool PressButton::update(const psapi::IRenderWindow* renderWindow, const psapi::
         return false;
 
     return (*(action_.get()))(renderWindow, event);
-}
+}*/
 
 void PressButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {

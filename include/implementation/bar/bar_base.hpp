@@ -3,33 +3,6 @@
 
 #include "api/api_bar.hpp"
 
-
-/*class IBar : public IWindowContainer
-{
-public:
-    //virtual void finishButtonDraw(IRenderWindow* renderWindow, const IBarButton* button) const = 0;
-
-    //virtual void addWindow(std::unique_ptr<IWindow> window) = 0;
-    //virtual void removeWindow(wid_t id) = 0;
-
-    virtual void draw(IRenderWindow* renderWindow) = 0;
-    virtual std::unique_ptr<IAction> createAction(const IRenderWindow* renderWindow, const Event& event) = 0;
-    //virtual wid_t getId() const = 0;
-    //virtual IWindow* getWindowById(wid_t id) = 0;
-    //virtual const IWindow* getWindowById(wid_t id) const = 0;
-
-    //virtual vec2i getPos() const = 0;
-    //virtual vec2u getSize() const = 0;
-    virtual void setSize(const vec2u& size) = 0;
-    virtual void setPos(const vec2i& pos) = 0;
-    virtual bool unPressAllButtons() = 0;
-    //virtual void setParent(const IWindow* parent) = 0;
-    //virtual void forceActivate() = 0;
-    //virtual void forceDeactivate() = 0;
-    //virtual bool isActive() const = 0;
-};*/
-
-
 class ABar : public psapi::IBar
 {
 public:
@@ -58,8 +31,8 @@ public:
     virtual void addWindow(std::unique_ptr<psapi::IWindow> window) override;
     virtual void removeWindow(psapi::wid_t id) override;
 
-    virtual void setSize(const vec2u& size) override;
-    virtual void setPos(const vec2i& pos) override;
+    virtual void setSize(const psapi::vec2u& size) override;
+    virtual void setPos(const psapi::vec2i& pos) override;
     virtual bool unPressAllButtons() override;
 
 protected:
@@ -76,15 +49,12 @@ protected:
     std::unique_ptr<psapi::sfm::ISprite> normal_;
     std::unique_ptr<psapi::sfm::ISprite> released_;
 
-    std::vector<std::unique_ptr<psapi::IBarButton> > buttons_;
+    std::vector<std::unique_ptr<psapi::IBarButton>> buttons_;
 
     bool is_active_ = true;
-
-    psapi::sfm::vec2i gap_ = {18, 18};
-
-    mutable size_t curr_child_ = 0;
-
 };
+
+//psapi::sfm::IntRect getNextChildInfo(const size_t curr_child);
 
 
 #endif // BAR_HPP

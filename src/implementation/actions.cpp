@@ -81,3 +81,16 @@ bool ActionController::redo()
 
     return result;
 }
+
+IdleAction::IdleAction(const psapi::IRenderWindow* render_window, const psapi::Event& event) : AAction(render_window, event)
+{}
+
+bool IdleAction::execute(const Key& key)
+{
+    return false;
+}
+
+bool IdleAction::isUndoable(const Key& key)
+{
+    return false;
+}

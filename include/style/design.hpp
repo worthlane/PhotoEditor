@@ -1,7 +1,7 @@
 #ifndef DESIGN_PLUGIN_HPP
 #define DESIGN_PLUGIN_HPP
 
-#include "standard/api_sfm.hpp"
+#include "api/api_sfm.hpp"
 
 static const size_t STD_GUI_RADIUS = 12;
 static const size_t STD_GUI_WIDTH  = 1;

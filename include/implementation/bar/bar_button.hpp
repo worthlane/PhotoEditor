@@ -1,23 +1,15 @@
 #ifndef BAR_BUTTON_HPP
 #define BAR_BUTTON_HPP
 
-#include "standard/api_bar.hpp"
-#include "standard/api_canvas.hpp"
-
-static const psapi::sfm::IntRect BUTTON_RECT = {0, 0, 90, 90};
-
-class Action
-{
-    public:
-        virtual bool operator()(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) = 0;
-};
+#include "api/api_bar.hpp"
 
 class ABarButton : public psapi::IBarButton
 {
 public:
-    ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-               std::unique_ptr<psapi::sfm::ISprite> sprite,
-               std::unique_ptr<Action> action);
+    ABarButton(const psapi::wid_t id, psapi::IBar* bar,
+               const psapi::vec2i& pos,
+               const psapi::vec2u& size,
+               std::unique_ptr<psapi::sfm::ISprite> sprite);
 
     virtual psapi::wid_t getId() const override;
 
@@ -40,7 +32,8 @@ public:
 
     virtual bool isWindowContainer() const override;
 
-    void setPos(const psapi::vec2i pos);
+    virtual void setSize(const psapi::vec2u& size) override;
+    virtual void setPos(const psapi::vec2i& pos) override;
 
 protected:
     psapi::wid_t id_;
@@ -55,21 +48,18 @@ protected:
     const psapi::IBar* parent_ = nullptr;
     bool is_active_ = true;
 
-    std::unique_ptr<Action> action_;
+    std::unique_ptr<psapi::IAction> action_;
 };
 
 class SwitchButton : public ABarButton
 {
 public:
-    SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 std::unique_ptr<Action> action);
-
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite);
 
     virtual void setState(State state) override;
 
-private:
+protected:
     State prev_state_ = State::Normal;
 
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
@@ -78,13 +68,10 @@ private:
 class PressButton : public ABarButton
 {
 public:
-    PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 std::unique_ptr<Action> action);
+    PressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite);
 
-    virtual bool update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
-
-private:
+protected:
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
 };
 
