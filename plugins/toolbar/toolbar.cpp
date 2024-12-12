@@ -13,14 +13,14 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {128, 700}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {96, 700}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
-static const char* HOVER_TEXTURE      = "assets/textures/hovered_icon.png";
-static const char* RELEASE_TEXTURE    = "assets/textures/active_icon.png";
-static const char* PRESS_TEXTURE      = "assets/textures/pressed_icon.png";
-static const char* NORMAL_TEXTURE     = "assets/textures/normal_icon.png";
+static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
+static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
+static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
+static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 
 bool onLoadPlugin()
 {
@@ -46,15 +46,19 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1);
+    release_sprite->setColor(psapi::sfm::Color(121, 232, 150, 255));
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1);
+    hover_sprite->setColor(psapi::sfm::Color(150, 150, 150, 255));
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1);
+    press_sprite->setColor(psapi::sfm::Color(100, 100, 100, 255));
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1);
+    normal_sprite->setColor(psapi::sfm::Color(200, 200, 200, 255));
 
     auto bar = std::make_unique<ToolBar>(psapi::kToolBarWindowId,
                                          psapi::vec2i(20, 20),

@@ -17,21 +17,6 @@ void onUnloadPlugin();
 
 }
 
-class PaintAction : public AAction
-{
-public:
-    PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, InterpolationArray* array);
-
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
-private:
-    psapi::sfm::Color color_;
-    size_t radius_;
-    psapi::ICanvas* canvas_;
-
-    InterpolationArray* array_;
-};
-
 class PaintButton : public SwitchButton
 {
 public:
@@ -47,6 +32,19 @@ private:
     psapi::ICanvas* canvas_;
 
     InterpolationArray array_;
+
+    friend class PaintAction;
+};
+
+class PaintAction : public AAction
+{
+public:
+    PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button);
+
+    virtual bool execute   (const Key& key) override;
+    virtual bool isUndoable(const Key& key) override;
+private:
+    PaintButton* button_;
 };
 
 static const psapi::wid_t kBrushButtonId = 228;

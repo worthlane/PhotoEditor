@@ -39,8 +39,6 @@ bool onLoadPlugin()
     auto bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
     auto bar_pos = bar->getPos();
 
-    std::cout << bar;
-
     auto negative = std::make_unique<ContrastButton>(kNegativeFilterButtonId, bar,
                                                     bar_pos + psapi::vec2i(18, 18),
                                                     psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
@@ -177,7 +175,7 @@ bool BareliefAction::execute(const Key& key)
     auto temp_layer = canvas->getTempLayer();
     auto size = canvas->getSize();
 
-    const int offset = 1;
+    const int offset = 4;
 
     for (int x = 0; x < size.x; x++)
     {

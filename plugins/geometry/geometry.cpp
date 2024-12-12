@@ -4,7 +4,7 @@
 
 static const psapi::sfm::vec2i NO_CATCH = {-1, -1};
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
 bool onLoadPlugin()
 {
@@ -56,7 +56,7 @@ std::unique_ptr<psapi::IAction> GeometryButton::createAction(const psapi::IRende
 
     if (state_ != SwitchButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
-    
+
     psapi::vec2i mouse_pos = canvas_->getMousePosition();
     bool LMB_down = canvas_->isPressedLeftMouseButton();
 

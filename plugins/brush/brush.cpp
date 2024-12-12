@@ -7,7 +7,7 @@ static psapi::sfm::ITexture* btn = nullptr;
 
 static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
 void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
                       const psapi::sfm::Color& color, const int radius);
@@ -25,7 +25,7 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> btn_sprite = psapi::sfm::ISprite::create();
     btn_sprite.get()->setTextureRect(BUTTON_RECT);
-    btn_sprite.get()->setTexture(btn);
+    //btn_sprite.get()->setTexture(btn);
 
     auto root = psapi::getRootWindow();
 
@@ -80,31 +80,34 @@ void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
     }
 }
 
-PaintAction::PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event,
-                         const psapi::sfm::Color& color, const size_t radius, psapi::ICanvas* canvas, InterpolationArray* array) :
-                        AAction(render_window, event), color_(color), radius_(radius), canvas_(canvas), array_(array)
+PaintAction::PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button) :
+                        AAction(render_window, event), button_(button)
 {
-    //std::cout << (int) color_.r << " " << (int) color_.g << " " << (int) color_.b << " " << (int) color_.a << "\n";
 }
 
 bool PaintAction::execute(const Key& key)
 {
-    psapi::vec2i mouse_pos = canvas_->getMousePosition();
-    bool LMB_down = canvas_->isPressedLeftMouseButton();
+    auto canvas = button_->canvas_;
+    auto array = button_->array_;
+    auto color = button_->color_;
+    auto radius = button_->radius_;
 
-    psapi::vec2u canvas_size = canvas_->getSize();
-    psapi::ILayer* layer = canvas_->getTempLayer();
+    psapi::vec2i mouse_pos = canvas->getMousePosition();
+    bool LMB_down = canvas->isPressedLeftMouseButton();
+
+    psapi::vec2u canvas_size = canvas->getSize();
+    psapi::ILayer* layer = canvas->getTempLayer();
     if (!layer)
             return false;
 
-    if (canvas_->isPressedLeftMouseButton() && array_->size() >= CATMULL_LEN)
+    if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
-        double delta = 0.001 * static_cast<double>(radius_);
+        double delta = 0.001 * static_cast<double>(radius);
         double max_point = static_cast<double>(CATMULL_LEN - 2);
 
         for (double i = 1; i < max_point; i += delta)
         {
-            set_point(layer, array_->getInterpolated(i), color_, radius_);
+            set_point(layer, array.getInterpolated(i), color, radius);
         }
     }
 
@@ -151,6 +154,6 @@ std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWi
         array_.clear();
     }
 
-    return std::make_unique<PaintAction>(renderWindow, event, color_, radius_, canvas_, &array_);
+    return std::make_unique<PaintAction>(renderWindow, event, this);
 }
 
