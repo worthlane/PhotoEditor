@@ -12,13 +12,13 @@ static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi:
 
 // ======================================================
 
-ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+NegativeButton::NegativeButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  const double k, psapi::ICanvas* canvas) :
                  PressButton(id, bar, pos, size, std::move(sprite)), k_(k), canvas_(canvas)
 {}
 
-std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+std::unique_ptr<psapi::IAction> NegativeButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return std::make_unique<IdleAction>(renderWindow, event);
@@ -28,14 +28,14 @@ std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRende
     if (state_ != PressButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
 
-    return std::make_unique<ContrastAction>(renderWindow, event, this);
+    return std::make_unique<NegativeAction>(renderWindow, event, this);
 }
 
-ContrastAction::ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter) :
+NegativeAction::NegativeAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, NegativeButton* filter) :
                                 AAction(render_window, event), filter_(filter)
 {}
 
-bool ContrastAction::execute(const Key& key)
+bool NegativeAction::execute(const Key& key)
 {
     auto canvas = filter_->canvas_;
     auto k      = filter_->k_;
@@ -67,7 +67,7 @@ bool ContrastAction::execute(const Key& key)
     return true;
 }
 
-bool ContrastAction::isUndoable(const Key& key)
+bool NegativeAction::isUndoable(const Key& key)
 {
     return false;
 }
@@ -207,13 +207,13 @@ bool BlurAction::isUndoable(const Key& key)
     return false;
 }
 
-SharpButton::SharpButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  psapi::ICanvas* canvas) :
                  PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas)
 {}
 
-std::unique_ptr<psapi::IAction> SharpButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return std::make_unique<IdleAction>(renderWindow, event);
@@ -223,14 +223,14 @@ std::unique_ptr<psapi::IAction> SharpButton::createAction(const psapi::IRenderWi
     if (state_ != PressButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
 
-    return std::make_unique<SharpAction>(renderWindow, event, this);
+    return std::make_unique<ContrastAction>(renderWindow, event, this);
 }
 
-SharpAction::SharpAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, SharpButton* filter) :
+ContrastAction::ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter) :
                                 AAction(render_window, event), filter_(filter)
 {}
 
-bool SharpAction::execute(const Key& key)
+bool ContrastAction::execute(const Key& key)
 {
     auto canvas = filter_->canvas_;
 
@@ -276,7 +276,7 @@ bool SharpAction::execute(const Key& key)
     return true;
 }
 
-bool SharpAction::isUndoable(const Key& key)
+bool ContrastAction::isUndoable(const Key& key)
 {
     return false;
 }

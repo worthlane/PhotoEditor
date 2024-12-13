@@ -88,8 +88,8 @@ bool onLoadPlugin()
     std::unique_ptr<psapi::sfm::ISprite> bar_sprite = psapi::sfm::ISprite::create();
     bar_sprite.get()->setTextureRect(BUTTON_RECT);
 
-    std::unique_ptr<psapi::sfm::ISprite> sharp_sprite = psapi::sfm::ISprite::create();
-    sharp_sprite.get()->setTextureRect(BUTTON_RECT);
+    std::unique_ptr<psapi::sfm::ISprite> contrast_sprite = psapi::sfm::ISprite::create();
+    contrast_sprite.get()->setTextureRect(BUTTON_RECT);
 
     std::unique_ptr<psapi::sfm::ISprite> blur_sprite = psapi::sfm::ISprite::create();
     blur_sprite.get()->setTextureRect(BUTTON_RECT);
@@ -99,7 +99,7 @@ bool onLoadPlugin()
     auto menu = static_cast<psapi::IBar*>(root->getWindowById(psapi::kMenuBarWindowId));
     auto menu_pos = menu->getPos();
 
-    auto negative = std::make_unique<ContrastButton>(kNegativeFilterButtonId, filtersbar.get(),
+    auto negative = std::make_unique<NegativeButton>(kNegativeFilterButtonId, filtersbar.get(),
                                                     psapi::vec2i(1, 1),
                                                     psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                     std::move(neg_sprite),
@@ -117,10 +117,10 @@ bool onLoadPlugin()
                                                std::move(blur_sprite),
                                                canvas);
 
-    auto sharp = std::make_unique<SharpButton>(kSharpFilterButtonId, filtersbar.get(),
+    auto contrast = std::make_unique<ContrastButton>(kContrastFilterButtonId, filtersbar.get(),
                                                psapi::vec2i(1, 4 + 3 * BUTTON_RECT.size.y),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(sharp_sprite),
+                                               std::move(contrast_sprite),
                                                canvas);
 
     auto filterbutton = std::make_unique<FiltersButton>(psapi::kMenuFilterId, menu,
@@ -133,13 +133,13 @@ bool onLoadPlugin()
     filterbutton->addMenuItem(std::move(negative));
     filterbutton->addMenuItem(std::move(barel));
     filterbutton->addMenuItem(std::move(blur));
-    filterbutton->addMenuItem(std::move(sharp));
+    filterbutton->addMenuItem(std::move(contrast));
     menu->addWindow(std::move(filterbutton));
 
         /*bar->addWindow(std::move(negative));
         bar->addWindow(std::move(barel));
         bar->addWindow(std::move(blur));
-        bar->addWindow(std::move(sharp));*/
+        bar->addWindow(std::move(contrast));*/
 
     //root->addWindow(std::move(bar));
 }
