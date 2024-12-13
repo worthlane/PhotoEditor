@@ -99,6 +99,8 @@ bool PaintAction::execute(const Key& key)
     if (!layer)
             return false;
 
+    button_->color_ = button_->palette_->getColor();
+
     if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
         double delta = 0.001 * static_cast<double>(radius);
@@ -190,6 +192,8 @@ void PaintButton::createOptions()
     auto palette = psapi::IColorPalette::create();
 
     palette->setColor(color_);
+
+    palette_ = palette.get();
 
     options_.push_back(std::move(palette));
 }

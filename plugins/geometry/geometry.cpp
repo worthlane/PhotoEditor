@@ -10,15 +10,13 @@ bool onLoadPlugin()
 {
     std::cout << "geometry loaded\n";
 
-    auto root = psapi::getRootWindow();
-    auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
-
     std::unique_ptr<psapi::sfm::ISprite> rec_sprite = psapi::sfm::ISprite::create();
     rec_sprite.get()->setTextureRect(BUTTON_RECT);
 
     std::unique_ptr<psapi::sfm::IRectangleShape> rect = psapi::sfm::IRectangleShape::create(0, 0);
     rect.get()->setFillColor(psapi::sfm::Color(0, 255, 0, 255));
 
+    auto root = psapi::getRootWindow();
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
     auto toolbar_pos = tool_bar->getPos();
 
@@ -26,7 +24,7 @@ bool onLoadPlugin()
                                                 psapi::vec2i(3 * 18 + 2 * BUTTON_RECT.size.x, 18),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(rec_sprite),
-                                               canvas, std::move(rect));
+                                               std::move(rect));
 
 
     if (tool_bar)
@@ -43,9 +41,13 @@ void onUnloadPlugin()
 
 GeometryButton::GeometryButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 psapi::ICanvas* canvas, std::unique_ptr<psapi::sfm::IShape> shape) :
-                 SwitchButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas), shape_(std::move(shape)), catch_pos_(NO_CATCH)
-{}
+                 std::unique_ptr<psapi::sfm::IShape> shape) :
+                 SwitchButton(id, bar, pos, size, std::move(sprite)), shape_(std::move(shape)), catch_pos_(NO_CATCH)
+{
+    auto root = psapi::getRootWindow();
+    canvas_ = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
+    options_bar_ = static_cast<psapi::IOptionsBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
+}
 
 std::unique_ptr<psapi::IAction> GeometryButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
@@ -55,7 +57,13 @@ std::unique_ptr<psapi::IAction> GeometryButton::createAction(const psapi::IRende
     updateState(renderWindow, event);
 
     if (state_ != SwitchButton::State::Released)
+    {
+        has_options_ = false;
         return std::make_unique<IdleAction>(renderWindow, event);
+    }
+
+    if (!has_options_)
+        replaceOptions();
 
     psapi::vec2i mouse_pos = canvas_->getMousePosition();
     bool LMB_down = canvas_->isPressedLeftMouseButton();
@@ -71,26 +79,60 @@ std::unique_ptr<psapi::IAction> GeometryButton::createAction(const psapi::IRende
         canvas_->cleanTempLayer();
     }
 
-    return std::make_unique<GeometryAction>(renderWindow, event, shape_.get(), canvas_, catch_pos_);
+    return std::make_unique<GeometryAction>(renderWindow, event, this);
 }
 
-GeometryAction::GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, psapi::sfm::IShape* shape, psapi::ICanvas* canvas, psapi::sfm::vec2i catch_pos) :
-                                AAction(render_window, event), shape_(shape), canvas_(canvas), catch_pos_(catch_pos)
+void GeometryButton::replaceOptions()
+{
+    options_bar_->removeAllOptions();
+
+    createOptions();
+
+    for (auto& option : options_)
+    {
+        options_bar_->addWindow(std::move(option));
+    }
+
+    options_.clear();
+    has_options_ = true;
+}
+
+void GeometryButton::createOptions()
+{
+    auto palette = psapi::IColorPalette::create();
+
+    psapi::sfm::Color col = shape_->getFillColor();
+
+    palette_ = palette.get();
+    palette_->setColor(col);
+
+    options_.push_back(std::move(palette));
+}
+
+GeometryAction::GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, GeometryButton* button) :
+                                AAction(render_window, event), button_(button)
 {}
 
 bool GeometryAction::execute(const Key& key)
 {
-    psapi::vec2i mouse_pos = canvas_->getMousePosition();
-    bool LMB_down = canvas_->isPressedLeftMouseButton();
+    auto canvas = button_->canvas_;
+    auto palette = button_->palette_;
+    auto shape   = (button_->shape_).get();
+    auto catch_pos = button_->catch_pos_;
 
-    psapi::vec2u canvas_size = canvas_->getSize();
+    psapi::vec2i mouse_pos = canvas->getMousePosition();
+    bool LMB_down = canvas->isPressedLeftMouseButton();
 
-    psapi::ILayer* layer = canvas_->getTempLayer();
+    psapi::vec2u canvas_size = canvas->getSize();
+
+    psapi::ILayer* layer = canvas->getTempLayer();
+
+    shape->setFillColor(palette->getColor());
 
     if (event_.type == psapi::sfm::Event::MouseMoved && LMB_down)
     {
-        psapi::sfm::vec2i shape_pos = {shape_->getPosition().x, shape_->getPosition().y};
-        auto shape_size = shape_->getSize();
+        psapi::sfm::vec2i shape_pos = {shape->getPosition().x, shape->getPosition().y};
+        auto shape_size = shape->getSize();
 
         for (int x = 0; x < shape_size.x; x++)
         {
@@ -100,13 +142,13 @@ bool GeometryAction::execute(const Key& key)
             }
         }
 
-        shape_pos = {std::min(catch_pos_.x, mouse_pos.x), std::min(catch_pos_.y, mouse_pos.y)};
-        shape_size = {abs(mouse_pos.x - catch_pos_.x), abs(mouse_pos.y - catch_pos_.y)};
+        shape_pos = {std::min(catch_pos.x, mouse_pos.x), std::min(catch_pos.y, mouse_pos.y)};
+        shape_size = {abs(mouse_pos.x - catch_pos.x), abs(mouse_pos.y - catch_pos.y)};
 
-        shape_->setPosition(shape_pos);
-        shape_->setSize(shape_size);
+        shape->setPosition(shape_pos);
+        shape->setSize(shape_size);
 
-        const psapi::sfm::IImage* shape_img = shape_->getImage();
+        const psapi::sfm::IImage* shape_img = shape->getImage();
 
         for (int x = 0; x < shape_size.x; x++)
         {
