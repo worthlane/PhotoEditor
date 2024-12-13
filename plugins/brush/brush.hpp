@@ -22,7 +22,7 @@ class PaintButton : public SwitchButton
 public:
     PaintButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 const psapi::sfm::Color& color, const size_t radius);
+                 const psapi::sfm::Color& color, const size_t radius, const bool fixed_color = false, const bool fixed_size = false);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
@@ -32,6 +32,9 @@ private:
     psapi::ICanvas* canvas_;
     psapi::IColorPalette* palette_ = nullptr;
     psapi::IOptionsBar* options_bar_;
+
+    bool fixed_color_ = false;
+    bool fixed_size_  = false;
 
     InterpolationArray array_;
 

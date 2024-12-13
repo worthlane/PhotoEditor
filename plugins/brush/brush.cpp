@@ -46,7 +46,7 @@ bool onLoadPlugin()
                                                 psapi::vec2i(36 + BUTTON_RECT.size.x, 18),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(ers_sprite),
-                                               canvas->getCanvasBaseColor(), 20);
+                                               canvas->getCanvasBaseColor(), 20, true);
 
     psapi::sfm::Color col = canvas->getCanvasBaseColor();
 
@@ -99,7 +99,8 @@ bool PaintAction::execute(const Key& key)
     if (!layer)
             return false;
 
-    button_->color_ = button_->palette_->getColor();
+    if (!button_->fixed_color_)
+        button_->color_ = button_->palette_->getColor();
 
     if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
@@ -124,8 +125,8 @@ bool PaintAction::isUndoable(const Key& key)
 
 PaintButton::PaintButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 const psapi::sfm::Color& color, const size_t radius) :
-            SwitchButton(id, bar, pos, size, std::move(sprite)), color_(color), radius_(radius), array_()
+                 const psapi::sfm::Color& color, const size_t radius, const bool fixed_color, const bool fixed_size) :
+            SwitchButton(id, bar, pos, size, std::move(sprite)), color_(color), radius_(radius), array_(), fixed_color_(fixed_color), fixed_size_(fixed_size)
 {
     auto root = psapi::getRootWindow();
     canvas_ = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
@@ -189,12 +190,12 @@ void PaintButton::replaceOptions()
 
 void PaintButton::createOptions()
 {
-    auto palette = psapi::IColorPalette::create();
-
-    palette->setColor(color_);
-
-    palette_ = palette.get();
-
-    options_.push_back(std::move(palette));
+    if (!fixed_color_)
+    {
+        auto palette = psapi::IColorPalette::create();
+        palette->setColor(color_);
+        palette_ = palette.get();
+        options_.push_back(std::move(palette));
+    }
 }
 
