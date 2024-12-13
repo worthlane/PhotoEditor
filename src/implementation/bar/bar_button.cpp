@@ -252,3 +252,135 @@ void PressButton::updateState(const psapi::IRenderWindow* renderWindow, const ps
     }
 }
 
+// ****************** MENU BUTTON ************************
+
+AMenuButton::AMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu) :
+    id_(id), state_(ABarButton::State::Normal), size_(size),
+    sprite_(std::move(sprite)), parent_(bar), is_active_(true), menu_(std::move(menu))
+{
+    setPos(pos);
+}
+
+psapi::wid_t AMenuButton::getId() const
+{
+    return id_;
+}
+
+void AMenuButton::setSize(const psapi::vec2u& size)
+{
+    size_ = size;
+}
+
+void AMenuButton::setPos(const psapi::vec2i& pos)
+{
+    pos_ = pos + parent_->getPos();
+    sprite_->setPosition(pos_.x, pos_.y);
+}
+
+void AMenuButton::setState(AMenuButton::State state)
+{
+    state_ = state;
+}
+
+AMenuButton::State AMenuButton::getState() const
+{
+    return state_;
+}
+
+void AMenuButton::draw(psapi::IRenderWindow* renderWindow)
+{
+    if (!is_active_)
+        return;
+
+    //psapi::sfm::IntRect info = parent_->getNextChildInfo();
+
+    //pos_ = info.pos;
+    //size_ = {info.size.x, info.size.y};
+
+    sprite_->setPosition(pos_.x, pos_.y);
+
+    sprite_->draw(renderWindow);
+}
+
+psapi::IWindow* AMenuButton::getWindowById(psapi::wid_t id)
+{
+    auto found = menu_->getWindowById(id);
+
+    if (!found)
+        return found;
+
+    return (id == getId()) ? this : nullptr;
+};
+
+const psapi::IWindow* AMenuButton::getWindowById(psapi::wid_t id) const
+{
+    auto found = menu_->getWindowById(id);
+
+    if (!found)
+        return found;
+
+    return (id == getId()) ? this : nullptr;
+};
+
+psapi::vec2i AMenuButton::getPos() const
+{
+    return pos_;
+}
+
+psapi::vec2u AMenuButton::getSize() const
+{
+    return size_;
+}
+
+void AMenuButton::setParent(const psapi::IWindow* parent)
+{
+    parent_ = dynamic_cast<const psapi::IBar*>(parent);
+}
+
+void AMenuButton::forceActivate()
+{
+    is_active_ = true;
+}
+
+void AMenuButton::forceDeactivate()
+{
+    is_active_ = false;
+}
+
+bool AMenuButton::isActive() const
+{
+    return is_active_;
+}
+
+bool AMenuButton::isWindowContainer() const
+{
+    return false;
+};
+
+void AMenuButton::addMenuItem(std::unique_ptr<psapi::IWindow> item)
+{
+    menu_->addWindow(std::move(item));
+}
+
+void AMenuButton::activateMenu()
+{
+    menu_->forceActivate();
+}
+void AMenuButton::deactivateMenu()
+{
+    menu_->forceDeactivate();
+}
+
+psapi::IBar* AMenuButton::getMenu()
+{
+    return menu_.get();
+}
+
+const psapi::IBar* AMenuButton::getMenu() const
+{
+    return menu_.get();
+}
+
+
+
