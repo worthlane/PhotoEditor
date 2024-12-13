@@ -38,19 +38,7 @@ DOXYBUILD = doxygen $(DOXYFILE)
 SOURCES = main.cpp
 SOURCE_DIR = src
 
-IMPLEMENTATION_SOURCES = actions.cpp bar.cpp canvas.cpp memento.cpp photoshop.cpp sfm.cpp
-IMPLEMENTATION_DIR = $(SOURCE_DIR)/implementation
-
-API_SOURCES = api_system.cpp
-API_DIR = $(SOURCE_DIR)/api
-
-PLUGINS_SOURCES = canvas_plugin.cpp
-PLUGINS_DIR = $(SOURCE_DIR)/plugins
-
 OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-IMPLEMENTATION_OBJECTS = $(IMPLEMENTATION_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-PLUGINS_OBJECTS = $(PLUGINS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 
 # ==============================================================
 #						 API
@@ -58,10 +46,27 @@ API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 
 API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 
-DLL_API_SOURCES = src/api/api_system.cpp \
-				  src/implementation/sfm.cpp src/implementation/photoshop.cpp src/implementation/actions.cpp \
-				  src/implementation/canvas/canvas.cpp src/implementation/canvas/scrollbar.cpp src/implementation/utils.cpp \
-				  src/implementation/bar/bar_button.cpp src/implementation/bar/bar_base.cpp src/style/design.cpp src/implementation/bar/options.cpp
+IMPLEMENTATION_SOURCES = sfm.cpp photoshop.cpp actions.cpp utils.cpp
+IMPLEMENTATION_DIR = $(SOURCE_DIR)/implementation
+
+API_SOURCES = api_system.cpp
+API_DIR = $(SOURCE_DIR)/api
+
+STYLE_SOURCES = design.cpp
+STYLE_DIR = $(SOURCE_DIR)/style
+
+CANVAS_SOURCES = canvas.cpp scrollbar.cpp
+CANVAS_DIR     = $(IMPLEMENTATION_DIR)/canvas
+
+BAR_SOURCES = bar_button.cpp bar_base.cpp options.cpp
+BAR_DIR = $(IMPLEMENTATION_DIR)/bar
+
+IMPLEMENTATION_OBJECTS = $(IMPLEMENTATION_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+STYLE_OBJECTS = $(STYLE_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+BAR_OBJECTS = $(BAR_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+CANVAS_OBJECTS = $(CANVAS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+
 
 # ==============================================================
 
@@ -76,17 +81,25 @@ $(EXECUTABLE): $(OBJECTS)
 $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-#$(BUILD_DIR)/%.o : $(GRAPHICS_DIR)/%.cpp
-#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+# -------------------------------------------------------------------------------
 
-#$(BUILD_DIR)/%.o : $(STANDARD_DIR)/%.cpp
-#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+$(API_TARGET_DLL): $(API_OBJECTS) $(IMPLEMENTATION_OBJECTS) $(STYLE_OBJECTS) $(CANVAS_OBJECTS) $(BAR_OBJECTS)
+	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS)
 
-#$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
-#	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(API_TARGET_DLL): $(DLL_API_SOURCES)
-	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+$(BUILD_DIR)/%.o : $(STYLE_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+
+$(BUILD_DIR)/%.o : $(CANVAS_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+
+$(BUILD_DIR)/%.o : $(BAR_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
+
+$(BUILD_DIR)/%.o : $(IMPLEMENTATION_DIR)/%.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
 # -------------------------------------------------------------------------------
 
