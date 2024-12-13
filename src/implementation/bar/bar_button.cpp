@@ -301,6 +301,8 @@ void AMenuButton::draw(psapi::IRenderWindow* renderWindow)
     sprite_->setPosition(pos_.x, pos_.y);
 
     sprite_->draw(renderWindow);
+
+    menu_->draw(renderWindow);
 }
 
 psapi::IWindow* AMenuButton::getWindowById(psapi::wid_t id)
@@ -384,26 +386,32 @@ const psapi::IBar* AMenuButton::getMenu() const
 
 // ************** MENU PRESS BUTTON ******************
 
-MenuPressButton::MenuPressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+MenuSwitchButton::MenuSwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu) :
     AMenuButton(id, bar, pos, size, std::move(sprite), std::move(menu))
 {
 }
 
-/*bool PressButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+void MenuSwitchButton::setState(ABarButton::State state)
+{
+    prev_state_ = state_;
+    state_ = state;
+}
+
+/*bool SwitchButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return false;
 
     updateState(renderWindow, event);
 
-    if (state_ != PressButton::State::Released)
+    if (state_ != SwitchButton::State::Released)
         return false;
 
     return (*(action_.get()))(renderWindow, event);
 }*/
 
-void MenuPressButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+void MenuSwitchButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     psapi::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
     bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
@@ -413,37 +421,51 @@ void MenuPressButton::updateState(const psapi::IRenderWindow* renderWindow, cons
 
     switch (state_)
     {
-        case PressButton::State::Normal:
+        case SwitchButton::State::Normal:
 
             if (is_hovered)
-                setState(PressButton::State::Hover);
+                setState(SwitchButton::State::Hover);
 
             break;
 
-        case PressButton::State::Hover:
+        case SwitchButton::State::Hover:
 
             if (LMB_down)
-                setState(PressButton::State::Press);
+                state_ = SwitchButton::State::Press;
             else if (!is_hovered)
-                setState(PressButton::State::Normal);
+                state_ = SwitchButton::State::Normal;
 
             break;
 
-        case PressButton::State::Press:
+        case SwitchButton::State::Press:
 
             if (is_hovered && !LMB_down)
-                setState(PressButton::State::Released);
-            else if (!is_hovered)
-                setState(PressButton::State::Normal);
+            {
+                if (prev_state_ == SwitchButton::State::Normal)
+                    state_ = SwitchButton::State::Released;
+                else if (prev_state_ == SwitchButton::State::Released)
+                    state_ = SwitchButton::State::Normal;
+            }
+
+            if (!is_hovered)
+            {
+                setState(prev_state_);
+            }
 
             break;
 
-        case PressButton::State::Released:
+        case SwitchButton::State::Released:
 
-            if (is_hovered)
-                setState(PressButton::State::Hover);
+            if (prev_state_ == SwitchButton::State::Press)
+            {
+                if (!LMB_down)
+                    prev_state_ = SwitchButton::State::Released;
+            }
             else
-                setState(PressButton::State::Normal);
+            {
+                if (is_hovered && LMB_down)
+                    setState(SwitchButton::State::Press);
+            }
 
             break;
     }

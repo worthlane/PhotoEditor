@@ -7,14 +7,6 @@
 #include "implementation/bar/bar_button.hpp"
 #include "implementation/actions.hpp"
 
-extern "C"
-{
-
-bool onLoadPlugin();
-void onUnloadPlugin();
-
-}
-
 class ContrastButton : public PressButton
 {
 public:

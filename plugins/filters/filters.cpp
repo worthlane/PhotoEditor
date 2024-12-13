@@ -3,80 +3,12 @@
 
 #include "../plugins/filters/filters.hpp"
 
-static psapi::sfm::ITexture* btn = nullptr;
-
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {88, 28}};
-
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
 static int apply_contrast(const int color, const double k);
 
 static const size_t CATMULL_LEN = 4;
 
 static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi::vec2u& size, const psapi::vec2i pos, const std::vector<std::vector<double>>& gauss_matrix);
-
-bool onLoadPlugin()
-{
-    std::cout << "filters loaded\n";
-
-    btn = psapi::sfm::ITexture::create().release();
-
-    std::unique_ptr<psapi::sfm::ISprite> neg_sprite = psapi::sfm::ISprite::create();
-    neg_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> bar_sprite = psapi::sfm::ISprite::create();
-    bar_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> sharp_sprite = psapi::sfm::ISprite::create();
-    sharp_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> blur_sprite = psapi::sfm::ISprite::create();
-    blur_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    auto root = psapi::getRootWindow();
-
-    auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
-
-    auto bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kMenuBarWindowId));
-    auto bar_pos = bar->getPos();
-
-    auto negative = std::make_unique<ContrastButton>(kNegativeFilterButtonId, bar,
-                                                    bar_pos + psapi::vec2i(1, 1),
-                                                    psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                                    std::move(neg_sprite),
-                                                    -1, canvas);
-
-    auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, bar,
-                                                  bar_pos + psapi::vec2i(2 + BUTTON_RECT.size.x, 1),
-                                                  psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                                  std::move(bar_sprite),
-                                                  -1, canvas);
-
-    auto blur = std::make_unique<BlurButton>(kBlurFilterButtonId, bar,
-                                            bar_pos + psapi::vec2i(3 + 2 * BUTTON_RECT.size.x, 1),
-                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(blur_sprite),
-                                               canvas);
-
-    auto sharp = std::make_unique<SharpButton>(kSharpFilterButtonId, bar,
-                                              bar_pos + psapi::vec2i(4 + 3 * BUTTON_RECT.size.x, 1),
-                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(sharp_sprite),
-                                               canvas);
-
-
-    if (bar)
-    {
-        bar->addWindow(std::move(negative));
-        bar->addWindow(std::move(barel));
-        bar->addWindow(std::move(blur));
-        bar->addWindow(std::move(sharp));
-    }
-}
-
-void onUnloadPlugin()
-{
-    delete btn;
-}
 
 // ======================================================
 

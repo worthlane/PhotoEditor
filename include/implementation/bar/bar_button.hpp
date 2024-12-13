@@ -131,13 +131,17 @@ protected:
     std::unique_ptr<psapi::IBar> menu_;
 };
 
-class MenuPressButton : public AMenuButton
+class MenuSwitchButton : public AMenuButton
 {
 public:
-    MenuPressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+    MenuSwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu);
 
+    virtual void setState(State state) override;
+
 protected:
+    State prev_state_ = State::Normal;
+
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
 };
 
