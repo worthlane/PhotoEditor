@@ -61,7 +61,7 @@ API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 DLL_API_SOURCES = src/api/api_system.cpp \
 				  src/implementation/sfm.cpp src/implementation/photoshop.cpp src/implementation/actions.cpp \
 				  src/implementation/canvas/canvas.cpp src/implementation/canvas/scrollbar.cpp src/implementation/utils.cpp \
-				  src/implementation/bar/bar_button.cpp src/implementation/bar/bar_base.cpp src/style/design.cpp
+				  src/implementation/bar/bar_button.cpp src/implementation/bar/bar_base.cpp src/style/design.cpp src/implementation/bar/options.cpp
 
 # ==============================================================
 
@@ -101,6 +101,7 @@ makedirs:
 plugins:
 	$(CXX) -dynamiclib plugins/canvas/canvas.cpp -o $(BUILD_DIR)/canvas.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/toolbar/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/menubar/menubar.cpp -o $(BUILD_DIR)/menubar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/brush/brush.cpp plugins/brush/catmull.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/filters/filters.cpp -o $(BUILD_DIR)/filters.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll

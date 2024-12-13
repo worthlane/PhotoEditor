@@ -5,7 +5,7 @@
 
 static psapi::sfm::ITexture* btn = nullptr;
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {88, 28}};
 
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
 static int apply_contrast(const int color, const double k);
@@ -36,29 +36,29 @@ bool onLoadPlugin()
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
-    auto bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kOptionsBarWindowId));
+    auto bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kMenuBarWindowId));
     auto bar_pos = bar->getPos();
 
     auto negative = std::make_unique<ContrastButton>(kNegativeFilterButtonId, bar,
-                                                    bar_pos + psapi::vec2i(18, 18),
+                                                    bar_pos + psapi::vec2i(1, 1),
                                                     psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                     std::move(neg_sprite),
                                                     -1, canvas);
 
     auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, bar,
-                                                  bar_pos + psapi::vec2i(18, 2 * 18 + BUTTON_RECT.size.y),
+                                                  bar_pos + psapi::vec2i(2 + BUTTON_RECT.size.x, 1),
                                                   psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                   std::move(bar_sprite),
                                                   -1, canvas);
 
     auto blur = std::make_unique<BlurButton>(kBlurFilterButtonId, bar,
-                                            bar_pos + psapi::vec2i(18, 3 * 18 +  2 * BUTTON_RECT.size.y),
+                                            bar_pos + psapi::vec2i(3 + 2 * BUTTON_RECT.size.x, 1),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(blur_sprite),
                                                canvas);
 
     auto sharp = std::make_unique<SharpButton>(kSharpFilterButtonId, bar,
-                                              bar_pos + psapi::vec2i(18, 4 * 18 + 3 * BUTTON_RECT.size.y),
+                                              bar_pos + psapi::vec2i(4 + 3 * BUTTON_RECT.size.x, 1),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(sharp_sprite),
                                                canvas);

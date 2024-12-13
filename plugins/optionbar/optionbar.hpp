@@ -12,17 +12,11 @@ void onUnloadPlugin();
 
 }
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 90}};
-
-class OptionBar : public ABar
+class OptionBar : public AOptionsBar
 {
 public:
     OptionBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-            std::unique_ptr<psapi::sfm::ISprite> background,
-            std::unique_ptr<psapi::sfm::ISprite> normal,
-            std::unique_ptr<psapi::sfm::ISprite> hovered,
-            std::unique_ptr<psapi::sfm::ISprite> pressed,
-            std::unique_ptr<psapi::sfm::ISprite> released);
+            std::unique_ptr<psapi::sfm::ISprite> background);
 
     virtual void draw(psapi::IRenderWindow* renderWindow) override;
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;

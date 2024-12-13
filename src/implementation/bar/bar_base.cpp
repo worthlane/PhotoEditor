@@ -178,3 +178,132 @@ bool ABar::unPressAllButtons()
     return info;
 
 }*/
+
+// **************** AOPTIONS BAR ***********
+
+AOptionsBar::AOptionsBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+                        std::unique_ptr<psapi::sfm::ISprite> background) :
+    id_(id), pos_(pos), size_(size),
+    background_(std::move(background))
+{
+    parent_ = nullptr;
+    is_active_ = true;
+}
+
+psapi::wid_t AOptionsBar::getId() const
+{
+    return id_;
+}
+
+void AOptionsBar::addWindow(std::unique_ptr<psapi::IWindow> window)
+{
+    window.get()->setParent(this);
+
+    static const psapi::vec2i GAP = {10, 10};
+
+    psapi::vec2u size = window.get()->getSize();
+    psapi::vec2i pos = window.get()->getPos();
+
+    if (options_.size() == 0)
+    {
+        window.get()->setPos(pos_ + GAP);
+        options_.push_back(std::move(window));
+        return;
+    }
+
+    psapi::vec2u prev_size = options_[options_.size() - 1]->getSize();
+    psapi::vec2i prev_pos = options_[options_.size() - 1]->getPos();
+
+    psapi::sfm::IntRect info = {{prev_pos.x + prev_size.x + GAP.x,  prev_pos.y},
+                                {size.x, size.y}};
+
+    if (info.pos.x + GAP.x > pos_.x + size_.x)
+    {
+        info.pos = {pos_.x + GAP.x, prev_pos.y + GAP.y + prev_size.y};
+    }
+
+    window.get()->setPos(info.pos);
+    options_.push_back(std::move(window));
+}
+
+void AOptionsBar::removeWindow(psapi::wid_t id)
+{
+    for (size_t i = 0; i < options_.size(); ++i)
+    {
+        if (options_[i]->getId() == id)
+        {
+            options_.erase(options_.begin() + i);
+            break;
+        }
+    }
+}
+
+psapi::IWindow* AOptionsBar::getWindowById(psapi::wid_t id)
+{
+    if (id == getId())
+        return this;
+
+    for (auto& option : options_)
+    {
+        if (option->getId() == id)
+            return option.get();
+    }
+
+    return nullptr;
+};
+
+const psapi::IWindow* AOptionsBar::getWindowById(psapi::wid_t id) const
+{
+    if (id == getId())
+        return this;
+
+    for (auto& option : options_)
+    {
+        if (option->getId() == id)
+            return option.get();
+    }
+
+    return nullptr;
+};
+
+psapi::vec2i AOptionsBar::getPos() const
+{
+    return pos_;
+}
+psapi::vec2u AOptionsBar::getSize() const
+{
+    return size_;
+}
+
+void AOptionsBar::setParent(const psapi::IWindow* parent)
+{
+    parent_ = parent;
+}
+
+void AOptionsBar::forceActivate()
+{
+    is_active_ = true;
+}
+void AOptionsBar::forceDeactivate()
+{
+    is_active_ = false;
+}
+bool AOptionsBar::isActive() const
+{
+    return is_active_;
+}
+
+void AOptionsBar::setSize(const psapi::vec2u& size)
+{
+    size_ = size;
+}
+
+void AOptionsBar::setPos(const psapi::vec2i& pos)
+{
+    pos_ = pos;
+}
+
+void AOptionsBar::removeAllOptions()
+{
+    options_.clear();
+}

@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/toolbar/toolbar.hpp"
+#include "../plugins/menubar/menubar.hpp"
 
 #include "style/design.hpp"
 
@@ -13,10 +13,10 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {700, 96}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {1200, 30}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {88, 28}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
+static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -24,7 +24,7 @@ static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 
 bool onLoadPlugin()
 {
-    std::cout << "toolbar loaded\n";
+    std::cout << "menubar loaded\n";
 
     back = psapi::sfm::ITexture::create().release();
     back->loadFromFile(BACKGROUND_TEXTURE);
@@ -42,26 +42,27 @@ bool onLoadPlugin()
     release->loadFromFile(RELEASE_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT);
+    make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT, 1, {0, 0});
+    back_sprite->setColor(psapi::sfm::Color(210, 231, 252));
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1);
-    release_sprite->setColor(psapi::sfm::Color(121, 232, 150, 255));
+    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1, {6, 0});
+    release_sprite->setColor(psapi::sfm::Color(121, 232, 150));
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1);
-    hover_sprite->setColor(psapi::sfm::Color(150, 150, 150, 255));
+    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1, {6, 0});
+    hover_sprite->setColor(psapi::sfm::Color(150, 150, 150));
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1);
-    press_sprite->setColor(psapi::sfm::Color(100, 100, 100, 255));
+    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1, {6, 0});
+    press_sprite->setColor(psapi::sfm::Color(100, 100, 100));
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1);
-    normal_sprite->setColor(psapi::sfm::Color(200, 200, 200, 255));
+    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1, {6, 0});
+    normal_sprite->setColor(psapi::sfm::Color(168, 208, 247));
 
-    auto bar = std::make_unique<ToolBar>(psapi::kToolBarWindowId,
-                                         psapi::vec2i(20, 650),
+    auto bar = std::make_unique<MenuBar>(psapi::kMenuBarWindowId,
+                                         psapi::vec2i(0, 0),
                                          psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
@@ -84,9 +85,9 @@ void onUnloadPlugin()
 }
 
 
-// ********************* TOOLBAR *********************/
+// ********************* MENUBAR *********************/
 
-ToolBar::ToolBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
+MenuBar::MenuBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background,
             std::unique_ptr<psapi::sfm::ISprite> normal,
             std::unique_ptr<psapi::sfm::ISprite> hovered,
@@ -101,7 +102,7 @@ ToolBar::ToolBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::ve
 }
 
 
-void ToolBar::draw(psapi::sfm::IRenderWindow* renderWindow)
+void MenuBar::draw(psapi::sfm::IRenderWindow* renderWindow)
 {
     background_.get()->setPosition(pos_.x, pos_.y);
     background_.get()->draw(renderWindow);
@@ -113,30 +114,30 @@ void ToolBar::draw(psapi::sfm::IRenderWindow* renderWindow)
     }
 
 }
-std::unique_ptr<psapi::IAction> ToolBar::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+std::unique_ptr<psapi::IAction> MenuBar::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
-    return std::make_unique<ToolBarAction>(renderWindow, event, this);
+    return std::make_unique<MenuBarAction>(renderWindow, event, this);
 }
 
 // ******************** TOOLBAR ACTION ***********************
 
-ToolBarAction::ToolBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ToolBar* tool_bar) :
-AAction(render_window, event), tool_bar_(tool_bar)
+MenuBarAction::MenuBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, MenuBar* menu_bar) :
+AAction(render_window, event), menu_bar_(menu_bar)
 {
 }
 
-bool ToolBarAction::execute(const Key& key)
+bool MenuBarAction::execute(const Key& key)
 {
-    if (!tool_bar_->is_active_)
+    if (!menu_bar_->is_active_)
         return false;
 
     bool flag = false;
 
     auto controller = psapi::getActionController();
 
-    for (size_t i = 0; i < tool_bar_->buttons_.size(); ++i)
+    for (size_t i = 0; i < menu_bar_->buttons_.size(); ++i)
     {
-        auto& button = tool_bar_->buttons_[i];
+        auto& button = menu_bar_->buttons_[i];
 
         psapi::IBarButton::State prev_state = button.get()->getState();
 
@@ -147,15 +148,15 @@ bool ToolBarAction::execute(const Key& key)
         if (cur_state == psapi::IBarButton::State::Released &&
             prev_state != psapi::IBarButton::State::Released)
         {
-            for (size_t j = 0; j < tool_bar_->buttons_.size(); ++j)
-                if (j != i) tool_bar_->buttons_[j].get()->setState(psapi::IBarButton::State::Normal);
+            for (size_t j = 0; j < menu_bar_->buttons_.size(); ++j)
+                if (j != i) menu_bar_->buttons_[j].get()->setState(psapi::IBarButton::State::Normal);
         }
     }
 
     return flag;
 }
 
-bool ToolBarAction::isUndoable(const Key& key)
+bool MenuBarAction::isUndoable(const Key& key)
 {
     return false;
 }

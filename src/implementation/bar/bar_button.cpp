@@ -8,8 +8,9 @@
 ABarButton::ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                          std::unique_ptr<psapi::sfm::ISprite> sprite) :
     id_(id), state_(ABarButton::State::Normal), size_(size),
-    sprite_(std::move(sprite)), parent_(bar), is_active_(true), pos_(pos)
+    sprite_(std::move(sprite)), parent_(bar), is_active_(true)
 {
+    setPos(pos);
 }
 
 psapi::wid_t ABarButton::getId() const
@@ -24,8 +25,8 @@ void ABarButton::setSize(const psapi::vec2u& size)
 
 void ABarButton::setPos(const psapi::vec2i& pos)
 {
-    pos_ = pos;
-    sprite_->setPosition(pos.x, pos.y);
+    pos_ = pos + parent_->getPos();
+    sprite_->setPosition(pos_.x, pos_.y);
 }
 
 void ABarButton::setState(ABarButton::State state)
