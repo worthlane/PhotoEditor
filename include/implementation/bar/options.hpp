@@ -41,14 +41,12 @@ protected:
 
     psapi::sfm::Color color_ = psapi::sfm::Color(255, 255, 255);
 
-    std::unique_ptr<psapi::sfm::ITexture> curr_texture_;
-    std::unique_ptr<psapi::sfm::ISprite> current_;
+    std::unique_ptr<psapi::sfm::IRectangleShape> current_;
 
-    std::unique_ptr<psapi::sfm::ITexture> var_texture_;
-    std::vector<std::unique_ptr<psapi::sfm::ISprite>> variants_;
+    std::vector<std::unique_ptr<psapi::sfm::IRectangleShape>> variants_;
 
     void placeColors(const psapi::sfm::vec2i pos, const psapi::sfm::vec2u size);
-    bool hoverSprite(const psapi::sfm::vec2i pos, const psapi::sfm::ISprite* sprite);
+    bool hoverRectangle(const psapi::sfm::vec2i pos, const psapi::sfm::IRectangleShape* sprite);
 
     friend class ColorPaletteAction;
 };

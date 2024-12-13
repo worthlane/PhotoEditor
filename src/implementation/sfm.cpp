@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "implementation/sfm.hpp"
 
 namespace psapi
@@ -221,12 +223,17 @@ void RenderWindow::draw(Drawable *target)
 
 void RenderWindow::setFps(float fps)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 float RenderWindow::getFps() const
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
+}
+
+sf::RenderWindow& RenderWindow::getWindow()
+{
+    return window_;
 }
 
 std::unique_ptr<IRenderWindow> IRenderWindow::create(unsigned int width, unsigned int height, const std::string& name)
@@ -324,47 +331,47 @@ std::unique_ptr<IFont> IFont::create()
 
 void PixelsArray::setColor(const Color &color, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 Color PixelsArray::getColor(size_t ind) const
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(const vec2i &coord, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(const vec2f &coord, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(const vec2d &coord, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(int x, int y, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(float x, float y, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::setPosition(double x, double y, size_t ind)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void PixelsArray::draw(IRenderWindow *window) const
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 // *************************************************************************
@@ -496,7 +503,7 @@ void Texture::update(const Color *pixels)
 void Texture::update(const Color *pixels, unsigned int width, unsigned int height,
                                           unsigned int x,     unsigned int y)
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 std::unique_ptr<ITexture> ITexture::create()
@@ -561,6 +568,8 @@ void RectangleShape::setTexture(const ITexture *texture)
 
 void RectangleShape::setFillColor(const Color &color)
 {
+    color_ = color;
+    
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
@@ -617,9 +626,7 @@ vec2f RectangleShape::getPosition() const
 }
 const Color& RectangleShape::getFillColor() const
 {
-    sf::Color color = shape_.getFillColor();
-
-    return {color.r, color.g, color.b, color.a};
+    return color_;
 }
 vec2u RectangleShape::getSize() const
 {
@@ -665,7 +672,8 @@ const IImage* RectangleShape::getImage() const
 
 void RectangleShape::draw(IRenderWindow *window) const
 {
-    // TODO implement
+    RenderWindow* desktop = static_cast<RenderWindow*>(window);
+    desktop->getWindow().draw(shape_);
 }
 
 std::unique_ptr<IRectangleShape> IRectangleShape::create(unsigned int width, unsigned int height)
@@ -685,7 +693,7 @@ RectangleShape::RectangleShape(unsigned int width, unsigned int height)
 
 void RectangleShape::move(const vec2f &offset)
 {
-    // TODO
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 // *************************************************************************
@@ -694,7 +702,7 @@ void RectangleShape::move(const vec2f &offset)
 
 EllipseShape::EllipseShape(unsigned int width, unsigned int height)
 {
-    // TODO
+    assert(0 && "NOT IMPLEMENTED");
     shape_.setRadius(width);
 
     psapi::sfm::vec2f scale = psapi::sfm::vec2f(1, static_cast<float>(height) / static_cast<float>(width));
@@ -752,7 +760,7 @@ void EllipseShape::setScale(const vec2f &scale)
 
 void EllipseShape::setSize(const vec2u &size)
 {
-    // TODO
+    assert(0 && "NOT IMPLEMENTED");
     shape_.setRadius(size.x);
 
     psapi::sfm::vec2f scale = getScale();
@@ -796,7 +804,7 @@ const Color& EllipseShape::getFillColor() const
 }
 vec2u EllipseShape::getSize() const
 {
-    // TODO
+    assert(0 && "NOT IMPLEMENTED");
     psapi::sfm::vec2f scale = getScale();
 
     return {static_cast<unsigned int>(shape_.getRadius() * scale.x), static_cast<unsigned int>(shape_.getRadius() * scale.y)};
@@ -839,12 +847,12 @@ const IImage* EllipseShape::getImage() const
 
 void EllipseShape::draw(IRenderWindow *window) const
 {
-    // TODO implement
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 void EllipseShape::move(const vec2f &offset)
 {
-    // TODO
+    assert(0 && "NOT IMPLEMENTED");
 }
 
 } // sfm

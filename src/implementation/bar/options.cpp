@@ -6,7 +6,6 @@
 #include "style/design.hpp"
 
 
-static const char* WHITE_TEXTURE = "assets/textures/white.jpg";
 static const psapi::vec2u STD_SIZE = {120,60};
 
 using psapi::sfm::Color;
@@ -22,25 +21,16 @@ static const std::vector<psapi::sfm::Color> BASE_COLORS = {Color::getStandardCol
 
 ColorPalette::ColorPalette()
 {
-    curr_texture_ = psapi::sfm::ITexture::create();
-    var_texture_ = psapi::sfm::ITexture::create();
-
-    curr_texture_->loadFromFile(WHITE_TEXTURE);
-    var_texture_->loadFromFile(WHITE_TEXTURE);
-
     pos_ = {0, 0};
     size_ = STD_SIZE;
 
-    current_ = psapi::sfm::ISprite::create();
-    make_styled_sprite(current_.get(), curr_texture_.get(), {{0, 0}, STD_SIZE}, 0.3, {1, 2});
+    current_ = psapi::sfm::IRectangleShape::create(STD_SIZE);
+    current_->setFillColor(color_);
 
     for (auto& color : BASE_COLORS)
     {
-        auto choice = psapi::sfm::ISprite::create();
-        //choice->setTextureRect({{0, 0}, STD_SIZE});
-        //choice->setTexture(var_texture_.get());
-        make_styled_sprite(choice.get(), var_texture_.get(), {{0, 0}, STD_SIZE}, 1, {0, 0});
-        choice->setColor(color);
+        auto choice = psapi::sfm::IRectangleShape::create(STD_SIZE);
+        choice->setFillColor(color);
         variants_.push_back(std::move(choice));
     }
 
@@ -51,8 +41,8 @@ void ColorPalette::placeColors(const psapi::sfm::vec2i pos, const psapi::sfm::ve
 {
     static const double CURR_SPACE_COEF = 0.6;
 
-    current_->setTextureRect({{0,0}, {size.x, size.y * CURR_SPACE_COEF}});
-    current_->setPosition(pos.x, pos.y);
+    current_->setSize(psapi::sfm::vec2u(size.x, size.y * CURR_SPACE_COEF));
+    current_->setPosition(pos);
 
     size_t height = size.y * (1 - CURR_SPACE_COEF);
     size_t length = size.x / variants_.size();
@@ -61,20 +51,20 @@ void ColorPalette::placeColors(const psapi::sfm::vec2i pos, const psapi::sfm::ve
 
     for (auto& variant : variants_)
     {
-        variant->setTextureRect({{0,0}, {length, height}});
-        variant->setPosition(x_start, y_pos);
+        variant->setSize(psapi::sfm::vec2u(length, height));
+        variant->setPosition(psapi::sfm::vec2i(x_start, y_pos));
         x_start += length;
     }
 
 }
 
-bool ColorPalette::hoverSprite(const psapi::sfm::vec2i pos, const psapi::sfm::ISprite* sprite)
+bool ColorPalette::hoverRectangle(const psapi::sfm::vec2i pos, const psapi::sfm::IRectangleShape* rect)
 {
-    auto sprite_pos = sprite->getPosition();
-    auto sprite_size = sprite->getSize();
+    auto rect_pos = rect->getPosition();
+    auto rect_size = rect->getSize();
 
-    return (pos.x >= sprite_pos.x && pos.x <= sprite_pos.x + sprite_size.x &&
-            pos.y >= sprite_pos.y && pos.y <= sprite_pos.y + sprite_size.y);
+    return (pos.x >= rect_pos.x && pos.x <= rect_pos.x + rect_size.x &&
+            pos.y >= rect_pos.y && pos.y <= rect_pos.y + rect_size.y);
 }
 
 psapi::wid_t ColorPalette::getId() const
@@ -149,7 +139,8 @@ psapi::sfm::Color ColorPalette::getColor() const
 void ColorPalette::setColor(const psapi::sfm::Color &color)
 {
     color_ = color;
-    current_->setColor(color);
+
+    current_->setFillColor(color);
 }
 
 void ColorPalette::draw(psapi::IRenderWindow* renderWindow)
@@ -188,9 +179,9 @@ bool ColorPaletteAction::execute(const Key& key)
 
     for (auto& variant : palette_->variants_)
     {
-        if (palette_->hoverSprite(mouse_pos, variant.get()))
+        if (palette_->hoverRectangle(mouse_pos, variant.get()))
         {
-            palette_->setColor(variant->getColor());
+            palette_->setColor(variant->getFillColor());
             return true;
         }
     }

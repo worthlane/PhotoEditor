@@ -176,6 +176,8 @@ public:
     virtual void setFps(float fps) override;
     virtual float getFps() const override;
 
+    sf::RenderWindow& getWindow();
+
 private:
     sf::RenderWindow window_;
 
@@ -237,6 +239,8 @@ public:
 
 private:
     sf::RectangleShape shape_;
+
+    psapi::sfm::Color color_ = psapi::sfm::Color(255, 255, 255);
 };
 
 
