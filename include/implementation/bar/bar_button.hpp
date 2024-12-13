@@ -131,5 +131,15 @@ protected:
     std::unique_ptr<psapi::IBar> menu_;
 };
 
+class MenuPressButton : public AMenuButton
+{
+public:
+    MenuPressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu);
+
+protected:
+    void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
+};
+
 #endif // BAR_BUTTON_HPP
 

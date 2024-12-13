@@ -382,5 +382,69 @@ const psapi::IBar* AMenuButton::getMenu() const
     return menu_.get();
 }
 
+// ************** MENU PRESS BUTTON ******************
 
+MenuPressButton::MenuPressButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                         std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu) :
+    AMenuButton(id, bar, pos, size, std::move(sprite), std::move(menu))
+{
+}
 
+/*bool PressButton::update(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return false;
+
+    updateState(renderWindow, event);
+
+    if (state_ != PressButton::State::Released)
+        return false;
+
+    return (*(action_.get()))(renderWindow, event);
+}*/
+
+void MenuPressButton::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    psapi::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
+    bool LMB_down = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
+
+    bool is_hovered = (mouse_pos.x >= pos_.x) && (mouse_pos.x < pos_.x + size_.x) &&
+                      (mouse_pos.y >= pos_.y) && (mouse_pos.y < pos_.y + size_.y);
+
+    switch (state_)
+    {
+        case PressButton::State::Normal:
+
+            if (is_hovered)
+                setState(PressButton::State::Hover);
+
+            break;
+
+        case PressButton::State::Hover:
+
+            if (LMB_down)
+                setState(PressButton::State::Press);
+            else if (!is_hovered)
+                setState(PressButton::State::Normal);
+
+            break;
+
+        case PressButton::State::Press:
+
+            if (is_hovered && !LMB_down)
+                setState(PressButton::State::Released);
+            else if (!is_hovered)
+                setState(PressButton::State::Normal);
+
+            break;
+
+        case PressButton::State::Released:
+
+            if (is_hovered)
+                setState(PressButton::State::Hover);
+            else
+                setState(PressButton::State::Normal);
+
+            break;
+    }
+}
