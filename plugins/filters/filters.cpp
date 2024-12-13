@@ -254,15 +254,13 @@ bool ContrastAction::execute(const Key& key)
             psapi::sfm::Color blur = calculate_gauss_blur(layer, canvas_size, pos, GAUSS_MATRIX);
             auto pixel = layer->getPixel(pos);
 
-            float r = static_cast<float>(pixel.r) / 255 + static_cast<float>(pixel.r - blur.r) * 2 / 255;
-            float g = static_cast<float>(pixel.g) / 255 + static_cast<float>(pixel.g - blur.g) * 2 / 255;
-            float b = static_cast<float>(pixel.b) / 255 + static_cast<float>(pixel.b - blur.b) * 2 / 255;
+            float r = static_cast<float>(pixel.r) + static_cast<float>(pixel.r - blur.r) * 2;
+            float g = static_cast<float>(pixel.g) + static_cast<float>(pixel.g - blur.g) * 2;
+            float b = static_cast<float>(pixel.b) + static_cast<float>(pixel.b - blur.b) * 2;
 
-            float max = std::max(std::max(r, g), b);
-
-            r = r / max * 255;
-            g = g / max * 255;
-            b = b / max * 255;
+            r = std::min(std::max(r, 0.0f), 255.0f);
+            g = std::min(std::max(g, 0.0f), 255.0f);
+            b = std::min(std::max(b, 0.0f), 255.0f);
 
             temp_layer->setPixel({x, y}, {static_cast<uint8_t>(r),
                                           static_cast<uint8_t>(g),
