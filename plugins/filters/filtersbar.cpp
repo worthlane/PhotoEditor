@@ -46,7 +46,7 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT, 1, {0, 0});
-    back_sprite->setColor(psapi::sfm::Color(210, 231, 252));
+    back_sprite->setColor(psapi::sfm::Color(197, 225, 252));
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1, {6, 0});
