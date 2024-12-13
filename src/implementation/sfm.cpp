@@ -40,12 +40,12 @@ void Sprite::setScale(float factorX, float factorY)
 
 vec2u Sprite::getSize() const
 {
-    // TODO implement
+    return vec2u(sprite_.getTextureRect().width, sprite_.getTextureRect().height);
 }
 
 Color Sprite::getColor() const
 {
-    // TODO implement
+    return {sprite_.getColor().r, sprite_.getColor().g, sprite_.getColor().b, sprite_.getColor().a};
 }
 
 void Sprite::setColor(const Color &color)

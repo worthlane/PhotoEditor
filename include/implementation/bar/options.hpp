@@ -39,10 +39,16 @@ protected:
     psapi::vec2i pos_ = {0, 0};
     psapi::vec2u size_ = {0, 0};
 
-    psapi::sfm::Color color_ = psapi::sfm::Color(255, 255, 255, 255);
+    psapi::sfm::Color color_ = psapi::sfm::Color(255, 255, 255);
 
-    std::unique_ptr<psapi::sfm::ITexture> texture_;
-    std::unique_ptr<psapi::sfm::ISprite> sprite_;
+    std::unique_ptr<psapi::sfm::ITexture> curr_texture_;
+    std::unique_ptr<psapi::sfm::ISprite> current_;
+
+    std::unique_ptr<psapi::sfm::ITexture> var_texture_;
+    std::vector<std::unique_ptr<psapi::sfm::ISprite>> variants_;
+
+    void placeColors(const psapi::sfm::vec2i pos, const psapi::sfm::vec2u size);
+    bool hoverSprite(const psapi::sfm::vec2i pos, const psapi::sfm::ISprite* sprite);
 
     friend class ColorPaletteAction;
 };

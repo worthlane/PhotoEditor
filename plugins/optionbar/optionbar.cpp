@@ -10,7 +10,7 @@
 
 static psapi::sfm::ITexture* back    = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {96, 500}};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {140, 500}};
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
