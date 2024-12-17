@@ -13,10 +13,9 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {700, 96}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
+static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -25,6 +24,8 @@ static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 bool onLoadPlugin()
 {
     std::cout << "toolbar loaded\n";
+
+    psapi::sfm::IntRect background_rect = psapi::getToolbarIntRect();
 
     back = psapi::sfm::ITexture::create().release();
     back->loadFromFile(BACKGROUND_TEXTURE);
@@ -42,27 +43,28 @@ bool onLoadPlugin()
     release->loadFromFile(RELEASE_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT);
+    make_styled_sprite(back_sprite.get(), back, background_rect, 1, {0, 0});
+    back_sprite->setColor(psapi::sfm::Color(41, 44, 49));
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1);
-    release_sprite->setColor(psapi::sfm::Color(121, 232, 150, 255));
+    release_sprite->setColor(psapi::sfm::Color(67, 69, 73));
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1);
-    hover_sprite->setColor(psapi::sfm::Color(150, 150, 150, 255));
+    hover_sprite->setColor(psapi::sfm::Color(56, 58, 62));
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1);
-    press_sprite->setColor(psapi::sfm::Color(100, 100, 100, 255));
+    press_sprite->setColor(psapi::sfm::Color(56, 58, 62));
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1);
-    normal_sprite->setColor(psapi::sfm::Color(200, 200, 200, 255));
+    normal_sprite->setColor(psapi::sfm::Color(41, 44, 49));
 
     auto bar = std::make_unique<ToolBar>(psapi::kToolBarWindowId,
-                                         psapi::vec2i(20, 650),
-                                         psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
+                                         background_rect.pos,
+                                         background_rect.size,
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
                                          std::move(hover_sprite),

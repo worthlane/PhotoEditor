@@ -10,10 +10,9 @@
 
 static psapi::sfm::ITexture* back    = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {140, 500}};
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/background_gray.jpg";
+static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 
 bool onLoadPlugin()
 {
@@ -22,13 +21,16 @@ bool onLoadPlugin()
     back = psapi::sfm::ITexture::create().release();
     back->loadFromFile(BACKGROUND_TEXTURE);
 
+    static const psapi::sfm::IntRect back_rect = psapi::getOptionsBarIntRect();
+
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT);
+    make_styled_sprite(back_sprite.get(), back, back_rect, 1, {0, 0});
+    back_sprite->setColor(psapi::sfm::Color(41, 44, 49));
 
     auto bar = std::make_unique<OptionBar>(psapi::kOptionsBarWindowId,
-                                         psapi::vec2i(1032, 50),
-                                         psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
-                                         std::move(back_sprite));
+                                           back_rect.pos,
+                                           back_rect.size,
+                                           std::move(back_sprite));
 
     auto root = psapi::getRootWindow();
 

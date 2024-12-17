@@ -14,7 +14,7 @@ static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {1200, 30}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {88, 28}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 30}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
@@ -43,23 +43,23 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT, 1, {0, 0});
-    back_sprite->setColor(psapi::sfm::Color(210, 231, 252));
+    back_sprite->setColor(psapi::sfm::Color(31, 34, 37));
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1, {6, 0});
-    release_sprite->setColor(psapi::sfm::Color(121, 232, 150));
+    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1, {0, 0});
+    release_sprite->setColor(psapi::sfm::Color(1, 1, 1));
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1, {6, 0});
-    hover_sprite->setColor(psapi::sfm::Color(150, 150, 150));
+    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1, {0, 0});
+    hover_sprite->setColor(psapi::sfm::Color(1, 1, 1));
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1, {6, 0});
-    press_sprite->setColor(psapi::sfm::Color(100, 100, 100));
+    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1, {0, 0});
+    press_sprite->setColor(psapi::sfm::Color(1, 1, 1));
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1, {6, 0});
-    normal_sprite->setColor(psapi::sfm::Color(168, 208, 247));
+    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1, {0, 0});
+    normal_sprite->setColor(psapi::sfm::Color(31, 34, 37));
 
     auto bar = std::make_unique<MenuBar>(psapi::kMenuBarWindowId,
                                          psapi::vec2i(0, 0),

@@ -119,3 +119,5 @@ plugins:
 	$(CXX) -dynamiclib plugins/filters/filters.cpp plugins/filters/filtersbar.cpp -o $(BUILD_DIR)/filters.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/optionbar/optionbar.cpp -o $(BUILD_DIR)/optionbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/files/filebar.cpp plugins/files/import.cpp -o $(BUILD_DIR)/files.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+

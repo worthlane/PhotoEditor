@@ -4,7 +4,7 @@
 
 static const psapi::sfm::vec2i NO_CATCH = {-1, -1};
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 
 bool onLoadPlugin()
 {
@@ -21,7 +21,7 @@ bool onLoadPlugin()
     auto toolbar_pos = tool_bar->getPos();
 
     auto rectangle = std::make_unique<GeometryButton>(kRectangleButtonId, tool_bar,
-                                                psapi::vec2i(3 * 18 + 2 * BUTTON_RECT.size.x, 18),
+                                                psapi::vec2i(2, 6 + BUTTON_RECT.size.y),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(rec_sprite),
                                                std::move(rect));

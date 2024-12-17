@@ -3,21 +3,21 @@
 #include "implementation/photoshop.hpp"
 
 static const size_t SCREEN_LENGTH = 1200;
-static const size_t SCREEN_WIDTH  = 800;
+static const size_t SCREEN_WIDTH  = 700;
 
 psapi::sfm::IntRect psapi::getCanvasIntRect()
 {
-    return {{0, 30}, {SCREEN_LENGTH - 20, SCREEN_WIDTH - 50}};
+    return {{68, 70}, {SCREEN_LENGTH - 90, SCREEN_WIDTH - 90}};
 }
 
 psapi::sfm::IntRect psapi::getToolbarIntRect()
 {
-    return {{0, 0}, {0, 0}};
+    return {{0, 70}, {68, SCREEN_WIDTH - 70}};
 }
 
 psapi::sfm::IntRect psapi::getOptionsBarIntRect()
 {
-    return {{0, 0}, {0, 0}};
+    return {{0, 30}, {SCREEN_LENGTH, 40}};
 }
 
 psapi::sfm::IntRect psapi::getInstrumentOptionsIntRect()

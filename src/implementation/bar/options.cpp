@@ -6,7 +6,7 @@
 #include "style/design.hpp"
 
 
-static const psapi::vec2u STD_SIZE = {120,60};
+static const psapi::vec2u STD_SIZE = {120,30};
 
 using psapi::sfm::Color;
 

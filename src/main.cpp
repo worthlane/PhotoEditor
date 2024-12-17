@@ -15,19 +15,32 @@
 
 
 static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dll", "build/toolbar.dll",
-                                                      "build/menubar.dll", "build/optionbar.dll",
-                                                      "build/brush.dll", "build/geometry.dll", "build/filters.dll"};
+                                                      "build/optionbar.dll", "build/menubar.dll",
+                                                      "build/brush.dll", "build/geometry.dll", "build/filters.dll",
+                                                      "build/files.dll"};
 static       std::vector<void*> dll_ptrs;
 
 static const char* LOAD_PLUGIN   = "onLoadPlugin";
 static const char* UNLOAD_PLUGIN = "onUnloadPlugin";
 
+static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+
 int main()
 {
-    psapi::sfm::RenderWindow window(1200, 800, "PhotoRedactor");
+    auto screen = psapi::getScreenSize();
+
+    psapi::sfm::RenderWindow window(screen.x, screen.y, "PhotoRedactor");
 
     psapi::IRootWindow* root = psapi::getRootWindow();
     psapi::AActionController* controller = psapi::getActionController();
+
+    psapi::sfm::ITexture* background = psapi::sfm::ITexture::create().release();
+    background->loadFromFile(BACKGROUND_TEXTURE);
+
+    psapi::sfm::ISprite* background_sprite = psapi::sfm::ISprite::create().release();
+    background_sprite->setTextureRect({{0, 0}, {screen.x, screen.y}});
+    background_sprite->setTexture(background);
+    background_sprite->setColor(psapi::sfm::Color(23, 23, 23));
 
     for (auto& plugin_name : PLUGIN_NAMES)
     {
@@ -55,9 +68,9 @@ int main()
         }
 
         controller->execute(root->createAction(&window, event));
-        root->draw(&window);
 
-        //sprite.draw(&window);
+        background_sprite->draw(&window);
+        root->draw(&window);
 
         window.display();
         window.clear();

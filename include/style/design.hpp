@@ -3,7 +3,7 @@
 
 #include "api/api_sfm.hpp"
 
-static const size_t STD_GUI_RADIUS = 12;
+static const size_t STD_GUI_RADIUS = 4;
 static const size_t STD_GUI_WIDTH  = 1;
 static const double DARK_COEF = 0.7;
 

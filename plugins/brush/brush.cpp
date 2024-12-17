@@ -7,7 +7,7 @@ static psapi::sfm::ITexture* btn = nullptr;
 
 static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
 
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 
 void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
                       const psapi::sfm::Color& color, const int radius);
@@ -34,16 +34,16 @@ bool onLoadPlugin()
     auto toolbar_pos = tool_bar->getPos();
 
     auto brush = std::make_unique<PaintButton>(kBrushButtonId, tool_bar,
-                                               psapi::vec2i(18, 18),
+                                               psapi::vec2i(2, 2),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(btn_sprite),
-                                               psapi::sfm::Color(255, 0, 0, 255), 3);
+                                               psapi::sfm::Color(255, 0, 0), 3);
 
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
 
     auto eraser = std::make_unique<PaintButton>(kEraserButtonId, tool_bar,
-                                                psapi::vec2i(36 + BUTTON_RECT.size.x, 18),
+                                                psapi::vec2i(6 + BUTTON_RECT.size.x, 2),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(ers_sprite),
                                                canvas->getCanvasBaseColor(), 20, true);
