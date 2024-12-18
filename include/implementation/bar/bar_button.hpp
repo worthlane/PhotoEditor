@@ -132,6 +132,8 @@ public:
     virtual psapi::IBar *getMenu() override;
     virtual const psapi::IBar *getMenu() const override;
 
+    void expandMenu(psapi::IBar* menu, psapi::IWindow* item);
+
 protected:
     psapi::wid_t id_;
 

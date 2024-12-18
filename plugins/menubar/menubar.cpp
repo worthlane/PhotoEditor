@@ -1,17 +1,19 @@
 #include <cassert>
 #include <iostream>
+#include <string>
 
 #include "../plugins/menubar/menubar.hpp"
+#include "../plugins/menubar/submenubar.hpp"
 
 #include "style/design.hpp"
 
 #include "implementation/bar/bar_base.hpp"
 
-static psapi::sfm::ITexture* back    = nullptr;
-static psapi::sfm::ITexture* release = nullptr;
-static psapi::sfm::ITexture* hover   = nullptr;
-static psapi::sfm::ITexture* press   = nullptr;
-static psapi::sfm::ITexture* normal  = nullptr;
+static psapi::sfm::ITexture* back    = psapi::sfm::ITexture::create().release();
+static psapi::sfm::ITexture* release = psapi::sfm::ITexture::create().release();
+static psapi::sfm::ITexture* hover   = psapi::sfm::ITexture::create().release();
+static psapi::sfm::ITexture* press   = psapi::sfm::ITexture::create().release();
+static psapi::sfm::ITexture* normal  = psapi::sfm::ITexture::create().release();
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {1200, 30}};
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 30}};
@@ -22,23 +24,16 @@ static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
 static const char* NORMAL_TEXTURE     = "assets/textures/white.jpg";
 
+void create_submenu(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size, psapi::IBar* menu, std::string name);
+
 bool onLoadPlugin()
 {
     std::cout << "menubar loaded\n";
 
-    back = psapi::sfm::ITexture::create().release();
     back->loadFromFile(BACKGROUND_TEXTURE);
-
-    hover = psapi::sfm::ITexture::create().release();
     hover->loadFromFile(HOVER_TEXTURE);
-
-    press = psapi::sfm::ITexture::create().release();
     press->loadFromFile(PRESS_TEXTURE);
-
-    normal = psapi::sfm::ITexture::create().release();
     normal->loadFromFile(NORMAL_TEXTURE);
-
-    release = psapi::sfm::ITexture::create().release();
     release->loadFromFile(RELEASE_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
@@ -69,6 +64,22 @@ bool onLoadPlugin()
                                          std::move(hover_sprite),
                                          std::move(press_sprite),
                                          std::move(release_sprite));
+
+    create_submenu(psapi::kMenuFileId, psapi::vec2i(0, 0),
+                   psapi::vec2u(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y +  2 * GAP.y),
+                   bar.get(), "File");
+    create_submenu(psapi::kMenuToolsId, psapi::vec2i(BUTTON_RECT.size.x, 0),
+                   psapi::vec2u(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y + 2 * GAP.y),
+                   bar.get(), "Edit");
+    create_submenu(psapi::kMenuLayerId, psapi::vec2i(2 * BUTTON_RECT.size.x, 0),
+                   psapi::vec2u(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y + 2 * GAP.y),
+                   bar.get(), "Layer");
+    create_submenu(psapi::kMenuFilterId, psapi::vec2i(3 * BUTTON_RECT.size.x, 0),
+                   psapi::vec2u(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y + 2 * GAP.y),
+                   bar.get(), "Filter");
+    create_submenu(psapi::kMenuHelpId, psapi::vec2i(4 * BUTTON_RECT.size.x, 0),
+                   psapi::vec2u(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y + 2 * GAP.y),
+                   bar.get(), "Help");
 
     auto root = psapi::getRootWindow();
 
@@ -160,4 +171,45 @@ bool MenuBarAction::isUndoable(const Key& key)
 {
     return false;
 }
+
+void create_submenu(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size, psapi::IBar* menu, std::string name)
+{
+    std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
+    make_styled_sprite(back_sprite.get(), back, {{0, 0}, {size.x, size.y}}, 1, {0, 0});
+    back_sprite->setColor(BACK_COLOR);
+
+    std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
+    make_styled_sprite(release_sprite.get(), release, SUBBUTTON_RECT, 1, {0, 0});
+    release_sprite->setColor(RELEASE_COLOR);
+
+    std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
+    make_styled_sprite(hover_sprite.get(), hover, SUBBUTTON_RECT, 1, {0, 0});
+    hover_sprite->setColor(HOVER_COLOR);
+
+    std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
+    make_styled_sprite(press_sprite.get(), press, SUBBUTTON_RECT, 1, {0, 0});
+    press_sprite->setColor(PRESS_COLOR);
+
+    std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
+    make_styled_sprite(normal_sprite.get(), normal, SUBBUTTON_RECT, 1, {0, 0});
+    normal_sprite->setColor(NORMAL_COLOR);
+
+    auto bar = std::make_unique<SubMenuBar>(id + 50,
+                                            pos + psapi::sfm::vec2i(0, BUTTON_RECT.size.y),
+                                            size,
+                                            std::move(back_sprite),
+                                            std::move(normal_sprite),
+                                            std::move(hover_sprite),
+                                            std::move(press_sprite),
+                                            std::move(release_sprite));
+
+    auto call_bar = std::make_unique<CallSubMenuButton>(id, menu,
+                                                        pos,
+                                                        BUTTON_RECT.size,
+                                                        name, psapi::sfm::Color(255, 255, 255),
+                                                        std::move(bar));
+
+    menu->addWindow(std::move(call_bar));
+}
+
 

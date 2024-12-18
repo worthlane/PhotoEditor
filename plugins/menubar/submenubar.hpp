@@ -12,6 +12,9 @@ static const psapi::sfm::Color PRESS_COLOR = psapi::sfm::Color(2, 168, 167);
 static const psapi::sfm::Color NORMAL_COLOR = psapi::sfm::Color(1, 1, 1);
 
 static const psapi::sfm::IntRect SUBBUTTON_RECT = {{0, 0}, {268, 29}};
+static const psapi::sfm::vec2i GAP = {2, 1};
+
+void expandMenu(psapi::IBar* menu, psapi::IWindow* item);
 
 class SubMenuBar : public ABar
 {

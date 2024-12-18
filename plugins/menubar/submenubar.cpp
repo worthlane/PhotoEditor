@@ -126,3 +126,16 @@ bool CallSubMenuAction::isUndoable(const Key& key)
 {
     return false;
 }
+
+void expandMenu(psapi::IBar* menu, psapi::IWindow* item)
+{
+    auto size = menu->getSize();
+    auto pos = menu->getPos();
+    auto item_pos = item->getPos();
+    auto item_size = item->getSize();
+
+    psapi::vec2i relative = item_pos - pos;
+
+    size = {std::max(size.x, relative.x + item_size.x + GAP.x), std::max(size.y, relative.y + item_size.y + GAP.y)};
+    menu->setSize(size);
+}

@@ -1,10 +1,7 @@
 #ifndef FILTERSBAR_PLUGIN_HPP
 #define FILTERSBAR_PLUGIN_HPP
 
-#include "implementation/actions.hpp"
-#include "implementation/bar/bar_base.hpp"
-#include "implementation/bar/bar_button.hpp"
-
+#include "api/api_photoshop.hpp"
 
 extern "C"
 {

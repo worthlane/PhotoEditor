@@ -24,6 +24,8 @@ ABar::ABar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& s
 {
     parent_ = nullptr;
     is_active_ = true;
+
+    background_->setTextureRect({{0, 0}, size});
 }
 
 void ABar::addWindow(std::unique_ptr<psapi::IWindow> window)
@@ -129,6 +131,8 @@ bool ABar::isActive() const
 void ABar::setSize(const psapi::vec2u& size)
 {
     size_ = size;
+
+    background_->setTextureRect({{0, 0}, size});
 }
 
 void ABar::setPos(const psapi::vec2i& pos)
