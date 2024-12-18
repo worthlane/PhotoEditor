@@ -1,6 +1,6 @@
 #include <string>
 
-#include "../plugins/files/import.hpp"
+#include "../plugins/menubar/files/import.hpp"
 
 ImportButton::ImportButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                            std::string& file_name, psapi::sfm::Color color,

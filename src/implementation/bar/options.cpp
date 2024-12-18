@@ -6,7 +6,7 @@
 #include "style/design.hpp"
 
 
-static const psapi::vec2u STD_SIZE = {120,30};
+static const psapi::vec2u STD_SIZE = {200,28};
 
 using psapi::sfm::Color;
 
@@ -41,19 +41,21 @@ void ColorPalette::placeColors(const psapi::sfm::vec2i pos, const psapi::sfm::ve
 {
     static const double CURR_SPACE_COEF = 0.6;
 
-    current_->setSize(psapi::sfm::vec2u(size.x, size.y * CURR_SPACE_COEF));
+    current_->setSize(psapi::sfm::vec2u(size.y, size.y));
     current_->setPosition(pos);
 
-    size_t height = size.y * (1 - CURR_SPACE_COEF);
-    size_t length = size.x / variants_.size();
-    int    y_pos  = pos.y + size.y - height;
-    int    x_start = pos.x;
+    size_t side = size.y * CURR_SPACE_COEF;
+
+    int gap = ((size.x - size.y) / BASE_COLORS.size()) - side;
+
+    int y_pos  = pos.y + (size.y - side) / 2;
+    int x_start = pos.x + gap + size.y;
 
     for (auto& variant : variants_)
     {
-        variant->setSize(psapi::sfm::vec2u(length, height));
+        variant->setSize(psapi::sfm::vec2u(side, side));
         variant->setPosition(psapi::sfm::vec2i(x_start, y_pos));
-        x_start += length;
+        x_start += side + gap;
     }
 
 }

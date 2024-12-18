@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/filters/filters.hpp"
+#include "../plugins/menubar/filters/filters.hpp"
 
 void update_point(psapi::ILayer* layer, psapi::ILayer* temp_layer, std::vector<std::vector<bool>>& changed, const psapi::vec2i& pos, const double k, const int radius);
 static int apply_contrast(const int color, const double k);

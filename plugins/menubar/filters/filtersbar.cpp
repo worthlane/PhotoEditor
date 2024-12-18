@@ -1,8 +1,8 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/filters/filtersbar.hpp"
-#include "../plugins/filters/filters.hpp"
+#include "../plugins/menubar/filters/filtersbar.hpp"
+#include "../plugins/menubar/filters/filters.hpp"
 
 #include "style/design.hpp"
 

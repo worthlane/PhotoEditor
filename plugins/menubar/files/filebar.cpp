@@ -1,8 +1,8 @@
 #include <cassert>
 #include <iostream>
 
-#include "../plugins/files/filebar.hpp"
-#include "../plugins/files/import.hpp"
+#include "../plugins/menubar/files/filebar.hpp"
+#include "../plugins/menubar/files/import.hpp"
 
 #include "style/design.hpp"
 

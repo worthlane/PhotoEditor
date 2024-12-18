@@ -569,7 +569,7 @@ void RectangleShape::setTexture(const ITexture *texture)
 void RectangleShape::setFillColor(const Color &color)
 {
     color_ = color;
-    
+
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
@@ -700,15 +700,9 @@ void RectangleShape::move(const vec2f &offset)
 //                          ELLIPSE SHAPE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-EllipseShape::EllipseShape(unsigned int width, unsigned int height)
+EllipseShape::EllipseShape(unsigned int width, unsigned int height) : shape_(width)
 {
-    assert(0 && "NOT IMPLEMENTED");
-    shape_.setRadius(width);
-
-    psapi::sfm::vec2f scale = psapi::sfm::vec2f(1, static_cast<float>(height) / static_cast<float>(width));
-
-    shape_.setScale(sf::Vector2f(scale.x, scale.y));
-    cached_image_ = std::make_unique<Image>();
+    setSize({width, height});
 }
 
 
@@ -728,9 +722,12 @@ std::unique_ptr<IEllipseShape> IEllipseShape::create(unsigned int radius)
 
 void EllipseShape::setTexture(const ITexture *texture)
 {
-    const Texture* tex = static_cast<const Texture*>(texture);
+    const auto sfm_texture = dynamic_cast<const sfm::Texture*>(texture);
 
-    shape_.setTexture(&(tex->texture_));
+    if (sfm_texture)
+    {
+        shape_.setTexture(&sfm_texture->texture_);
+    }
 }
 
 void EllipseShape::setFillColor(const Color &color)
