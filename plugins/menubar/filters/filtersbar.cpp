@@ -3,6 +3,7 @@
 
 #include "../plugins/menubar/filters/filtersbar.hpp"
 #include "../plugins/menubar/filters/filters.hpp"
+#include "../plugins/menubar/submenubar.hpp"
 
 #include "style/design.hpp"
 
@@ -17,7 +18,6 @@ static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {270, 121}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {268, 29}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
@@ -46,25 +46,25 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> back_sprite = psapi::sfm::ISprite::create();
     make_styled_sprite(back_sprite.get(), back, BACKGROUND_RECT, 1, {0, 0});
-    back_sprite->setColor(psapi::sfm::Color(1, 1, 1));
+    back_sprite->setColor(BACK_COLOR);
 
     std::unique_ptr<psapi::sfm::ISprite> release_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(release_sprite.get(), release, BUTTON_RECT, 1, {0, 0});
-    release_sprite->setColor(psapi::sfm::Color(2, 168, 167));
+    make_styled_sprite(release_sprite.get(), release, SUBBUTTON_RECT, 1, {0, 0});
+    release_sprite->setColor(RELEASE_COLOR);
 
     std::unique_ptr<psapi::sfm::ISprite> hover_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(hover_sprite.get(), hover, BUTTON_RECT, 1, {0, 0});
-    hover_sprite->setColor(psapi::sfm::Color(2, 168, 167));
+    make_styled_sprite(hover_sprite.get(), hover, SUBBUTTON_RECT, 1, {0, 0});
+    hover_sprite->setColor(HOVER_COLOR);
 
     std::unique_ptr<psapi::sfm::ISprite> press_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(press_sprite.get(), press, BUTTON_RECT, 1, {0, 0});
-    press_sprite->setColor(psapi::sfm::Color(2, 168, 167));
+    make_styled_sprite(press_sprite.get(), press, SUBBUTTON_RECT, 1, {0, 0});
+    press_sprite->setColor(PRESS_COLOR);
 
     std::unique_ptr<psapi::sfm::ISprite> normal_sprite = psapi::sfm::ISprite::create();
-    make_styled_sprite(normal_sprite.get(), normal, BUTTON_RECT, 1, {0, 0});
-    normal_sprite->setColor(psapi::sfm::Color(1, 1, 1));
+    make_styled_sprite(normal_sprite.get(), normal, SUBBUTTON_RECT, 1, {0, 0});
+    normal_sprite->setColor(NORMAL_COLOR);
 
-    auto filtersbar = std::make_unique<FiltersBar>(kFiltersBarWindowId,
+    auto filtersbar = std::make_unique<SubMenuBar>(kFiltersBarWindowId,
                                          psapi::vec2i(90, 30),
                                          psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
                                          std::move(back_sprite),
@@ -80,7 +80,7 @@ bool onLoadPlugin()
     btn = psapi::sfm::ITexture::create().release();
 
     std::unique_ptr<psapi::sfm::ISprite> filters_sprite = psapi::sfm::ISprite::create();
-    filters_sprite.get()->setTextureRect(BUTTON_RECT);
+    filters_sprite.get()->setTextureRect(SUBBUTTON_RECT);
 
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
@@ -90,32 +90,32 @@ bool onLoadPlugin()
     std::string neg_name = "Negative";
     auto negative = std::make_unique<NegativeButton>(kNegativeFilterButtonId, filtersbar.get(),
                                                     psapi::vec2i(1, 1),
-                                                    psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                                    psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                     neg_name, psapi::sfm::Color(255, 255, 255),
                                                     -1, canvas);
 
     std::string barel_name = "Barelief";
     auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, filtersbar.get(),
-                                                  psapi::vec2i(1, 2 + BUTTON_RECT.size.y),
-                                                  psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                                  psapi::vec2i(1, 2 + SUBBUTTON_RECT.size.y),
+                                                  psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                   barel_name, psapi::sfm::Color(255, 255, 255),
                                                   -1, canvas);
 
     std::string blur_name = "Blur";
     auto blur = std::make_unique<BlurButton>(kBlurFilterButtonId, filtersbar.get(),
-                                             psapi::vec2i(1, 3 + 2 * BUTTON_RECT.size.y),
-                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                             psapi::vec2i(1, 3 + 2 * SUBBUTTON_RECT.size.y),
+                                               psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                blur_name, psapi::sfm::Color(255, 255, 255),
                                                canvas);
 
     std::string contrast_name = "Contrast";
     auto contrast = std::make_unique<ContrastButton>(kContrastFilterButtonId, filtersbar.get(),
-                                               psapi::vec2i(1, 4 + 3 * BUTTON_RECT.size.y),
-                                               psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
+                                               psapi::vec2i(1, 4 + 3 * SUBBUTTON_RECT.size.y),
+                                               psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                contrast_name, psapi::sfm::Color(255, 255, 255),
                                                canvas);
     std::string filter_name = "Filter";
-    auto filterbutton = std::make_unique<FiltersButton>(psapi::kMenuFilterId, menu,
+    auto filterbutton = std::make_unique<CallSubMenuButton>(psapi::kMenuFilterId, menu,
                                                         psapi::vec2i(90, 0),
                                                         psapi::vec2u(90, 30),
                                                         filter_name, psapi::sfm::Color(255, 255, 255),
@@ -139,129 +139,5 @@ void onUnloadPlugin()
     delete btn;
 }
 
-
-// ********************* MENUBAR *********************/
-
-FiltersBar::FiltersBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
-            std::unique_ptr<psapi::sfm::ISprite> background,
-            std::unique_ptr<psapi::sfm::ISprite> normal,
-            std::unique_ptr<psapi::sfm::ISprite> hovered,
-            std::unique_ptr<psapi::sfm::ISprite> pressed,
-            std::unique_ptr<psapi::sfm::ISprite> released) :
-    ABar(id, pos, size, std::move(background),
-                    std::move(normal),
-                    std::move(hovered),
-                    std::move(pressed),
-                    std::move(released))
-{
-}
-
-
-void FiltersBar::draw(psapi::sfm::IRenderWindow* renderWindow)
-{
-    if (!isActive())
-        return;
-
-    background_.get()->setPosition(pos_.x, pos_.y);
-    background_.get()->draw(renderWindow);
-
-    for (auto& button : buttons_)
-    {
-        finishButtonDraw(renderWindow, button.get());
-        button.get()->draw(renderWindow);
-    }
-
-}
-std::unique_ptr<psapi::IAction> FiltersBar::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
-{
-    return std::make_unique<FiltersBarAction>(renderWindow, event, this);
-}
-
-// ******************** TOOLBAR ACTION ***********************
-
-FiltersBarAction::FiltersBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, FiltersBar* filters_bar) :
-AAction(render_window, event), filters_bar_(filters_bar)
-{
-}
-
-bool FiltersBarAction::execute(const Key& key)
-{
-    if (!filters_bar_->is_active_)
-        return false;
-
-    bool flag = false;
-
-    auto controller = psapi::getActionController();
-
-    for (size_t i = 0; i < filters_bar_->buttons_.size(); ++i)
-    {
-        auto& button = filters_bar_->buttons_[i];
-
-        psapi::IBarButton::State prev_state = button.get()->getState();
-
-        flag |= controller->execute(button.get()->createAction(render_window_, event_));
-
-        psapi::IBarButton::State cur_state = button.get()->getState();
-
-        if (cur_state == psapi::IBarButton::State::Released &&
-            prev_state != psapi::IBarButton::State::Released)
-        {
-            for (size_t j = 0; j < filters_bar_->buttons_.size(); ++j)
-                if (j != i) filters_bar_->buttons_[j].get()->setState(psapi::IBarButton::State::Normal);
-        }
-    }
-
-    return flag;
-}
-
-bool FiltersBarAction::isUndoable(const Key& key)
-{
-    return false;
-}
-
-// ******** FILTERS BUTTON **********
-
-FiltersButton::FiltersButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
-                 TextMenuButton(id, bar, pos, size, name, color, std::move(menu))
-{}
-
-std::unique_ptr<psapi::IAction> FiltersButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
-{
-    if (!isActive())
-        return std::make_unique<IdleAction>(renderWindow, event);
-
-    updateState(renderWindow, event);
-
-    if (state_ != SwitchButton::State::Released)
-    {
-        if (menu_->isActive())
-            deactivateMenu();
-
-        return std::make_unique<IdleAction>(renderWindow, event);
-    }
-
-    if (!menu_->isActive())
-        activateMenu();
-
-    return std::make_unique<FiltersAction>(renderWindow, event, this);
-}
-
-FiltersAction::FiltersAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, FiltersButton* filters_button) :
-                                AAction(render_window, event), filters_button_(filters_button)
-{}
-
-bool FiltersAction::execute(const Key& key)
-{
-    auto controller = psapi::getActionController();
-    controller->execute(filters_button_->menu_->createAction(render_window_, event_));
-
-    return true;
-}
-
-bool FiltersAction::isUndoable(const Key& key)
-{
-    return false;
-}
 
 
