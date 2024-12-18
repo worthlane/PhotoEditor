@@ -65,7 +65,7 @@ bool onLoadPlugin()
     normal_sprite->setColor(NORMAL_COLOR);
 
     auto filtersbar = std::make_unique<SubMenuBar>(kFiltersBarWindowId,
-                                         psapi::vec2i(90, 30),
+                                         psapi::vec2i(270, 30),
                                          psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
@@ -116,7 +116,7 @@ bool onLoadPlugin()
                                                canvas);
     std::string filter_name = "Filter";
     auto filterbutton = std::make_unique<CallSubMenuButton>(psapi::kMenuFilterId, menu,
-                                                        psapi::vec2i(90, 0),
+                                                        psapi::vec2i(270, 0),
                                                         psapi::vec2u(90, 30),
                                                         filter_name, psapi::sfm::Color(255, 255, 255),
                                                         std::move(filtersbar));
