@@ -1,7 +1,11 @@
 #include <cassert>
+#include <string>
+#include <iostream>
 
 #include "implementation/canvas/canvas.hpp"
 #include "implementation/utils.hpp"
+
+static const char* GRID = "assets/textures/psgrid.png";
 
 static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);
 
@@ -79,6 +83,14 @@ Canvas::Canvas(const psapi::sfm::vec2i& pos, const psapi::sfm::vec2u& size,
     temp_layer_ = std::make_unique<Layer>(size_.x, size_.y, psapi::sfm::Color(0, 0, 0, 0));
 
     layers_.push_back(std::make_unique<Layer>(size_.x, size_.y, base_color_));
+
+    background_sprite_ = psapi::sfm::ISprite::create();
+    background_texture_ = psapi::sfm::ITexture::create();
+
+    background_texture_->loadFromFile(GRID);
+    background_sprite_->setTexture(background_texture_.get());
+    background_sprite_->setTextureRect({{0, 0}, size_});
+    background_sprite_->setPosition(pos.x, pos.y);
 }
 
 psapi::wid_t Canvas::getId() const
@@ -272,6 +284,10 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     texture->update(final_image);
     sprite->setTexture(texture);
 
+    background_sprite_->setTextureRect({{0, 0}, size_});
+    background_sprite_->setPosition(pos_.x, pos_.y);
+
+    background_sprite_->draw(renderWindow);
     sprite->draw(renderWindow);
 
     delete texture;

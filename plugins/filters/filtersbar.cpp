@@ -16,8 +16,8 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {180, 121}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {178, 29}};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {270, 121}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {268, 29}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";

@@ -36,7 +36,7 @@ class Canvas : public psapi::ICanvas, public Scrollable
 public:
     Canvas(const psapi::sfm::vec2i& pos,
            const psapi::sfm::vec2u& size,
-           const psapi::sfm::Color& base_color = {255, 255, 255, 255});
+           const psapi::sfm::Color& base_color = {0, 0, 0, 0});
 
     virtual psapi::ILayer*       getLayer(size_t index) override;
     virtual const psapi::ILayer* getLayer(size_t index) const override;
@@ -94,6 +94,9 @@ protected:
 
     std::vector<std::unique_ptr<psapi::ILayer> > layers_;
     std::unique_ptr<psapi::ILayer> temp_layer_;
+
+    std::unique_ptr<psapi::sfm::ISprite> background_sprite_;
+    std::unique_ptr<psapi::sfm::ITexture> background_texture_;
 
     psapi::sfm::vec2i mouse_pos_ = {0, 0};
     bool is_pressed_LMB_ = false;
