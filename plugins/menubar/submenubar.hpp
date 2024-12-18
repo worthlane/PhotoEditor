@@ -45,7 +45,7 @@ class CallSubMenuButton : public TextMenuButton
 {
 public:
     CallSubMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                  std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu);
+                  std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering = true);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 private:

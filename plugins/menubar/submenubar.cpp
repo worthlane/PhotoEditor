@@ -85,8 +85,8 @@ bool SubMenuBarAction::isUndoable(const Key& key)
 // ********************* CALLSUBMENUBUTTON *********************/
 
 CallSubMenuButton::CallSubMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
-                 TextMenuButton(id, bar, pos, size, name, color, std::move(menu))
+                 std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering) :
+                 TextMenuButton(id, bar, pos, size, name, color, std::move(menu), need_centering)
 {}
 
 std::unique_ptr<psapi::IAction> CallSubMenuButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)

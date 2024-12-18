@@ -19,4 +19,7 @@ static const psapi::wid_t kFileBarWindowId = 267;
 static const psapi::wid_t kFileImportBarWindowId = 777;
 static const psapi::wid_t kFileExportBarWindowId = 778;
 
+static const psapi::wid_t kFileImportMenuWindowId = 780;
+static const psapi::wid_t kFileExportMenuWindowId = 781;
+
 #endif // FILTERSBAR_PLUGIN_HPP

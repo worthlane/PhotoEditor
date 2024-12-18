@@ -166,7 +166,7 @@ class TextMenuButton : public MenuSwitchButton
 {
 public:
     TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu);
+                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering = true);
 
     virtual void draw(psapi::IRenderWindow* renderWindow) override;
 

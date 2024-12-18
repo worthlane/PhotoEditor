@@ -449,6 +449,12 @@ vec2i Image::getPos() const
     //return {pos.x, pos.y};
     return {0, 0};
 }
+
+bool Image::saveToFile(const std::string &filename) const
+{
+    return image_.saveToFile(filename);
+}
+
 void Image::setPos(const vec2i &pos)
 {
     //image_.setPos(sf::Vector2i(pos.x, pos.y));

@@ -512,7 +512,7 @@ void MenuSwitchButton::updateState(const psapi::IRenderWindow* renderWindow, con
 // ========= TEXT MENU BUTTON ==========
 
 TextMenuButton::TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
+                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering) :
                 MenuSwitchButton(id, bar, pos, size, nullptr, std::move(menu)), name_(name), text_color_(color)
 {
     font_ = psapi::sfm::IFont::create();
@@ -529,7 +529,10 @@ TextMenuButton::TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const ps
 
     static const double LEN_COEF = 0.35;
 
-    text_gap_ = (size.x - name.length() * char_size * LEN_COEF) / 2;
+    if (need_centering)
+        text_gap_ = (size.x - name.length() * char_size * LEN_COEF) / 2;
+    else
+        text_gap_ = 1.f/3.f * size_.y;
 }
 
 void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)

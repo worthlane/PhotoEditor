@@ -49,6 +49,8 @@ public:
 
     virtual bool loadFromFile(const std::string &filename) override;
 
+    bool saveToFile(const std::string &filename) const;
+
     virtual void setPixel(unsigned int x, unsigned int y, const Color &color) override;
     virtual void setPixel(vec2u pos, const Color &color) override;
 
