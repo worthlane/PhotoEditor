@@ -2,15 +2,23 @@
 
 #include "../plugins/geometry/geometry.hpp"
 
+static psapi::sfm::ITexture* rec_text = nullptr;
+
 static const psapi::sfm::vec2i NO_CATCH = {-1, -1};
 
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
+
+static const char* RECT_TEXTURE = "assets/textures/rectangle.png";
 
 bool onLoadPlugin()
 {
     std::cout << "geometry loaded\n";
 
+    rec_text = psapi::sfm::ITexture::create().release();
+    rec_text->loadFromFile(RECT_TEXTURE);
+
     std::unique_ptr<psapi::sfm::ISprite> rec_sprite = psapi::sfm::ISprite::create();
+    rec_sprite.get()->setTexture(rec_text);
     rec_sprite.get()->setTextureRect(BUTTON_RECT);
 
     std::unique_ptr<psapi::sfm::IRectangleShape> rect = psapi::sfm::IRectangleShape::create(0, 0);
@@ -35,7 +43,7 @@ bool onLoadPlugin()
 
 void onUnloadPlugin()
 {
-
+    delete rec_text;
 }
 
 

@@ -13,9 +13,9 @@ static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi:
 // ======================================================
 
 NegativeButton::NegativeButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 const double k, psapi::ICanvas* canvas) :
-                 PressButton(id, bar, pos, size, std::move(sprite)), k_(k), canvas_(canvas)
+                                std::string& name, psapi::sfm::Color color,
+                                const double k, psapi::ICanvas* canvas) :
+                 TextButton(id, bar, pos, size, name, color), k_(k), canvas_(canvas)
 {}
 
 std::unique_ptr<psapi::IAction> NegativeButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
@@ -73,9 +73,9 @@ bool NegativeAction::isUndoable(const Key& key)
 }
 
 BareliefButton::BareliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas) :
-                 PressButton(id, bar, pos, size, std::move(sprite)), k_(k), canvas_(canvas)
+                 TextButton(id, bar, pos, size, name, color), k_(k), canvas_(canvas)
 {}
 
 std::unique_ptr<psapi::IAction> BareliefButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
@@ -148,9 +148,9 @@ bool BareliefAction::isUndoable(const Key& key)
 }
 
 BlurButton::BlurButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas) :
-                 PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas)
+                 TextButton(id, bar, pos, size, name, color), canvas_(canvas)
 {}
 
 std::unique_ptr<psapi::IAction> BlurButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
@@ -208,9 +208,9 @@ bool BlurAction::isUndoable(const Key& key)
 }
 
 ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas) :
-                 PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas)
+                 TextButton(id, bar, pos, size, name, color), canvas_(canvas)
 {}
 
 std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)

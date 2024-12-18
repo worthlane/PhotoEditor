@@ -42,11 +42,11 @@ private:
     FiltersBar* filters_bar_;
 };
 
-class FiltersButton : public MenuSwitchButton
+class FiltersButton : public TextMenuButton
 {
 public:
     FiltersButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu);
+                  std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 private:

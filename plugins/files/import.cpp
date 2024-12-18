@@ -3,9 +3,9 @@
 #include "../plugins/files/import.hpp"
 
 ImportButton::ImportButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 psapi::ICanvas* canvas, std::string& file_name) :
-                 PressButton(id, bar, pos, size, std::move(sprite)), canvas_(canvas), file_name_(std::move(file_name))
+                           std::string& file_name, psapi::sfm::Color color,
+                           psapi::ICanvas* canvas) :
+                           TextButton(id, bar, pos, size, file_name, color), canvas_(canvas)
 {}
 
 std::unique_ptr<psapi::IAction> ImportButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
@@ -28,7 +28,7 @@ ImportAction::ImportAction(const psapi::IRenderWindow* render_window, const psap
 bool ImportAction::execute(const Key& key)
 {
     auto canvas = import_->canvas_;
-    std::string& file_name = import_->file_name_;
+    std::string& file_name = import_->name_;
 
     std::unique_ptr<psapi::sfm::IImage> image = psapi::sfm::IImage::create();
     image->loadFromFile(file_name);

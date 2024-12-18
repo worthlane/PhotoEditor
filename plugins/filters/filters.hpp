@@ -7,11 +7,11 @@
 #include "implementation/bar/bar_button.hpp"
 #include "implementation/actions.hpp"
 
-class NegativeButton : public PressButton
+class NegativeButton : public TextButton
 {
 public:
     NegativeButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
@@ -35,11 +35,11 @@ private:
     NegativeButton* filter_ = nullptr;
 };
 
-class BlurButton : public PressButton
+class BlurButton : public TextButton
 {
 public:
     BlurButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
@@ -62,11 +62,11 @@ private:
     BlurButton* filter_ = nullptr;
 };
 
-class ContrastButton : public PressButton
+class ContrastButton : public TextButton
 {
 public:
     ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
@@ -89,11 +89,11 @@ private:
     ContrastButton* filter_ = nullptr;
 };
 
-class BareliefButton : public PressButton
+class BareliefButton : public TextButton
 {
 public:
     BareliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
+                 std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;

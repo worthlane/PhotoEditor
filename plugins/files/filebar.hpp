@@ -42,11 +42,11 @@ private:
     FileBar* file_bar_;
 };
 
-class FileButton : public MenuSwitchButton
+class FileButton : public TextMenuButton
 {
 public:
     FileButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu);
+               std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 private:
@@ -67,5 +67,8 @@ private:
 };
 
 static const psapi::wid_t kFileBarWindowId = 267;
+
+static const psapi::wid_t kFileImportBarWindowId = 777;
+static const psapi::wid_t kFileExportBarWindowId = 778;
 
 #endif // FILTERSBAR_PLUGIN_HPP

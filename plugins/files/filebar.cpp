@@ -16,8 +16,8 @@ static psapi::sfm::ITexture* hover   = nullptr;
 static psapi::sfm::ITexture* press   = nullptr;
 static psapi::sfm::ITexture* normal  = nullptr;
 
-static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {180, 61}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {178, 29}};
+static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {270, 61}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {268, 29}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
@@ -65,7 +65,7 @@ bool onLoadPlugin()
     normal_sprite->setColor(psapi::sfm::Color(1, 1, 1));
 
     auto filebar = std::make_unique<FileBar>(kFileBarWindowId,
-                                         psapi::vec2i(90, 30),
+                                         psapi::vec2i(0, 30),
                                          psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
@@ -92,16 +92,17 @@ bool onLoadPlugin()
 
     std::string litvin = "assets/litvin.jpg";
 
-    auto import = std::make_unique<ImportButton>(777, filebar.get(),
+    auto import = std::make_unique<ImportButton>(kFileImportBarWindowId, filebar.get(),
                                                     psapi::vec2i(1, 1),
                                                     psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                                    std::move(file_sprite),
-                                                    canvas, litvin);
+                                                    litvin, psapi::sfm::Color(255, 255, 255), canvas);
 
+    std::string file_name = "File";
     auto filebutton = std::make_unique<FileButton>(psapi::kMenuFileId, menu,
-                                                     psapi::vec2i(90, 0),
+                                                     psapi::vec2i(0, 0),
                                                      psapi::vec2u(90, 30),
-                                                     std::move(but_sprite), std::move(filebar));
+                                                     file_name, psapi::sfm::Color(255, 255, 255),
+                                                     std::move(filebar));
 
 
 
@@ -203,8 +204,8 @@ bool FileBarAction::isUndoable(const Key& key)
 // ******** FILTERS BUTTON **********
 
 FileButton::FileButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu) :
-                 MenuSwitchButton(id, bar, pos, size, std::move(sprite), std::move(menu))
+                       std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
+                       TextMenuButton(id, bar, pos, size, name, color, std::move(menu))
 {
 }
 

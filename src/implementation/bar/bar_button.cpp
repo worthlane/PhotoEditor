@@ -3,6 +3,8 @@
 
 #include "implementation/bar/bar_button.hpp"
 
+static const char* MAIN_FONT = "assets/fonts/Helvetica_Neue_S.ttf";
+
 // ======================================================
 
 ABarButton::ABarButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -26,7 +28,9 @@ void ABarButton::setSize(const psapi::vec2u& size)
 void ABarButton::setPos(const psapi::vec2i& pos)
 {
     pos_ = pos + parent_->getPos();
-    sprite_->setPosition(pos_.x, pos_.y);
+
+    if (sprite_)
+        sprite_->setPosition(pos_.x, pos_.y);
 }
 
 void ABarButton::setState(ABarButton::State state)
@@ -49,9 +53,12 @@ void ABarButton::draw(psapi::IRenderWindow* renderWindow)
     //pos_ = info.pos;
     //size_ = {info.size.x, info.size.y};
 
-    sprite_->setPosition(pos_.x, pos_.y);
+    if (sprite_)
+    {
+        sprite_->setPosition(pos_.x, pos_.y);
+        sprite_->draw(renderWindow);
+    }
 
-    sprite_->draw(renderWindow);
 }
 
 psapi::IWindow* ABarButton::getWindowById(psapi::wid_t id)
@@ -252,6 +259,34 @@ void PressButton::updateState(const psapi::IRenderWindow* renderWindow, const ps
     }
 }
 
+// =================== TEXT BUTTON =================
+
+TextButton::TextButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::string& name, psapi::sfm::Color color) :
+                 PressButton(id, bar, pos, size, nullptr), name_(name), text_color_(color)
+{
+    font_ = psapi::sfm::IFont::create();
+    font_->loadFromFile(MAIN_FONT);
+
+    text_ = psapi::sfm::IText::create();
+    text_->setFont(font_.get());
+
+    text_->setFillColor(&text_color_);
+    text_->setString(name);
+    text_->setCharacterSize( 2.f/3.f * size_.y);
+    text_gap_ = 1.f/3.f * size_.y;
+}
+
+void TextButton::draw(psapi::IRenderWindow* renderWindow)
+{
+    if (!is_active_)
+        return;
+
+    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_, pos_.y));
+    renderWindow->draw(text_.get());
+}
+
+
 // ****************** MENU BUTTON ************************
 
 AMenuButton::AMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -275,7 +310,8 @@ void AMenuButton::setSize(const psapi::vec2u& size)
 void AMenuButton::setPos(const psapi::vec2i& pos)
 {
     pos_ = pos + parent_->getPos();
-    sprite_->setPosition(pos_.x, pos_.y);
+    if (sprite_)
+        sprite_->setPosition(pos_.x, pos_.y);
 }
 
 void AMenuButton::setState(AMenuButton::State state)
@@ -298,9 +334,11 @@ void AMenuButton::draw(psapi::IRenderWindow* renderWindow)
     //pos_ = info.pos;
     //size_ = {info.size.x, info.size.y};
 
-    sprite_->setPosition(pos_.x, pos_.y);
-
-    sprite_->draw(renderWindow);
+    if (sprite_)
+    {
+        sprite_->setPosition(pos_.x, pos_.y);
+        sprite_->draw(renderWindow);
+    }
 
     menu_->draw(renderWindow);
 }
@@ -469,4 +507,38 @@ void MenuSwitchButton::updateState(const psapi::IRenderWindow* renderWindow, con
 
             break;
     }
+}
+
+// ========= TEXT MENU BUTTON ==========
+
+TextMenuButton::TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
+                MenuSwitchButton(id, bar, pos, size, nullptr, std::move(menu)), name_(name), text_color_(color)
+{
+    font_ = psapi::sfm::IFont::create();
+    font_->loadFromFile(MAIN_FONT);
+
+    text_ = psapi::sfm::IText::create();
+    text_->setFont(font_.get());
+
+    text_->setFillColor(&text_color_);
+    text_->setString(name);
+
+    size_t char_size = 2.f/3.f * size_.y;
+    text_->setCharacterSize(char_size);
+
+    static const double LEN_COEF = 0.35;
+
+    text_gap_ = (size.x - name.length() * char_size * LEN_COEF) / 2;
+}
+
+void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)
+{
+    if (!is_active_)
+        return;
+
+    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_, pos_.y));
+    renderWindow->draw(text_.get());
+
+    menu_->draw(renderWindow);
 }

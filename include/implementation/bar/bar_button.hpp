@@ -73,6 +73,23 @@ protected:
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
 };
 
+class TextButton : public PressButton
+{
+public:
+    TextButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                std::string& name, psapi::sfm::Color color);
+
+    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+
+protected:
+    std::unique_ptr<psapi::sfm::IText> text_;
+    std::unique_ptr<psapi::sfm::IFont> font_;
+
+    std::string name_;
+    psapi::sfm::Color text_color_;
+    size_t text_gap_ = 0;
+};
+
 class AMenuButton : public psapi::IMenuButton
 {
 public:
@@ -143,6 +160,23 @@ protected:
     State prev_state_ = State::Normal;
 
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
+};
+
+class TextMenuButton : public MenuSwitchButton
+{
+public:
+    TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu);
+
+    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+
+protected:
+    std::unique_ptr<psapi::sfm::IText> text_;
+    std::unique_ptr<psapi::sfm::IFont> font_;
+
+    std::string name_;
+    psapi::sfm::Color text_color_;
+    size_t text_gap_ = 0;
 };
 
 #endif // BAR_BUTTON_HPP

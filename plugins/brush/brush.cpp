@@ -3,9 +3,11 @@
 
 #include "../plugins/brush/brush.hpp"
 
-static psapi::sfm::ITexture* btn = nullptr;
+static psapi::sfm::ITexture* brsh_text = nullptr;
+static psapi::sfm::ITexture* ers_text = nullptr;
 
-static const char* BUTTON_TEXTURE = "assets/textures/pen.png";
+static const char* BRUSH_TEXTURE = "assets/textures/brush.png";
+static const char* ERASER_TEXTURE = "assets/textures/eraser.png";
 
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 
@@ -14,18 +16,19 @@ void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
 
 static const size_t CATMULL_LEN = 4;
 
-
 bool onLoadPlugin()
 {
     std::cout << "brush loaded\n";
 
-    btn = psapi::sfm::ITexture::create().release();
+    brsh_text = psapi::sfm::ITexture::create().release();
+    brsh_text->loadFromFile(BRUSH_TEXTURE);
 
-    btn->loadFromFile(BUTTON_TEXTURE);
+    ers_text = psapi::sfm::ITexture::create().release();
+    ers_text->loadFromFile(ERASER_TEXTURE);
 
     std::unique_ptr<psapi::sfm::ISprite> btn_sprite = psapi::sfm::ISprite::create();
     btn_sprite.get()->setTextureRect(BUTTON_RECT);
-    //btn_sprite.get()->setTexture(btn);
+    btn_sprite.get()->setTexture(brsh_text);
 
     auto root = psapi::getRootWindow();
     auto tool_bar = static_cast<psapi::IBar*>(root->getWindowById(psapi::kToolBarWindowId));
@@ -41,6 +44,7 @@ bool onLoadPlugin()
 
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
+    ers_sprite.get()->setTexture(ers_text);
 
     auto eraser = std::make_unique<PaintButton>(kEraserButtonId, tool_bar,
                                                 psapi::vec2i(6 + BUTTON_RECT.size.x, 2),
@@ -59,7 +63,7 @@ bool onLoadPlugin()
 
 void onUnloadPlugin()
 {
-    delete btn;
+    delete brsh_text;
 }
 
 // ======================================================

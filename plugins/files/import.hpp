@@ -7,17 +7,16 @@
 #include "implementation/bar/bar_button.hpp"
 #include "implementation/actions.hpp"
 
-class ImportButton : public PressButton
+class ImportButton : public TextButton
 {
 public:
     ImportButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 psapi::ICanvas* canvas, std::string& file_name);
+                 std::string& file_name, psapi::sfm::Color color,
+                 psapi::ICanvas* canvas);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
-    std::string file_name_;
     psapi::ICanvas* canvas_ = nullptr;
 
     friend class ImportAction;

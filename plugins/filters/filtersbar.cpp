@@ -65,7 +65,7 @@ bool onLoadPlugin()
     normal_sprite->setColor(psapi::sfm::Color(1, 1, 1));
 
     auto filtersbar = std::make_unique<FiltersBar>(kFiltersBarWindowId,
-                                         psapi::vec2i(0, 30),
+                                         psapi::vec2i(90, 30),
                                          psapi::vec2u(BACKGROUND_RECT.size.x, BACKGROUND_RECT.size.y),
                                          std::move(back_sprite),
                                          std::move(normal_sprite),
@@ -82,66 +82,50 @@ bool onLoadPlugin()
     std::unique_ptr<psapi::sfm::ISprite> filters_sprite = psapi::sfm::ISprite::create();
     filters_sprite.get()->setTextureRect(BUTTON_RECT);
 
-    std::unique_ptr<psapi::sfm::ISprite> neg_sprite = psapi::sfm::ISprite::create();
-    neg_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> bar_sprite = psapi::sfm::ISprite::create();
-    bar_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> contrast_sprite = psapi::sfm::ISprite::create();
-    contrast_sprite.get()->setTextureRect(BUTTON_RECT);
-
-    std::unique_ptr<psapi::sfm::ISprite> blur_sprite = psapi::sfm::ISprite::create();
-    blur_sprite.get()->setTextureRect(BUTTON_RECT);
-
     auto canvas = static_cast<psapi::ICanvas*>(root->getWindowById(psapi::kCanvasWindowId));
 
     auto menu = static_cast<psapi::IBar*>(root->getWindowById(psapi::kMenuBarWindowId));
     auto menu_pos = menu->getPos();
 
+    std::string neg_name = "Negative";
     auto negative = std::make_unique<NegativeButton>(kNegativeFilterButtonId, filtersbar.get(),
                                                     psapi::vec2i(1, 1),
                                                     psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                                    std::move(neg_sprite),
+                                                    neg_name, psapi::sfm::Color(255, 255, 255),
                                                     -1, canvas);
 
+    std::string barel_name = "Barelief";
     auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, filtersbar.get(),
                                                   psapi::vec2i(1, 2 + BUTTON_RECT.size.y),
                                                   psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                                  std::move(bar_sprite),
+                                                  barel_name, psapi::sfm::Color(255, 255, 255),
                                                   -1, canvas);
 
+    std::string blur_name = "Blur";
     auto blur = std::make_unique<BlurButton>(kBlurFilterButtonId, filtersbar.get(),
                                              psapi::vec2i(1, 3 + 2 * BUTTON_RECT.size.y),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(blur_sprite),
+                                               blur_name, psapi::sfm::Color(255, 255, 255),
                                                canvas);
 
+    std::string contrast_name = "Contrast";
     auto contrast = std::make_unique<ContrastButton>(kContrastFilterButtonId, filtersbar.get(),
                                                psapi::vec2i(1, 4 + 3 * BUTTON_RECT.size.y),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(contrast_sprite),
+                                               contrast_name, psapi::sfm::Color(255, 255, 255),
                                                canvas);
-
+    std::string filter_name = "Filter";
     auto filterbutton = std::make_unique<FiltersButton>(psapi::kMenuFilterId, menu,
-                                                        psapi::vec2i(0, 0),
+                                                        psapi::vec2i(90, 0),
                                                         psapi::vec2u(90, 30),
-                                                        std::move(filters_sprite), std::move(filtersbar));
-
-
+                                                        filter_name, psapi::sfm::Color(255, 255, 255),
+                                                        std::move(filtersbar));
 
     filterbutton->addMenuItem(std::move(negative));
     filterbutton->addMenuItem(std::move(barel));
     filterbutton->addMenuItem(std::move(blur));
     filterbutton->addMenuItem(std::move(contrast));
     menu->addWindow(std::move(filterbutton));
-
-        /*bar->addWindow(std::move(negative));
-        bar->addWindow(std::move(barel));
-        bar->addWindow(std::move(blur));
-        bar->addWindow(std::move(contrast));*/
-
-    //root->addWindow(std::move(bar));
 }
 
 void onUnloadPlugin()
@@ -238,8 +222,8 @@ bool FiltersBarAction::isUndoable(const Key& key)
 // ******** FILTERS BUTTON **********
 
 FiltersButton::FiltersButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
-                 std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu) :
-                 MenuSwitchButton(id, bar, pos, size, std::move(sprite), std::move(menu))
+                 std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu) :
+                 TextMenuButton(id, bar, pos, size, name, color, std::move(menu))
 {}
 
 std::unique_ptr<psapi::IAction> FiltersButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
