@@ -3,7 +3,7 @@
 
 #include "implementation/bar/bar_button.hpp"
 
-static const char* MAIN_FONT = "assets/fonts/Helvetica_Neue_S.ttf";
+static const char* MAIN_FONT = "assets/fonts/Stem_Medium.ttf";
 
 // ======================================================
 
@@ -273,7 +273,7 @@ TextButton::TextButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec
 
     text_->setFillColor(&text_color_);
     text_->setString(name);
-    text_->setCharacterSize( 2.f/3.f * size_.y);
+    text_->setCharacterSize( 0.6 * size_.y);
     text_gap_ = 1.f/3.f * size_.y;
 }
 
@@ -524,15 +524,16 @@ TextMenuButton::TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const ps
     text_->setFillColor(&text_color_);
     text_->setString(name);
 
-    size_t char_size = 2.f/3.f * size_.y;
+    size_t char_size = 0.6 * size.y;
     text_->setCharacterSize(char_size);
 
-    static const double LEN_COEF = 0.35;
+    auto rect = text_->getGlobalBounds();
+    std::cout << name << " " << rect.pos.x << ", " << rect.pos.y << ", " << rect.size.x << ", " << rect.size.y << std::endl;
 
     if (need_centering)
-        text_gap_ = (size.x - name.length() * char_size * LEN_COEF) / 2;
+        text_gap_ = {(size.x - rect.size.x) / 2, (size.y - rect.size.y) / 2};
     else
-        text_gap_ = 1.f/3.f * size_.y;
+        text_gap_ = {1.f/3.f * size_.y, 0};
 }
 
 void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)
@@ -540,7 +541,7 @@ void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
-    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_, pos_.y));
+    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_.x, pos_.y));
     renderWindow->draw(text_.get());
 
     menu_->draw(renderWindow);

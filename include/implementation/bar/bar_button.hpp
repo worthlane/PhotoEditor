@@ -178,7 +178,7 @@ protected:
 
     std::string name_;
     psapi::sfm::Color text_color_;
-    size_t text_gap_ = 0;
+    psapi::vec2u text_gap_ = {0, 0};
 };
 
 #endif // BAR_BUTTON_HPP

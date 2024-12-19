@@ -16,7 +16,7 @@ static psapi::sfm::ITexture* press   = psapi::sfm::ITexture::create().release();
 static psapi::sfm::ITexture* normal  = psapi::sfm::ITexture::create().release();
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {1200, 30}};
-static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {90, 30}};
+static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 30}};
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";

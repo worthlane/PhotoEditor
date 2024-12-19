@@ -120,6 +120,6 @@ plugins:
 	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/optionbar/optionbar.cpp -o $(BUILD_DIR)/optionbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
 	$(CXX) -dynamiclib plugins/menubar/files/filebar.cpp plugins/menubar/files/import.cpp plugins/menubar/files/export.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/files.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-#	$(CXX) -dynamiclib plugins/menubar/edit/edit.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/edit.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-#	$(CXX) -dynamiclib plugins/menubar/layer/layer.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/layer.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-#	$(CXX) -dynamiclib plugins/menubar/help/help.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/help.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/menubar/edit/edit.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/edit.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/menubar/layer/layer.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/layer.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/menubar/help/help.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/help.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
