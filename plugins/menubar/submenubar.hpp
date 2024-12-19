@@ -6,9 +6,9 @@
 #include "implementation/bar/bar_button.hpp"
 
 static const psapi::sfm::Color BACK_COLOR = psapi::sfm::Color(1, 1, 1);
-static const psapi::sfm::Color RELEASE_COLOR = psapi::sfm::Color(2, 168, 167);
+static const psapi::sfm::Color RELEASE_COLOR = psapi::sfm::Color(2, 129, 168);
 static const psapi::sfm::Color HOVER_COLOR = psapi::sfm::Color(2, 168, 167);
-static const psapi::sfm::Color PRESS_COLOR = psapi::sfm::Color(2, 168, 167);
+static const psapi::sfm::Color PRESS_COLOR = psapi::sfm::Color(2, 129, 168);
 static const psapi::sfm::Color NORMAL_COLOR = psapi::sfm::Color(1, 1, 1);
 
 static const psapi::sfm::IntRect SUBBUTTON_RECT = {{0, 0}, {268, 29}};
