@@ -1,6 +1,10 @@
 #include <string>
+#include <iostream>
+
+#include <SFML/Graphics.hpp>
 
 #include "../plugins/menubar/files/export.hpp"
+
 #include "implementation/sfm.hpp"
 
 ExportButton::ExportButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -31,30 +35,26 @@ bool ExportAction::execute(const Key& key)
     auto canvas = export_but_->canvas_;
     std::string& file_name = export_but_->name_;
 
-    std::unique_ptr<psapi::sfm::Image> image = std::make_unique<psapi::sfm::Image>();
-
-    //psapi::vec2u canvas_size = canvas->getSize();
-
     auto layer_id = canvas->getActiveLayerIndex();
     auto layer = canvas->getLayer(layer_id);
     auto temp_layer = canvas->getTempLayer();
-    auto size = image->getSize();
     auto canvas_size = canvas->getSize();
 
-    image->create(size.x, size.y);
+    sf::Image img;
+    img.create(canvas_size.x, canvas_size.y);
 
-    for (int x = 0; x < size.x && x < canvas_size.x; x++)
+    for (int x = 0; x < canvas_size.x; x++)
     {
-        for (int y = 0; y < size.y && x < canvas_size.y; y++)
+        for (int y = 0; y < canvas_size.y; y++)
         {
             psapi::vec2u pos = {x, y};
             psapi::sfm::Color pixel = layer->getPixel(pos);
 
-            image->setPixel(pos, pixel);
+            img.setPixel(pos.x, pos.y, sf::Color(pixel.r, pixel.g, pixel.b, pixel.a));
         }
     }
 
-    image->saveToFile(file_name);
+    img.saveToFile(file_name);
 
     return true;
 }
