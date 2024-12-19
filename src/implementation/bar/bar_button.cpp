@@ -4,6 +4,7 @@
 #include "implementation/bar/bar_button.hpp"
 
 static const char* MAIN_FONT = "assets/fonts/Stem_Medium.ttf";
+static const size_t FONT_SIZE = 18;
 
 // ======================================================
 
@@ -273,8 +274,8 @@ TextButton::TextButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec
 
     text_->setFillColor(&text_color_);
     text_->setString(name);
-    text_->setCharacterSize( 0.6 * size_.y);
-    text_gap_ = 1.f/3.f * size_.y;
+    text_->setCharacterSize(FONT_SIZE);
+    text_gap_ = {1.f/3.f * size_.y, (size.y - 1.2 * FONT_SIZE) / 2};
 }
 
 void TextButton::draw(psapi::IRenderWindow* renderWindow)
@@ -282,7 +283,7 @@ void TextButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
-    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_, pos_.y));
+    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_.x, pos_.y + text_gap_.y));
     renderWindow->draw(text_.get());
 }
 
@@ -524,16 +525,14 @@ TextMenuButton::TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const ps
     text_->setFillColor(&text_color_);
     text_->setString(name);
 
-    size_t char_size = 0.6 * size.y;
-    text_->setCharacterSize(char_size);
+    text_->setCharacterSize(FONT_SIZE);
 
     auto rect = text_->getGlobalBounds();
-    std::cout << name << " " << rect.pos.x << ", " << rect.pos.y << ", " << rect.size.x << ", " << rect.size.y << std::endl;
 
     if (need_centering)
-        text_gap_ = {(size.x - rect.size.x) / 2, (size.y - rect.size.y) / 2};
+        text_gap_ = {(size.x - rect.size.x) / 2, (size.y - 1.2 * FONT_SIZE) / 2};
     else
-        text_gap_ = {1.f/3.f * size_.y, 0};
+        text_gap_ = {1.f/3.f * size_.y, (size.y - 1.2 * FONT_SIZE) / 2};
 }
 
 void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)
@@ -541,7 +540,7 @@ void TextMenuButton::draw(psapi::IRenderWindow* renderWindow)
     if (!is_active_)
         return;
 
-    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_.x, pos_.y));
+    text_->setPos(psapi::sfm::vec2f(pos_.x + text_gap_.x, pos_.y + text_gap_.y));
     renderWindow->draw(text_.get());
 
     menu_->draw(renderWindow);
