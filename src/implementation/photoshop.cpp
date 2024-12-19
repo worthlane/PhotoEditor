@@ -20,7 +20,7 @@ psapi::sfm::IntRect psapi::getOptionsBarIntRect()
     return {{0, 30}, {SCREEN_LENGTH, 40}};
 }
 
-psapi::sfm::IntRect psapi::getInstrumentOptionsIntRect()
+psapi::sfm::IntRect psapi::getMenuBarIntRect()
 {
     return {{0, 0}, {0, 0}};
 }

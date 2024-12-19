@@ -1,9 +1,9 @@
 #ifndef API_CANVAS_HPP
 #define API_CANVAS_HPP
 
-#include "api_photoshop.hpp"
-#include "api_sfm.hpp"
-#include "api_memento.hpp"
+#include "api/api_photoshop.hpp"
+#include "api/api_sfm.hpp"
+#include "api/api_memento.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -116,4 +116,3 @@ public:
 } // namespace
 
 #endif // API_CANVAS_HPP
-

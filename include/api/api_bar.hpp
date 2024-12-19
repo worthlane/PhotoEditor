@@ -1,7 +1,7 @@
 #ifndef API_BAR_HPP
 #define API_BAR_HPP
 
-#include "api_photoshop.hpp"
+#include "api/api_photoshop.hpp"
 
 namespace psapi
 {

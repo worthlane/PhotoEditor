@@ -6,8 +6,8 @@
 #ifndef API_PHOTOSHOP_HPP
 #define API_PHOTOSHOP_HPP
 
-#include "api_actions.hpp"
-#include "api_sfm.hpp"
+#include "api/api_actions.hpp"
+#include "api/api_sfm.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -43,7 +43,7 @@ const wid_t kInvalidWindowId = -1;
 sfm::IntRect getCanvasIntRect();
 sfm::IntRect getToolbarIntRect();
 sfm::IntRect getOptionsBarIntRect();
-sfm::IntRect getInstrumentOptionsIntRect();
+sfm::IntRect getMenuBarIntRect();
 
 /**
  * @brief Get the size of the screen
