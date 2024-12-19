@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 
 #include "../plugins/geometry/geometry.hpp"
 
@@ -107,14 +108,9 @@ void GeometryButton::replaceOptions()
 
 void GeometryButton::createOptions()
 {
-    auto palette = psapi::IColorPalette::create();
-
-    psapi::sfm::Color col = shape_->getFillColor();
-
-    palette_ = palette.get();
-    palette_->setColor(col);
-
-    options_.push_back(std::move(palette));
+    auto root = psapi::getRootWindow();
+    palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
+    assert(palette_);
 }
 
 GeometryAction::GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, GeometryButton* button) :

@@ -5,7 +5,6 @@
 #include "implementation/bar/options.hpp"
 #include "style/design.hpp"
 
-
 static const psapi::vec2u STD_SIZE = {200,28};
 
 using psapi::sfm::Color;
@@ -23,6 +22,7 @@ ColorPalette::ColorPalette()
 {
     pos_ = {0, 0};
     size_ = STD_SIZE;
+    id_ = psapi::kColorPaletteId;
 
     current_ = psapi::sfm::IRectangleShape::create(STD_SIZE);
     current_->setFillColor(color_);
@@ -147,6 +147,9 @@ void ColorPalette::setColor(const psapi::sfm::Color &color)
 
 void ColorPalette::draw(psapi::IRenderWindow* renderWindow)
 {
+    if (!isActive())
+        return;
+    
     current_->draw(renderWindow);
 
     for (auto& variant : variants_)
@@ -157,6 +160,9 @@ void ColorPalette::draw(psapi::IRenderWindow* renderWindow)
 
 std::unique_ptr<psapi::IAction> ColorPalette::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
     return std::make_unique<ColorPaletteAction>(renderWindow, event, this);
 }
 

@@ -32,9 +32,13 @@ bool onLoadPlugin()
                                            back_rect.size,
                                            std::move(back_sprite));
 
+    std::unique_ptr<psapi::IColorPalette> color_palette = psapi::IColorPalette::create();
+    color_palette->setPos(back_rect.pos + psapi::sfm::vec2i(2, 2));
+
     auto root = psapi::getRootWindow();
 
     root->addWindow(std::move(bar));
+    root->addWindow(std::move(color_palette));
 }
 
 void onUnloadPlugin()

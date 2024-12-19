@@ -4,7 +4,7 @@
 #include "implementation/bar/bar_button.hpp"
 
 static const char* MAIN_FONT = "assets/fonts/Stem_Medium.ttf";
-static const size_t FONT_SIZE = 18;
+static const size_t FONT_SIZE = 15;
 
 // ======================================================
 

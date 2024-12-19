@@ -90,7 +90,10 @@ bool onLoadPlugin()
                                                     SUBBUTTON_RECT.size,
                                                     aboba, psapi::sfm::Color(255, 255, 255), canvas);*/
 
+    expandMenu(filebar, call_import_button.get());
     filebutton->addMenuItem(std::move(call_import_button));
+
+    expandMenu(filebar, call_export_button.get());
     filebutton->addMenuItem(std::move(call_export_button));
 }
 

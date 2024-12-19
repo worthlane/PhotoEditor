@@ -3,6 +3,8 @@
 
 #include "../plugins/brush/brush.hpp"
 
+#include "api/api_bar.hpp"
+
 static psapi::sfm::ITexture* brsh_text = nullptr;
 static psapi::sfm::ITexture* ers_text = nullptr;
 
@@ -196,10 +198,9 @@ void PaintButton::createOptions()
 {
     if (!fixed_color_)
     {
-        auto palette = psapi::IColorPalette::create();
-        palette->setColor(color_);
-        palette_ = palette.get();
-        options_.push_back(std::move(palette));
+        auto root = psapi::getRootWindow();
+        palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
+        assert(palette_);
     }
 }
 
