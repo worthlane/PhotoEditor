@@ -4,7 +4,6 @@
 #include "../plugins/menubar/files/filebar.hpp"
 #include "../plugins/menubar/files/import.hpp"
 #include "../plugins/menubar/files/export.hpp"
-#include "../plugins/menubar/submenubar.hpp"
 
 #include "style/design.hpp"
 
@@ -62,24 +61,12 @@ bool onLoadPlugin()
                                     filebar_pos + psapi::vec2i(SUBBUTTON_RECT.size.x + GAP.x, SUBBUTTON_RECT.size.y + GAP.y),
                                     psapi::vec2u(BACKGROUND_RECT.size.x, 31));
 
-    std::string litvin = "assets/litvin.jpg";
-    auto import = std::make_unique<ImportButton>(800, importbar.get(),
-                                                    psapi::vec2i(GAP.x / 2, GAP.y),
-                                                    SUBBUTTON_RECT.size,
-                                                    litvin, psapi::sfm::Color(255, 255, 255), canvas);
-
     std::string call_import_name = "Import";
     auto call_import_button = std::make_unique<CallSubMenuButton>(kFileImportMenuId, filebar,
                                                      psapi::vec2i(GAP.x / 2, GAP.y),
                                                      SUBBUTTON_RECT.size,
                                                      call_import_name, psapi::sfm::Color(255, 255, 255),
                                                      std::move(importbar), false);
-
-    std::string aboba = "assets/aboba.png";
-    auto export_b = std::make_unique<ExportButton>(801, exportbar.get(),
-                                                    psapi::vec2i(GAP.x / 2, GAP.y),
-                                                    SUBBUTTON_RECT.size,
-                                                    aboba, psapi::sfm::Color(255, 255, 255), canvas);
 
     std::string call_export_name = "Export";
     auto call_export_button = std::make_unique<CallSubMenuButton>(kFileExportMenuId, filebar,
@@ -88,9 +75,20 @@ bool onLoadPlugin()
                                                      call_export_name, psapi::sfm::Color(255, 255, 255),
                                                      std::move(exportbar), false);
 
+    createFileButtons<ImportButton>(call_import_button.get(), canvas);
+    createFileButtons<ExportButton>(call_export_button.get(), canvas);
 
-    call_import_button->addMenuItem(std::move(import));
-    call_export_button->addMenuItem(std::move(export_b));
+    /*std::string litvin = "assets/litvin.jpg";
+    auto import = std::make_unique<ImportButton>(800, importbar.get(),
+                                                    psapi::vec2i(GAP.x / 2, GAP.y),
+                                                    SUBBUTTON_RECT.size,
+                                                    litvin, psapi::sfm::Color(255, 255, 255), canvas);
+
+    std::string aboba = "assets/aboba.png";
+    auto export_b = std::make_unique<ExportButton>(801, exportbar.get(),
+                                                    psapi::vec2i(GAP.x / 2, GAP.y),
+                                                    SUBBUTTON_RECT.size,
+                                                    aboba, psapi::sfm::Color(255, 255, 255), canvas);*/
 
     filebutton->addMenuItem(std::move(call_import_button));
     filebutton->addMenuItem(std::move(call_export_button));

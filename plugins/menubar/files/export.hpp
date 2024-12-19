@@ -1,4 +1,4 @@
-#ifndef FILEEXORT_PLUGIN_HPP
+#ifndef FILEEXPORT_PLUGIN_HPP
 #define FILEEXPORT_PLUGIN_HPP
 
 #include "api/api_bar.hpp"
