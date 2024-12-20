@@ -21,15 +21,21 @@ private:
     psapi::ICanvas* canvas_ = nullptr;
 
     friend class NegativeAction;
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
-class NegativeAction : public AAction
+class NegativeAction : public AUndoableAction
 {
 public:
     NegativeAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, NegativeButton* filter);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
+
+    bool undo(const Key &key);
+    bool redo(const Key &key);
 
 private:
     NegativeButton* filter_ = nullptr;
@@ -48,15 +54,21 @@ private:
     psapi::ICanvas* canvas_ = nullptr;
 
     friend class BlurAction;
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
-class BlurAction : public AAction
+class BlurAction : public AUndoableAction
 {
 public:
     BlurAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BlurButton* filter);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
+
+    bool undo(const Key &key);
+    bool redo(const Key &key);
 
 private:
     BlurButton* filter_ = nullptr;
@@ -75,15 +87,21 @@ private:
     psapi::ICanvas* canvas_ = nullptr;
 
     friend class ContrastAction;
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
-class ContrastAction : public AAction
+class ContrastAction : public AUndoableAction
 {
 public:
     ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
+
+    bool undo(const Key &key);
+    bool redo(const Key &key);
 
 private:
     ContrastButton* filter_ = nullptr;
@@ -103,15 +121,21 @@ private:
     psapi::ICanvas* canvas_ = nullptr;
 
     friend class BareliefAction;
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
-class BareliefAction : public AAction
+class BareliefAction : public AUndoableAction
 {
 public:
     BareliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BareliefButton* filter);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
+
+    bool undo(const Key &key);
+    bool redo(const Key &key);
 
 private:
     BareliefButton* filter_ = nullptr;

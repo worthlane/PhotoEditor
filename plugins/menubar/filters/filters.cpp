@@ -32,7 +32,7 @@ std::unique_ptr<psapi::IAction> NegativeButton::createAction(const psapi::IRende
 }
 
 NegativeAction::NegativeAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, NegativeButton* filter) :
-                                AAction(render_window, event), filter_(filter)
+                                AUndoableAction(render_window, event), filter_(filter)
 {}
 
 bool NegativeAction::execute(const Key& key)
@@ -62,6 +62,7 @@ bool NegativeAction::execute(const Key& key)
         }
     }
 
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
     canvas->cleanTempLayer();
 
     return true;
@@ -69,7 +70,37 @@ bool NegativeAction::execute(const Key& key)
 
 bool NegativeAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool NegativeAction::undo(const Key &key)
+{
+    if (filter_->snapshots_.empty())
+        return false;
+
+    filter_->future_snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->snapshots_.back().release();
+
+    filter_->snapshots_.pop_back();
+
+    filter_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool NegativeAction::redo(const Key &key)
+{
+    if (filter_->future_snapshots_.empty())
+        return false;
+
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->future_snapshots_.back().release();
+    filter_->future_snapshots_.pop_back();
+    filter_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 BareliefButton::BareliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -92,7 +123,7 @@ std::unique_ptr<psapi::IAction> BareliefButton::createAction(const psapi::IRende
 }
 
 BareliefAction::BareliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BareliefButton* filter) :
-                                AAction(render_window, event), filter_(filter)
+                                AUndoableAction(render_window, event), filter_(filter)
 {}
 
 bool BareliefAction::execute(const Key& key)
@@ -137,6 +168,7 @@ bool BareliefAction::execute(const Key& key)
         }
     }
 
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
     canvas->cleanTempLayer();
 
     return true;
@@ -144,7 +176,37 @@ bool BareliefAction::execute(const Key& key)
 
 bool BareliefAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool BareliefAction::undo(const Key &key)
+{
+    if (filter_->snapshots_.empty())
+        return false;
+
+    filter_->future_snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->snapshots_.back().release();
+
+    filter_->snapshots_.pop_back();
+
+    filter_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool BareliefAction::redo(const Key &key)
+{
+    if (filter_->future_snapshots_.empty())
+        return false;
+
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->future_snapshots_.back().release();
+    filter_->future_snapshots_.pop_back();
+    filter_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 BlurButton::BlurButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -167,7 +229,7 @@ std::unique_ptr<psapi::IAction> BlurButton::createAction(const psapi::IRenderWin
 }
 
 BlurAction::BlurAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BlurButton* filter) :
-                                AAction(render_window, event), filter_(filter)
+                                AUndoableAction(render_window, event), filter_(filter)
 {}
 
 bool BlurAction::execute(const Key& key)
@@ -197,6 +259,7 @@ bool BlurAction::execute(const Key& key)
         }
     }
 
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
     canvas->cleanTempLayer();
 
     return true;
@@ -204,7 +267,37 @@ bool BlurAction::execute(const Key& key)
 
 bool BlurAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool BlurAction::undo(const Key &key)
+{
+    if (filter_->snapshots_.empty())
+        return false;
+
+    filter_->future_snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->snapshots_.back().release();
+
+    filter_->snapshots_.pop_back();
+
+    filter_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool BlurAction::redo(const Key &key)
+{
+    if (filter_->future_snapshots_.empty())
+        return false;
+
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->future_snapshots_.back().release();
+    filter_->future_snapshots_.pop_back();
+    filter_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
@@ -227,7 +320,7 @@ std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRende
 }
 
 ContrastAction::ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter) :
-                                AAction(render_window, event), filter_(filter)
+                                AUndoableAction(render_window, event), filter_(filter)
 {}
 
 bool ContrastAction::execute(const Key& key)
@@ -269,6 +362,7 @@ bool ContrastAction::execute(const Key& key)
         }
     }
 
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
     canvas->cleanTempLayer();
 
     return true;
@@ -276,7 +370,37 @@ bool ContrastAction::execute(const Key& key)
 
 bool ContrastAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool ContrastAction::undo(const Key &key)
+{
+    if (filter_->snapshots_.empty())
+        return false;
+
+    filter_->future_snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->snapshots_.back().release();
+
+    filter_->snapshots_.pop_back();
+
+    filter_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool ContrastAction::redo(const Key &key)
+{
+    if (filter_->future_snapshots_.empty())
+        return false;
+
+    filter_->snapshots_.push_back(std::move(filter_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = filter_->future_snapshots_.back().release();
+    filter_->future_snapshots_.pop_back();
+    filter_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 static psapi::sfm::Color calculate_gauss_blur(psapi::ILayer* layer, const psapi::vec2u& size, const psapi::vec2i pos, const std::vector<std::vector<double>>& gauss_matrix)

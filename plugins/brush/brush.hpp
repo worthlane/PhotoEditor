@@ -49,6 +49,9 @@ private:
 
     void replaceOptions();
     void createOptions();
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
 class PaintAction : public AUndoableAction

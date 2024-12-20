@@ -63,9 +63,6 @@ protected:
     State prev_state_ = State::Normal;
 
     void updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event);
-
-    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
-    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
 class PressButton : public ABarButton
