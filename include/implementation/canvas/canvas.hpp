@@ -2,6 +2,8 @@
 #define CANVAS_HPP
 
 #include "api/api_canvas.hpp"
+#include "api/api_memento.hpp"
+
 #include "implementation/canvas/scrollbar.hpp"
 
 class Layer : public psapi::ILayer

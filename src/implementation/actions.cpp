@@ -1,3 +1,6 @@
+#include <iostream>
+#include <cassert>
+
 #include "implementation/actions.hpp"
 
 static const size_t MAX_DEQUE_SIZE = 32;
@@ -26,13 +29,17 @@ bool ActionController::execute(std::unique_ptr<psapi::IAction> action)
 
     if (isUndoableAction(action.get()))
     {
-        psapi::IUndoableAction* act = dynamic_cast<psapi::IUndoableAction*>(action.get());
-        if (!act) return result;
+        psapi::IUndoableAction* act = dynamic_cast<psapi::IUndoableAction*>(action.release());
+        assert(act);
 
         undo_deque_.push_back(std::unique_ptr<psapi::IUndoableAction>(act));
 
         if (undo_deque_.size() > MAX_DEQUE_SIZE)
+        {
+            undo_deque_.front().release();
             undo_deque_.pop_front();
+        }
+
     }
 
     return result;
@@ -43,18 +50,19 @@ bool ActionController::undo()
     if (undo_deque_.empty())
         return false;
 
-    psapi::IUndoableAction* act = undo_deque_.back().get();
-    if (!act) return false;
+    std::unique_ptr<psapi::IUndoableAction> act = std::move(undo_deque_.back());
 
-    bool result = actionUndo(act);
+    bool result = false;
+
+    result = actionUndo(act.get());
+
     undo_deque_.pop_back();
+    redo_deque_.push_back(std::move(act));
 
-    if (!isUndoableAction(act))
+    if (redo_deque_.size() > MAX_DEQUE_SIZE)
     {
-        redo_deque_.push_back(std::unique_ptr<psapi::IUndoableAction>(act));
-
-        if (redo_deque_.size() > MAX_DEQUE_SIZE)
-            redo_deque_.pop_front();
+        redo_deque_.front().release();
+        redo_deque_.pop_front();
     }
 
     return result;
@@ -65,18 +73,17 @@ bool ActionController::redo()
     if (redo_deque_.empty())
         return false;
 
-    psapi::IUndoableAction* act = redo_deque_.back().get();
-    if (!act) return false;
+    std::unique_ptr<psapi::IUndoableAction> act = std::move(redo_deque_.back());
 
-    bool result = actionRedo(act);
+    bool result = actionRedo(act.get());
+
     redo_deque_.pop_back();
+    undo_deque_.push_back(std::move(act));
 
-    if (!isUndoableAction(act))
+    if (undo_deque_.size() > MAX_DEQUE_SIZE)
     {
-        undo_deque_.push_back(std::unique_ptr<psapi::IUndoableAction>(act));
-
-        if (undo_deque_.size() > MAX_DEQUE_SIZE)
-            undo_deque_.pop_front();
+        undo_deque_.front().release();
+        undo_deque_.pop_front();
     }
 
     return result;

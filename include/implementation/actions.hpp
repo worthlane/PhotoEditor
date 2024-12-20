@@ -10,7 +10,7 @@ class AAction : public psapi::IAction
 {
 public:
     AAction(const psapi::IRenderWindow* render_window, const psapi::Event& event);
-
+    
 protected:
     const psapi::IRenderWindow* render_window_;
     const psapi::Event& event_;

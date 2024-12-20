@@ -5,6 +5,8 @@
 #include "implementation/canvas/canvas.hpp"
 #include "implementation/utils.hpp"
 
+#include "implementation/memento.hpp"
+
 static const char* GRID = "assets/textures/psgrid.png";
 
 static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);
@@ -282,11 +284,40 @@ psapi::sfm::Color Canvas::getCanvasBaseColor() const
 
 std::unique_ptr<psapi::ICanvasSnapshot> Canvas::save()
 {
-    assert(0);
+    psapi::ILayer*  layer = getLayer(getActiveLayerIndex());
+
+    auto canvas_size = getSize();
+
+    std::unique_ptr<psapi::sfm::IImage> img = psapi::sfm::IImage::create();
+    img->create(canvas_size.x, canvas_size.y);
+
+    for (int x = 0; x < canvas_size.x; x++)
+    {
+        for (int y = 0; y < canvas_size.y; y++)
+        {
+            psapi::sfm::Color pixel = layer->getPixel({x, y});
+            img->setPixel(x, y, pixel);
+        }
+    }
+    return std::make_unique<ACanvasSnapshot>(std::move(img));;
 }
 void Canvas::restore(psapi::ICanvasSnapshot* snapshot)
 {
-    assert(0);
+    psapi::ILayer* layer = getLayer(getActiveLayerIndex());
+
+    ACanvasSnapshot* canvas_snapshot = dynamic_cast<ACanvasSnapshot *>(snapshot);
+
+    psapi::vec2u canvas_size = getSize();
+
+    for (int x = 0; x < canvas_size.x; x++)
+    {
+        for (int y = 0; y < canvas_size.y; y++)
+        {
+            auto pixel = canvas_snapshot->getImage()->getPixel(x, y);
+
+            layer->setPixel({x, y}, pixel);
+        }
+    }
 }
 
 void Canvas::draw(psapi::IRenderWindow* renderWindow)

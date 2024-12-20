@@ -3,6 +3,7 @@
 
 #include "api/api_bar.hpp"
 #include "api/api_canvas.hpp"
+#include "api/api_memento.hpp"
 
 #include "implementation/bar/bar_button.hpp"
 #include "implementation/actions.hpp"
@@ -48,12 +49,18 @@ private:
 
     void replaceOptions();
     void createOptions();
+
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> snapshots_;
+    std::vector<std::unique_ptr<psapi::ICanvasSnapshot>> future_snapshots_;
 };
 
-class PaintAction : public AAction
+class PaintAction : public AUndoableAction
 {
 public:
     PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button);
+
+    bool undo(const Key &key) override;
+    bool redo(const Key &key) override;
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;
@@ -61,10 +68,13 @@ private:
     PaintButton* button_;
 };
 
-class EraseAction : public AAction
+class EraseAction : public AUndoableAction
 {
 public:
     EraseAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button);
+
+    bool undo(const Key &key) override;
+    bool redo(const Key &key) override;
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;

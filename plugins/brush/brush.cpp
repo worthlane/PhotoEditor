@@ -84,7 +84,7 @@ void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
 }
 
 PaintAction::PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button) :
-                        AAction(render_window, event), button_(button)
+                        AUndoableAction(render_window, event), button_(button)
 {
 }
 
@@ -125,7 +125,37 @@ bool PaintAction::execute(const Key& key)
 
 bool PaintAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool PaintAction::undo(const Key &key)
+{
+    if (button_->snapshots_.empty())
+        return false;
+
+    button_->future_snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->snapshots_.back().release();
+
+    button_->snapshots_.pop_back();
+
+    button_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool PaintAction::redo(const Key &key)
+{
+    if (button_->future_snapshots_.empty())
+        return false;
+
+    button_->snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->future_snapshots_.back().release();
+    button_->future_snapshots_.pop_back();
+    button_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 // *********** PAINT BUTTON ***************
@@ -170,7 +200,10 @@ std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWi
     else
     {
         if (array_.size())
+        {
+            snapshots_.push_back(std::move(canvas_->save()));
             canvas_->cleanTempLayer();
+        }
 
         array_.clear();
     }
@@ -211,7 +244,7 @@ void PaintButton::createOptions()
 }
 
 EraseAction::EraseAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button)
-    : AAction(render_window, event), button_(button)
+    : AUndoableAction(render_window, event), button_(button)
 {
 }
 
@@ -250,5 +283,33 @@ bool EraseAction::execute(const Key& key)
 }
 bool EraseAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool EraseAction::undo(const Key &key)
+{
+    if (button_->snapshots_.empty())
+        return false;
+
+    psapi::ICanvasSnapshot* snapshot = button_->snapshots_.back().release();
+
+    button_->snapshots_.pop_back();
+
+    button_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool EraseAction::redo(const Key &key)
+{
+    if (button_->future_snapshots_.empty())
+        return false;
+
+    button_->snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->future_snapshots_.back().release();
+    button_->future_snapshots_.pop_back();
+    button_->canvas_->restore(snapshot);
+
+    return true;
 }

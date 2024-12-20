@@ -46,7 +46,7 @@ OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
 
 API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
 
-IMPLEMENTATION_SOURCES = sfm.cpp photoshop.cpp actions.cpp utils.cpp
+IMPLEMENTATION_SOURCES = sfm.cpp photoshop.cpp actions.cpp utils.cpp memento.cpp
 IMPLEMENTATION_DIR = $(SOURCE_DIR)/implementation
 
 API_SOURCES = api_system.cpp
