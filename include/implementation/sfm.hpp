@@ -198,7 +198,7 @@ public:
 
 protected:
 
-    std::unique_ptr<Image> cached_image_;
+    mutable std::unique_ptr<Image> cached_image_;
     /*vec2i pos_;
     vec2u size_;
     vec2f scale_;
@@ -282,6 +282,8 @@ public:
     virtual void draw(IRenderWindow *window) const override;
 private:
     sf::CircleShape shape_;
+
+    mutable bool update_flag_ = false;
 };
 
 

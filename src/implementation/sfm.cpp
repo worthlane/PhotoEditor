@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 
 #include "implementation/sfm.hpp"
 
@@ -732,7 +733,7 @@ void RectangleShape::move(const vec2f &offset)
 //                          ELLIPSE SHAPE
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-EllipseShape::EllipseShape(unsigned int width, unsigned int height) : shape_(width)
+EllipseShape::EllipseShape(unsigned int width, unsigned int height) : shape_(width / 2.f)
 {
     setSize({width, height});
 }
@@ -756,59 +757,61 @@ void EllipseShape::setTexture(const ITexture *texture)
 {
     const auto sfm_texture = dynamic_cast<const sfm::Texture*>(texture);
 
-    if (sfm_texture)
-    {
-        shape_.setTexture(&sfm_texture->texture_);
-    }
+    shape_.setTexture(&sfm_texture->texture_);
+
+    update_flag_ = true;
 }
 
 void EllipseShape::setFillColor(const Color &color)
 {
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+    update_flag_ = true;
 }
 
 void EllipseShape::setPosition(const vec2i &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+    update_flag_ = true;
 }
 
 void EllipseShape::setPosition(const vec2f &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+    update_flag_ = true;
 }
 
 void EllipseShape::setPosition(const vec2d &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+    update_flag_ = true;
 }
 
 void EllipseShape::setScale(const vec2f &scale)
 {
     shape_.setScale(scale.x, scale.y);
+    update_flag_ = true;
 }
 
 void EllipseShape::setSize(const vec2u &size)
 {
-    assert(0 && "NOT IMPLEMENTED");
-    shape_.setRadius(size.x);
-
-    psapi::sfm::vec2f scale = getScale();
-
-    scale = psapi::sfm::vec2f(1, static_cast<float>(size.y) / static_cast<float>(size.x)) * scale;
-
-    shape_.setScale(sf::Vector2f(scale.x, scale.y));
+    shape_.setRadius(static_cast<float>(size.x) / 2.f);
+    shape_.setScale(1.f, static_cast<float>(size.y) / static_cast<float>(size.x));
+    update_flag_ = true;
 }
 void EllipseShape::setRotation(float angle)
 {
     shape_.setRotation(angle);
+    update_flag_ = true;
 }
 void EllipseShape::setOutlineColor(const Color &color)
 {
     shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
+    update_flag_ = true;
 }
 void EllipseShape::setOutlineThickness(float thickness)
 {
     shape_.setOutlineThickness(thickness);
+    update_flag_ = true;
 }
 
 float EllipseShape::getRotation() const
@@ -833,10 +836,10 @@ const Color& EllipseShape::getFillColor() const
 }
 vec2u EllipseShape::getSize() const
 {
-    assert(0 && "NOT IMPLEMENTED");
-    psapi::sfm::vec2f scale = getScale();
+    auto radius = shape_.getRadius();
 
-    return {static_cast<unsigned int>(shape_.getRadius() * scale.x), static_cast<unsigned int>(shape_.getRadius() * scale.y)};
+    return {static_cast<unsigned int>(radius * 2.f * shape_.getScale().x),
+            static_cast<unsigned int>(radius * 2.f * shape_.getScale().y)};
 }
 
 float EllipseShape::getOutlineThickness() const
@@ -853,35 +856,47 @@ const Color& EllipseShape::getOutlineColor() const
 
 const IImage* EllipseShape::getImage() const
 {
-    vec2u size = getSize();
+    if (update_flag_)
+    {
+        vec2u size = getSize();
 
-    if (size.x <= 0 || size.y <= 0)
-        return cached_image_.get();
+        if (size.x <= 0 || size.y <= 0)
+            return cached_image_.get();
 
-    sf::RenderTexture render_texture;
-    if (!render_texture.create(SCREEN.x, SCREEN.y))
-        return nullptr;
+        sf::RenderTexture render_texture;
+        if (!render_texture.create(SCREEN.x, SCREEN.y))
+            return nullptr;
 
-    render_texture.clear(sf::Color::Transparent);
-    render_texture.draw(shape_);
-    render_texture.display();
+        render_texture.clear(sf::Color::Transparent);
+        render_texture.draw(shape_);
+        render_texture.display();
 
-    sf::Image image = render_texture.getTexture().copyToImage();
+        sf::Image image = render_texture.getTexture().copyToImage();
 
-    cached_image_->create(image.getSize().x, image.getSize().y,
-                        reinterpret_cast<const Color*>(image.getPixelsPtr()));
+        cached_image_ = std::make_unique<Image>();
+        cached_image_->create(image.getSize().x, image.getSize().y,
+                            reinterpret_cast<const Color*>(image.getPixelsPtr()));
+
+        cached_image_->setPos({0, 0});
+
+        update_flag_ = false;
+    }
+
 
     return cached_image_.get();
 }
 
 void EllipseShape::draw(IRenderWindow *window) const
 {
-    assert(0 && "NOT IMPLEMENTED");
+    auto desktop = static_cast<RenderWindow*>(window);
+    desktop->getWindow().draw(shape_);
 }
 
 void EllipseShape::move(const vec2f &offset)
 {
-    assert(0 && "NOT IMPLEMENTED");
+    shape_.move(offset.x, offset.y);
+
+    update_flag_ = true;
 }
 
 } // sfm

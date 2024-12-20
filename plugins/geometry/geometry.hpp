@@ -53,6 +53,47 @@ private:
     GeometryButton* button_;
 };
 
+class LineButton : public SwitchButton
+{
+public:
+    LineButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+                 std::unique_ptr<psapi::sfm::ISprite> sprite);
+
+    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+
+private:
+    std::unique_ptr<psapi::sfm::IShape> shape_;
+    psapi::ICanvas* canvas_ = nullptr;
+
+    psapi::IColorPalette* palette_ = nullptr;
+    psapi::IOpacityOption* opacity_ = nullptr;
+    psapi::IThicknessOption* thickness_ = nullptr;
+
+    psapi::sfm::vec2i catch_pos_;
+
+    psapi::IOptionsBar* options_bar_;
+
+    bool has_options_ = false;
+
+    void replaceOptions();
+    void createOptions();
+
+    friend class LineAction;
+};
+
+class LineAction : public AAction
+{
+public:
+    LineAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, LineButton* button);
+
+    virtual bool execute   (const Key& key) override;
+    virtual bool isUndoable(const Key& key) override;
+private:
+    LineButton* button_;
+};
+
 static const psapi::wid_t kRectangleButtonId = 228;
+static const psapi::wid_t kEllipseButtonId = 229;
+static const psapi::wid_t kLineButtonId = 230;
 
 #endif // GEOMETRY_PLUGIN_HPP
