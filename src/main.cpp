@@ -17,7 +17,7 @@
 static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dylib", "build/toolbar.dylib",
                                                       "build/optionbar.dylib", "build/menubar.dylib",
                                                       "build/brush.dylib", "build/geometry.dylib", "build/filters.dylib",
-                                                      "build/files.dylib", "build/edit.dylib", "build/lib_unsharp_mask.dylib"};//, "build/layer.dylib", "build/help.dylib"};
+                                                      "build/files.dylib", "build/edit.dylib"}; //"build/lib_unsharp_mask.dylib"};//, "build/layer.dylib", "build/help.dylib"};
 static       std::vector<void*> dll_ptrs;
 
 static const char* LOAD_PLUGIN   = "onLoadPlugin";

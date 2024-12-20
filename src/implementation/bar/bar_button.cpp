@@ -401,11 +401,11 @@ bool AMenuButton::isWindowContainer() const
 
 void AMenuButton::addMenuItem(std::unique_ptr<psapi::IWindow> item)
 {
-    if (item->getId() == psapi::kInvalidWindowId)
+    /*if (item->getId() == psapi::kInvalidWindowId)
     {
         item->setPos({181, 150});
         item->setSize({270, 30});
-    }
+    }*/
 
     menu_->addWindow(std::move(item));
 }
