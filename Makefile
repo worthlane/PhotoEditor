@@ -27,6 +27,7 @@ LOCATION_FLAG  = -I $(HOME)/$(INCLUDE_DIR)
 CXXFLAGS  += $(LIB_INCLUDE)
 
 BUILD_DIR   = build
+MY_BUILD = build/mine
 
 DOXYFILE = Doxyfile
 DOXYBUILD = doxygen $(DOXYFILE)
@@ -38,13 +39,13 @@ DOXYBUILD = doxygen $(DOXYFILE)
 SOURCES = main.cpp
 SOURCE_DIR = src
 
-OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+OBJECTS = $(SOURCES:%.cpp=$(MY_BUILD)/%.o)
 
 # ==============================================================
 #						 API
 # ==============================================================
 
-API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dll
+API_TARGET_DLL = $(BUILD_DIR)/libapi_photoshop.dylib
 
 IMPLEMENTATION_SOURCES = sfm.cpp photoshop.cpp actions.cpp utils.cpp memento.cpp
 IMPLEMENTATION_DIR = $(SOURCE_DIR)/implementation
@@ -61,11 +62,11 @@ CANVAS_DIR     = $(IMPLEMENTATION_DIR)/canvas
 BAR_SOURCES = bar_button.cpp bar_base.cpp options.cpp
 BAR_DIR = $(IMPLEMENTATION_DIR)/bar
 
-IMPLEMENTATION_OBJECTS = $(IMPLEMENTATION_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-STYLE_OBJECTS = $(STYLE_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-API_OBJECTS = $(API_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-BAR_OBJECTS = $(BAR_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
-CANVAS_OBJECTS = $(CANVAS_SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+IMPLEMENTATION_OBJECTS = $(IMPLEMENTATION_SOURCES:%.cpp=$(MY_BUILD)/%.o)
+STYLE_OBJECTS = $(STYLE_SOURCES:%.cpp=$(MY_BUILD)/%.o)
+API_OBJECTS = $(API_SOURCES:%.cpp=$(MY_BUILD)/%.o)
+BAR_OBJECTS = $(BAR_SOURCES:%.cpp=$(MY_BUILD)/%.o)
+CANVAS_OBJECTS = $(CANVAS_SOURCES:%.cpp=$(MY_BUILD)/%.o)
 
 
 # ==============================================================
@@ -78,7 +79,7 @@ all: $(API_TARGET_DLL) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $^ -o $@ $(CXXFLAGS) $(API_TARGET_DLL)
 
-$(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
 # -------------------------------------------------------------------------------
@@ -86,19 +87,19 @@ $(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 $(API_TARGET_DLL): $(API_OBJECTS) $(IMPLEMENTATION_OBJECTS) $(STYLE_OBJECTS) $(CANVAS_OBJECTS) $(BAR_OBJECTS)
 	$(CXX) -dynamiclib $^ -o $@ $(CXXFLAGS)
 
-$(BUILD_DIR)/%.o : $(API_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(API_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(STYLE_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(STYLE_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(CANVAS_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(CANVAS_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(BAR_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(BAR_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-$(BUILD_DIR)/%.o : $(IMPLEMENTATION_DIR)/%.cpp
+$(MY_BUILD)/%.o : $(IMPLEMENTATION_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
 # -------------------------------------------------------------------------------
@@ -106,20 +107,20 @@ $(BUILD_DIR)/%.o : $(IMPLEMENTATION_DIR)/%.cpp
 .PHONY: clean makedirs plugins
 
 clean:
-	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.dll $(BUILD_DIR)/*.so $(BUILD_DIR)/*.dSYM
+	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.dylib $(BUILD_DIR)/*.so $(BUILD_DIR)/*.dSYM $(MY_BUILD)/*.o $(MY_BUILD)/*.dll
 
 makedirs:
 	mkdir -p $(BUILD_DIR)
 
 plugins:
-	$(CXX) -dynamiclib plugins/canvas/canvas.cpp -o $(BUILD_DIR)/canvas.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/toolbar/toolbar.cpp -o $(BUILD_DIR)/toolbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/menubar.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/menubar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/brush/brush.cpp plugins/brush/catmull.cpp -o $(BUILD_DIR)/brush.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/filters/filters.cpp plugins/menubar/filters/filtersbar.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/filters.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/optionbar/optionbar.cpp -o $(BUILD_DIR)/optionbar.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/files/filebar.cpp plugins/menubar/files/import.cpp plugins/menubar/files/export.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/files.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/edit/edit.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/edit.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/layer/layer.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/layer.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
-	$(CXX) -dynamiclib plugins/menubar/help/help.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/help.dll $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dll
+	$(CXX) -dynamiclib plugins/canvas/canvas.cpp -o $(BUILD_DIR)/canvas.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/toolbar/toolbar.cpp -o $(BUILD_DIR)/toolbar.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/menubar.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/menubar.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/brush/brush.cpp plugins/brush/catmull.cpp -o $(BUILD_DIR)/brush.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/filters/filters.cpp plugins/menubar/filters/filtersbar.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/filters.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/geometry/geometry.cpp -o $(BUILD_DIR)/geometry.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/optionbar/optionbar.cpp -o $(BUILD_DIR)/optionbar.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/files/filebar.cpp plugins/menubar/files/import.cpp plugins/menubar/files/export.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/files.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/edit/edit.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/edit.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/layer/layer.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/layer.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+	$(CXX) -dynamiclib plugins/menubar/help/help.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/help.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
