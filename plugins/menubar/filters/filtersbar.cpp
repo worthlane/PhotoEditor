@@ -25,8 +25,8 @@ bool onLoadPlugin()
                                                     neg_name, psapi::sfm::Color(255, 255, 255),
                                                     -1, canvas);
 
-    std::string barel_name = "Barelief";
-    auto barel = std::make_unique<BareliefButton>(kBareliefFilterButtonId, filtersbar,
+    std::string barel_name = "BasRelief";
+    auto barel = std::make_unique<BasReliefButton>(kBasReliefFilterButtonId, filtersbar,
                                                   psapi::vec2i(GAP.x / 2, 2 * GAP.y + SUBBUTTON_RECT.size.y),
                                                   psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                   barel_name, psapi::sfm::Color(255, 255, 255),
@@ -39,8 +39,8 @@ bool onLoadPlugin()
                                                blur_name, psapi::sfm::Color(255, 255, 255),
                                                canvas);
 
-    std::string contrast_name = "Contrast";
-    auto contrast = std::make_unique<ContrastButton>(kContrastFilterButtonId, filtersbar,
+    std::string contrast_name = "UnSharpMask";
+    auto contrast = std::make_unique<UnSharpMaskButton>(kUnSharpMaskFilterButtonId, filtersbar,
                                                psapi::vec2i(GAP.x / 2, 4 * GAP.y + 3 * SUBBUTTON_RECT.size.y),
                                                psapi::vec2u(SUBBUTTON_RECT.size.x, SUBBUTTON_RECT.size.y),
                                                contrast_name, psapi::sfm::Color(255, 255, 255),

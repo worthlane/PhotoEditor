@@ -123,6 +123,7 @@ std::unique_ptr<psapi::IAction> GeometryButton::createAction(const psapi::IRende
     if (!LMB_down && (catch_pos_.x != NO_CATCH.x || catch_pos_.y != NO_CATCH.y))
     {
         catch_pos_ = NO_CATCH;
+        snapshots_.push_back(std::move(canvas_->save()));
         canvas_->cleanTempLayer();
     }
 
@@ -151,7 +152,7 @@ void GeometryButton::createOptions()
 }
 
 GeometryAction::GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, GeometryButton* button) :
-                                AAction(render_window, event), button_(button)
+                                AUndoableAction(render_window, event), button_(button)
 {}
 
 bool GeometryAction::execute(const Key& key)
@@ -212,7 +213,37 @@ bool GeometryAction::execute(const Key& key)
 
 bool GeometryAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool GeometryAction::undo(const Key &key)
+{
+    if (button_->snapshots_.empty())
+        return false;
+
+    button_->future_snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->snapshots_.back().release();
+
+    button_->snapshots_.pop_back();
+
+    button_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool GeometryAction::redo(const Key &key)
+{
+    if (button_->future_snapshots_.empty())
+        return false;
+
+    button_->snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->future_snapshots_.back().release();
+    button_->future_snapshots_.pop_back();
+    button_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 // ===================
@@ -255,6 +286,7 @@ std::unique_ptr<psapi::IAction> LineButton::createAction(const psapi::IRenderWin
     if (!LMB_down && (catch_pos_.x != NO_CATCH.x || catch_pos_.y != NO_CATCH.y))
     {
         catch_pos_ = NO_CATCH;
+        snapshots_.push_back(std::move(canvas_->save()));
         canvas_->cleanTempLayer();
     }
 
@@ -287,7 +319,7 @@ void LineButton::createOptions()
 }
 
 LineAction::LineAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, LineButton* button) :
-                                AAction(render_window, event), button_(button)
+                                AUndoableAction(render_window, event), button_(button)
 {}
 
 bool LineAction::execute(const Key& key)
@@ -312,7 +344,6 @@ bool LineAction::execute(const Key& key)
 
     if (event_.type == psapi::sfm::Event::MouseMoved && LMB_down)
     {
-
         psapi::sfm::vec2i shape_pos = {shape->getPosition().x, shape->getPosition().y};
         auto shape_size = shape->getSize();
 
@@ -349,7 +380,37 @@ bool LineAction::execute(const Key& key)
 
 bool LineAction::isUndoable(const Key& key)
 {
-    return false;
+    return true;
+}
+
+bool LineAction::undo(const Key &key)
+{
+    if (button_->snapshots_.empty())
+        return false;
+
+    button_->future_snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->snapshots_.back().release();
+
+    button_->snapshots_.pop_back();
+
+    button_->canvas_->restore(snapshot);
+
+    return true;
+}
+
+bool LineAction::redo(const Key &key)
+{
+    if (button_->future_snapshots_.empty())
+        return false;
+
+    button_->snapshots_.push_back(std::move(button_->canvas_->save()));
+
+    psapi::ICanvasSnapshot* snapshot = button_->future_snapshots_.back().release();
+    button_->future_snapshots_.pop_back();
+    button_->canvas_->restore(snapshot);
+
+    return true;
 }
 
 

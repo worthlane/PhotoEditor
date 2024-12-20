@@ -103,13 +103,13 @@ bool NegativeAction::redo(const Key &key)
     return true;
 }
 
-BareliefButton::BareliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+BasReliefButton::BasReliefButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas) :
                  TextButton(id, bar, pos, size, name, color), k_(k), canvas_(canvas)
 {}
 
-std::unique_ptr<psapi::IAction> BareliefButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+std::unique_ptr<psapi::IAction> BasReliefButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return std::make_unique<IdleAction>(renderWindow, event);
@@ -119,14 +119,14 @@ std::unique_ptr<psapi::IAction> BareliefButton::createAction(const psapi::IRende
     if (state_ != PressButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
 
-    return std::make_unique<BareliefAction>(renderWindow, event, this);
+    return std::make_unique<BasReliefAction>(renderWindow, event, this);
 }
 
-BareliefAction::BareliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BareliefButton* filter) :
+BasReliefAction::BasReliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BasReliefButton* filter) :
                                 AUndoableAction(render_window, event), filter_(filter)
 {}
 
-bool BareliefAction::execute(const Key& key)
+bool BasReliefAction::execute(const Key& key)
 {
     auto canvas = filter_->canvas_;
     auto k = filter_->k_;
@@ -174,12 +174,12 @@ bool BareliefAction::execute(const Key& key)
     return true;
 }
 
-bool BareliefAction::isUndoable(const Key& key)
+bool BasReliefAction::isUndoable(const Key& key)
 {
     return true;
 }
 
-bool BareliefAction::undo(const Key &key)
+bool BasReliefAction::undo(const Key &key)
 {
     if (filter_->snapshots_.empty())
         return false;
@@ -195,7 +195,7 @@ bool BareliefAction::undo(const Key &key)
     return true;
 }
 
-bool BareliefAction::redo(const Key &key)
+bool BasReliefAction::redo(const Key &key)
 {
     if (filter_->future_snapshots_.empty())
         return false;
@@ -300,13 +300,13 @@ bool BlurAction::redo(const Key &key)
     return true;
 }
 
-ContrastButton::ContrastButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
+UnSharpMaskButton::UnSharpMaskButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas) :
                  TextButton(id, bar, pos, size, name, color), canvas_(canvas)
 {}
 
-std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+std::unique_ptr<psapi::IAction> UnSharpMaskButton::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
 {
     if (!isActive())
         return std::make_unique<IdleAction>(renderWindow, event);
@@ -316,14 +316,14 @@ std::unique_ptr<psapi::IAction> ContrastButton::createAction(const psapi::IRende
     if (state_ != PressButton::State::Released)
         return std::make_unique<IdleAction>(renderWindow, event);
 
-    return std::make_unique<ContrastAction>(renderWindow, event, this);
+    return std::make_unique<UnSharpMaskAction>(renderWindow, event, this);
 }
 
-ContrastAction::ContrastAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ContrastButton* filter) :
+UnSharpMaskAction::UnSharpMaskAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, UnSharpMaskButton* filter) :
                                 AUndoableAction(render_window, event), filter_(filter)
 {}
 
-bool ContrastAction::execute(const Key& key)
+bool UnSharpMaskAction::execute(const Key& key)
 {
     auto canvas = filter_->canvas_;
 
@@ -368,12 +368,12 @@ bool ContrastAction::execute(const Key& key)
     return true;
 }
 
-bool ContrastAction::isUndoable(const Key& key)
+bool UnSharpMaskAction::isUndoable(const Key& key)
 {
     return true;
 }
 
-bool ContrastAction::undo(const Key &key)
+bool UnSharpMaskAction::undo(const Key &key)
 {
     if (filter_->snapshots_.empty())
         return false;
@@ -389,7 +389,7 @@ bool ContrastAction::undo(const Key &key)
     return true;
 }
 
-bool ContrastAction::redo(const Key &key)
+bool UnSharpMaskAction::redo(const Key &key)
 {
     if (filter_->future_snapshots_.empty())
         return false;
