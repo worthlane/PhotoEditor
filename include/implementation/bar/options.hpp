@@ -34,7 +34,7 @@ public:
 protected:
     psapi::wid_t id_ = psapi::kColorPaletteId;
     const psapi::IWindow* parent_ = nullptr;
-    bool is_active_ = true;
+    bool is_active_ = false;
 
     psapi::vec2i pos_ = {0, 0};
     psapi::vec2u size_ = {0, 0};
@@ -99,7 +99,7 @@ public:
 protected:
     psapi::wid_t id_ = psapi::kOpacityBarId;
     const psapi::IWindow* parent_ = nullptr;
-    bool is_active_ = true;
+    bool is_active_ = false;
 
     float opacity_ = 1;
 
@@ -179,7 +179,7 @@ public:
 protected:
     psapi::wid_t id_ = psapi::kThicknessBarId;
     const psapi::IWindow* parent_ = nullptr;
-    bool is_active_ = true;
+    bool is_active_ = false;
 
     float thickness_ = 0.2;
 

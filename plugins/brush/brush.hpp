@@ -22,12 +22,12 @@ class PaintButton : public SwitchButton
 public:
     PaintButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
-                 const psapi::sfm::Color& color, const size_t radius, const bool fixed_color = false, const bool fixed_size = false);
+                 const size_t radius, const bool is_eraser = false);
 
     virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
-    psapi::sfm::Color color_;
+    psapi::sfm::Color color_ = {255, 255, 255, 255};
     size_t radius_; // max_radius
     psapi::ICanvas* canvas_;
 
@@ -37,15 +37,14 @@ private:
 
     psapi::IOptionsBar* options_bar_;
 
-    bool fixed_color_ = false;
-    bool fixed_size_  = false;
+    bool is_eraser_ = false;
 
     InterpolationArray array_;
 
-    std::vector<std::unique_ptr<psapi::IWindow>> options_;
     bool has_options_ = false;
 
     friend class PaintAction;
+    friend class EraseAction;
 
     void replaceOptions();
     void createOptions();
@@ -55,6 +54,17 @@ class PaintAction : public AAction
 {
 public:
     PaintAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button);
+
+    virtual bool execute   (const Key& key) override;
+    virtual bool isUndoable(const Key& key) override;
+private:
+    PaintButton* button_;
+};
+
+class EraseAction : public AAction
+{
+public:
+    EraseAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, PaintButton* button);
 
     virtual bool execute   (const Key& key) override;
     virtual bool isUndoable(const Key& key) override;

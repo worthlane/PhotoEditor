@@ -43,10 +43,11 @@ bool onLoadPlugin()
 
     auto root = psapi::getRootWindow();
 
+    bar->addWindow(std::move(color_palette));
+    bar->addWindow(std::move(thickness_opt));
+    bar->addWindow(std::move(opacity_opt));
+
     root->addWindow(std::move(bar));
-    root->addWindow(std::move(color_palette));
-    root->addWindow(std::move(thickness_opt));
-    root->addWindow(std::move(opacity_opt));
 }
 
 void onUnloadPlugin()

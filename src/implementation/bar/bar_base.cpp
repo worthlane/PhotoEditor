@@ -309,5 +309,8 @@ void AOptionsBar::setPos(const psapi::vec2i& pos)
 
 void AOptionsBar::removeAllOptions()
 {
-    options_.clear();
+    for (auto& option : options_)
+    {
+        option->forceDeactivate();
+    }
 }

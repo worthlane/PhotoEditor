@@ -97,12 +97,6 @@ void GeometryButton::replaceOptions()
 
     createOptions();
 
-    for (auto& option : options_)
-    {
-        options_bar_->addWindow(std::move(option));
-    }
-
-    options_.clear();
     has_options_ = true;
 }
 
@@ -110,9 +104,11 @@ void GeometryButton::createOptions()
 {
     auto root = psapi::getRootWindow();
     palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
+    palette_->forceActivate();
     assert(palette_);
 
     opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
+    opacity_->forceActivate();
     assert(opacity_);
 }
 

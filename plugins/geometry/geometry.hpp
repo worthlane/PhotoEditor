@@ -33,7 +33,7 @@ private:
     psapi::sfm::vec2i catch_pos_;
 
     psapi::IOptionsBar* options_bar_;
-    std::vector<std::unique_ptr<psapi::IWindow>> options_;
+
     bool has_options_ = false;
 
     void replaceOptions();
