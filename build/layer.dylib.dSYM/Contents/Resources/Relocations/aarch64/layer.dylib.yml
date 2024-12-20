@@ -1,0 +1,56 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     'build/layer.dylib'
+relocations:
+  - { offsetInCU: 0x37, offset: 0x37, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xED7, offset: 0xED7, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xEF2, offset: 0xEF2, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xF0D, offset: 0xF0D, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xF28, offset: 0xF28, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xF43, offset: 0xF43, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0xF74, offset: 0xF74, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x18F70, symBinAddr: 0x8000, symSize: 0x0 }
+  - { offsetInCU: 0x3EF3, offset: 0x3EF3, size: 0x8, addend: 0x0, symName: __ZNSt3__124__put_character_sequenceB7v160006IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_PKS4_m, symObjAddr: 0x68, symBinAddr: 0x29DC, symSize: 0x164 }
+  - { offsetInCU: 0x5F77, offset: 0x5F77, size: 0x8, addend: 0x0, symName: __ZNSt3__116__pad_and_outputB7v160006IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_, symObjAddr: 0x1CC, symBinAddr: 0x2B40, symSize: 0x19C }
+  - { offsetInCU: 0x67EE, offset: 0x67EE, size: 0x8, addend: 0x0, symName: __ZNSt3__120__throw_length_errorB7v160006EPKc, symObjAddr: 0x388, symBinAddr: 0x2CFC, symSize: 0x50 }
+  - { offsetInCU: 0x909B, offset: 0x909B, size: 0x8, addend: 0x0, symName: _onLoadPlugin, symObjAddr: 0x0, symBinAddr: 0x2974, symSize: 0x64 }
+  - { offsetInCU: 0x9162, offset: 0x9162, size: 0x8, addend: 0x0, symName: _onUnloadPlugin, symObjAddr: 0x64, symBinAddr: 0x29D8, symSize: 0x4 }
+  - { offsetInCU: 0x9181, offset: 0x9181, size: 0x8, addend: 0x0, symName: _onUnloadPlugin, symObjAddr: 0x64, symBinAddr: 0x29D8, symSize: 0x4 }
+  - { offsetInCU: 0x967B, offset: 0x967B, size: 0x8, addend: 0x0, symName: __ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB7v160006Ev, symObjAddr: 0x374, symBinAddr: 0x2CE8, symSize: 0x14 }
+  - { offsetInCU: 0x96A5, offset: 0x96A5, size: 0x8, addend: 0x0, symName: __ZNSt3__120__throw_length_errorB7v160006EPKc, symObjAddr: 0x388, symBinAddr: 0x2CFC, symSize: 0x50 }
+  - { offsetInCU: 0x96B0, offset: 0x96B0, size: 0x8, addend: 0x0, symName: __ZNSt3__116__pad_and_outputB7v160006IcNS_11char_traitsIcEEEENS_19ostreambuf_iteratorIT_T0_EES6_PKS4_S8_S8_RNS_8ios_baseES4_.cold.1, symObjAddr: 0x3FC, symBinAddr: 0x3B24, symSize: 0x24 }
+  - { offsetInCU: 0x97EC, offset: 0x97EC, size: 0x8, addend: 0x0, symName: __ZNSt12length_errorC1B7v160006EPKc, symObjAddr: 0x3D8, symBinAddr: 0x2D4C, symSize: 0x24 }
+  - { offsetInCU: 0x37, offset: 0x98A9, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0x9AD, offset: 0xA21F, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0x9C8, offset: 0xA23A, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0x9E3, offset: 0xA255, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0x9FE, offset: 0xA270, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0xA19, offset: 0xA28B, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0xA40, offset: 0xA2B2, size: 0x8, addend: 0x0, symName: __MergedGlobals, symObjAddr: 0x29D00, symBinAddr: 0x8030, symSize: 0x0 }
+  - { offsetInCU: 0x9BC7, offset: 0x13439, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBarC2ExRKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEESE_SE_SE_SE_, symObjAddr: 0x0, symBinAddr: 0x2E20, symSize: 0x138 }
+  - { offsetInCU: 0xA39E, offset: 0x13C10, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBarC2ExRKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEESE_SE_SE_SE_.cold.1, symObjAddr: 0xC48, symBinAddr: 0x3B48, symSize: 0x70 }
+  - { offsetInCU: 0xA406, offset: 0x13C78, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBarC1ExRKN5psapi3sfm5Vec2DIiEERKNS2_IjEENSt3__110unique_ptrINS1_7ISpriteENS9_14default_deleteISB_EEEESE_SE_SE_SE_, symObjAddr: 0x138, symBinAddr: 0x2F58, symSize: 0xC }
+  - { offsetInCU: 0xA4AB, offset: 0x13D1D, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBar4drawEPN5psapi3sfm13IRenderWindowE, symObjAddr: 0x144, symBinAddr: 0x2F64, symSize: 0xA8 }
+  - { offsetInCU: 0xA53D, offset: 0x13DAF, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBar4drawEPN5psapi3sfm13IRenderWindowE, symObjAddr: 0x144, symBinAddr: 0x2F64, symSize: 0xA8 }
+  - { offsetInCU: 0xA87A, offset: 0x140EC, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBar12createActionEPKN5psapi3sfm13IRenderWindowERKNS1_5EventE, symObjAddr: 0x1EC, symBinAddr: 0x300C, symSize: 0x7C }
+  - { offsetInCU: 0xA9B9, offset: 0x1422B, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarActionC2EPKN5psapi3sfm13IRenderWindowERKNS1_5EventEP10SubMenuBar, symObjAddr: 0x268, symBinAddr: 0x3088, symSize: 0x30 }
+  - { offsetInCU: 0xA9F4, offset: 0x14266, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarActionC1EPKN5psapi3sfm13IRenderWindowERKNS1_5EventEP10SubMenuBar, symObjAddr: 0x298, symBinAddr: 0x30B8, symSize: 0x30 }
+  - { offsetInCU: 0xAB2B, offset: 0x1439D, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarAction7executeERKN5psapi7IAction3KeyE, symObjAddr: 0x2C8, symBinAddr: 0x30E8, symSize: 0x188 }
+  - { offsetInCU: 0xAE40, offset: 0x146B2, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarAction10isUndoableERKN5psapi7IAction3KeyE, symObjAddr: 0x450, symBinAddr: 0x3270, symSize: 0x8 }
+  - { offsetInCU: 0xB029, offset: 0x1489B, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuButtonC2ExPN5psapi4IBarERKNS0_3sfm5Vec2DIiEERKNS4_IjEERNSt3__112basic_stringIcNSB_11char_traitsIcEENSB_9allocatorIcEEEENS3_5ColorENSB_10unique_ptrIS1_NSB_14default_deleteIS1_EEEEb, symObjAddr: 0x458, symBinAddr: 0x3278, symSize: 0x90 }
+  - { offsetInCU: 0xB314, offset: 0x14B86, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuButtonC1ExPN5psapi4IBarERKNS0_3sfm5Vec2DIiEERKNS4_IjEERNSt3__112basic_stringIcNSB_11char_traitsIcEENSB_9allocatorIcEEEENS3_5ColorENSB_10unique_ptrIS1_NSB_14default_deleteIS1_EEEEb, symObjAddr: 0x4E8, symBinAddr: 0x3308, symSize: 0x90 }
+  - { offsetInCU: 0xB688, offset: 0x14EFA, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuButton12createActionEPKN5psapi3sfm13IRenderWindowERKNS1_5EventE, symObjAddr: 0x578, symBinAddr: 0x3398, symSize: 0x12C }
+  - { offsetInCU: 0xB7C4, offset: 0x15036, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuActionC2EPKN5psapi3sfm13IRenderWindowERKNS1_5EventEP17CallSubMenuButton, symObjAddr: 0x6A4, symBinAddr: 0x34C4, symSize: 0x30 }
+  - { offsetInCU: 0xB7FF, offset: 0x15071, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuActionC1EPKN5psapi3sfm13IRenderWindowERKNS1_5EventEP17CallSubMenuButton, symObjAddr: 0x6D4, symBinAddr: 0x34F4, symSize: 0x30 }
+  - { offsetInCU: 0xB88A, offset: 0x150FC, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuAction7executeERKN5psapi7IAction3KeyE, symObjAddr: 0x704, symBinAddr: 0x3524, symSize: 0x9C }
+  - { offsetInCU: 0xBA5F, offset: 0x152D1, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuAction10isUndoableERKN5psapi7IAction3KeyE, symObjAddr: 0x7A0, symBinAddr: 0x35C0, symSize: 0x8 }
+  - { offsetInCU: 0xBADE, offset: 0x15350, size: 0x8, addend: 0x0, symName: __Z10expandMenuPN5psapi4IBarEPNS_7IWindowE, symObjAddr: 0x7A8, symBinAddr: 0x35C8, symSize: 0xE8 }
+  - { offsetInCU: 0xBE2F, offset: 0x156A1, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBarD1Ev, symObjAddr: 0x890, symBinAddr: 0x36B0, symSize: 0x104 }
+  - { offsetInCU: 0xC410, offset: 0x15C82, size: 0x8, addend: 0x0, symName: __ZN10SubMenuBarD0Ev, symObjAddr: 0x994, symBinAddr: 0x37B4, symSize: 0x108 }
+  - { offsetInCU: 0xC9FD, offset: 0x1626F, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarActionD1Ev, symObjAddr: 0xA9C, symBinAddr: 0x38BC, symSize: 0x4 }
+  - { offsetInCU: 0xCA28, offset: 0x1629A, size: 0x8, addend: 0x0, symName: __ZN16SubMenuBarActionD0Ev, symObjAddr: 0xAA0, symBinAddr: 0x38C0, symSize: 0x8 }
+  - { offsetInCU: 0xCCCE, offset: 0x16540, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuButtonD1Ev, symObjAddr: 0xAA8, symBinAddr: 0x38C8, symSize: 0xC8 }
+  - { offsetInCU: 0xD126, offset: 0x16998, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuButtonD0Ev, symObjAddr: 0xB70, symBinAddr: 0x3990, symSize: 0xCC }
+  - { offsetInCU: 0xD585, offset: 0x16DF7, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuActionD1Ev, symObjAddr: 0xC3C, symBinAddr: 0x3A5C, symSize: 0x4 }
+  - { offsetInCU: 0xD5B0, offset: 0x16E22, size: 0x8, addend: 0x0, symName: __ZN17CallSubMenuActionD0Ev, symObjAddr: 0xC40, symBinAddr: 0x3A60, symSize: 0x8 }
+  - { offsetInCU: 0xD5DC, offset: 0x16E4E, size: 0x8, addend: 0x0, symName: _OUTLINED_FUNCTION_0, symObjAddr: 0xCB8, symBinAddr: 0x3A68, symSize: 0xC }
+...

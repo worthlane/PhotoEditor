@@ -1,0 +1,13 @@
+#ifndef PLUGINS_CONTRAST_FILTER_CONTRAST_FILTER_HPP
+#define PLUGINS_CONTRAST_FILTER_CONTRAST_FILTER_HPP
+
+extern "C"
+{
+
+bool onLoadPlugin();
+void onUnloadPlugin();
+
+}
+
+
+#endif // PLUGINS_CONTRAST_FILTER_CONTRAST_FILTER_HPP
