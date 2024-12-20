@@ -65,8 +65,24 @@ static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const p
         for (size_t x = 0; x < size.x; x++)
         {
             psapi::sfm::Color pixel = layer->getPixel(coord_start + psapi::sfm::vec2i(x / scale.x, y / scale.y));
+            psapi::sfm::Color under = image->getPixel({x, y});
 
             if (pixel.a == 0) continue;
+
+            float at = pixel.a / 255.0f;
+            float au = under.a / 255.0f;
+
+            float a0 = at + au * (1 - at);
+
+            int r = (pixel.r * at + under.r * au * (1 - at)) / a0;
+            int g = (pixel.g * at + under.g * au * (1 - at)) / a0;
+            int b = (pixel.b * at + under.b * au * (1 - at)) / a0;
+
+            r = std::max(0, std::min(255, r));
+            g = std::max(0, std::min(255, g));
+            b = std::max(0, std::min(255, b));
+
+            pixel = psapi::sfm::Color(r, g, b, a0 * 255);
 
             image->setPixel({x, y}, pixel);
         }
@@ -182,9 +198,25 @@ void Canvas::cleanTempLayer()
         for (size_t x = 0; x < size.x; x++)
         {
             psapi::sfm::Color temp_pixel = temp_layer->getPixel({x, y});
+            psapi::sfm::Color under_pixel = active_layer->getPixel({x, y});
 
             if (temp_pixel.a == 0)
                 continue;
+
+            float at = temp_pixel.a / 255.0f;
+            float au = under_pixel.a / 255.0f;
+
+            float a0 = at + au * (1 - at);
+
+            int r = (temp_pixel.r * at + under_pixel.r * au * (1 - at)) / a0;
+            int g = (temp_pixel.g * at + under_pixel.g * au * (1 - at)) / a0;
+            int b = (temp_pixel.b * at + under_pixel.b * au * (1 - at)) / a0;
+
+            r = std::max(0, std::min(255, r));
+            g = std::max(0, std::min(255, g));
+            b = std::max(0, std::min(255, b));
+
+            temp_pixel = psapi::sfm::Color(r, g, b, a0 * 255);
 
             active_layer->setPixel({x, y}, temp_pixel);
 
