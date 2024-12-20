@@ -30,7 +30,10 @@ private:
     psapi::sfm::Color color_;
     size_t radius_;
     psapi::ICanvas* canvas_;
+    
     psapi::IColorPalette* palette_ = nullptr;
+    psapi::IOpacityOption* opacity_ = nullptr;
+
     psapi::IOptionsBar* options_bar_;
 
     bool fixed_color_ = false;

@@ -28,6 +28,7 @@ private:
     std::unique_ptr<psapi::sfm::IShape> shape_;
     psapi::ICanvas* canvas_ = nullptr;
     psapi::IColorPalette* palette_ = nullptr;
+    psapi::IOpacityOption* opacity_ = nullptr;
 
     psapi::sfm::vec2i catch_pos_;
 

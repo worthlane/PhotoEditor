@@ -30,7 +30,7 @@ bool onLoadPlugin()
     auto toolbar_pos = tool_bar->getPos();
 
     auto rectangle = std::make_unique<GeometryButton>(kRectangleButtonId, tool_bar,
-                                                psapi::vec2i(2, 6 + BUTTON_RECT.size.y),
+                                                psapi::vec2i(2, 21 + BUTTON_RECT.size.y),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(rec_sprite),
                                                std::move(rect));
@@ -111,6 +111,9 @@ void GeometryButton::createOptions()
     auto root = psapi::getRootWindow();
     palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
     assert(palette_);
+
+    opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
+    assert(opacity_);
 }
 
 GeometryAction::GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, GeometryButton* button) :
@@ -131,7 +134,10 @@ bool GeometryAction::execute(const Key& key)
 
     psapi::ILayer* layer = canvas->getTempLayer();
 
-    shape->setFillColor(palette->getColor());
+    psapi::sfm::Color color = palette->getColor();
+    color.a = 255 * button_->opacity_->getOpacity();
+
+    shape->setFillColor(color);
 
     if (event_.type == psapi::sfm::Event::MouseMoved && LMB_down)
     {

@@ -33,12 +33,16 @@ bool onLoadPlugin()
                                            std::move(back_sprite));
 
     std::unique_ptr<psapi::IColorPalette> color_palette = psapi::IColorPalette::create();
-    color_palette->setPos(back_rect.pos + psapi::sfm::vec2i(2, 2));
+    color_palette->setPos(back_rect.pos + psapi::sfm::vec2i(15, 6));
+
+    std::unique_ptr<psapi::IOpacityOption> opacity_opt = psapi::IOpacityOption::create();
+    opacity_opt->setPos(back_rect.pos + psapi::sfm::vec2i(300, 2));
 
     auto root = psapi::getRootWindow();
 
     root->addWindow(std::move(bar));
     root->addWindow(std::move(color_palette));
+    root->addWindow(std::move(opacity_opt));
 }
 
 void onUnloadPlugin()

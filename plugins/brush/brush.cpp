@@ -39,7 +39,7 @@ bool onLoadPlugin()
     auto toolbar_pos = tool_bar->getPos();
 
     auto brush = std::make_unique<PaintButton>(kBrushButtonId, tool_bar,
-                                               psapi::vec2i(2, 2),
+                                               psapi::vec2i(2, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(btn_sprite),
                                                psapi::sfm::Color(255, 0, 0), 3);
@@ -49,7 +49,7 @@ bool onLoadPlugin()
     ers_sprite.get()->setTexture(ers_text);
 
     auto eraser = std::make_unique<PaintButton>(kEraserButtonId, tool_bar,
-                                                psapi::vec2i(6 + BUTTON_RECT.size.x, 2),
+                                                psapi::vec2i(6 + BUTTON_RECT.size.x, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(ers_sprite),
                                                canvas->getCanvasBaseColor(), 20, true);
@@ -107,6 +107,8 @@ bool PaintAction::execute(const Key& key)
 
     if (!button_->fixed_color_)
         button_->color_ = button_->palette_->getColor();
+
+    button_->color_.a = 255 * button_->opacity_->getOpacity();
 
     if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
@@ -196,11 +198,15 @@ void PaintButton::replaceOptions()
 
 void PaintButton::createOptions()
 {
+    auto root = psapi::getRootWindow();
+
     if (!fixed_color_)
     {
-        auto root = psapi::getRootWindow();
         palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
         assert(palette_);
     }
+
+    opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
+    assert(opacity_);
 }
 
