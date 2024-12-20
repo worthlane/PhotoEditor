@@ -28,11 +28,12 @@ public:
 
 private:
     psapi::sfm::Color color_;
-    size_t radius_;
+    size_t radius_; // max_radius
     psapi::ICanvas* canvas_;
-    
+
     psapi::IColorPalette* palette_ = nullptr;
     psapi::IOpacityOption* opacity_ = nullptr;
+    psapi::IThicknessOption* thickness_ = nullptr;
 
     psapi::IOptionsBar* options_bar_;
 

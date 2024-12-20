@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 #include "api/api_system.hpp"
 #include "api/api_sfm.hpp"
@@ -248,8 +249,6 @@ OpacityOption::OpacityOption()
                                         ((int) STD_SLIDER_BACKGROUND_SIZE.y - (int) RAIL_RECT.size.y) / 2);
 
     slider_pos_ = psapi::sfm::vec2i(0, -((int) SLIDER_RECT.size.y - (int) RAIL_RECT.size.y) / 2);
-
-    std::cout << "loaded\n";
 }
 
 psapi::wid_t OpacityOption::getId() const
@@ -379,10 +378,6 @@ void OpacityOption::draw(psapi::IRenderWindow* renderWindow)
     inactive_rail->setTexture(normal_rail_.get());
     inactive_rail->setPosition(rail_pos_.x, rail_pos_.y);
     inactive_rail->setColor(Color(60, 62, 66));
-    //inactive_rail->setPosition(100, 100);
-    //inactive_rail->setColor(Color(255, 0, 0));
-
-    //std::cout << rail_pos_.x << " " << rail_pos_.y << " " << slider_pos_.x << " " << RAIL_RECT.size.y << "\n";
 
     psapi::sfm::ISprite* active_rail = psapi::sfm::ISprite::create().release();
     active_rail->setTextureRect({{0, 0}, {RAIL_RECT.size.x - slider_pos_.x, RAIL_RECT.size.y}});
@@ -492,6 +487,281 @@ bool OpacityOptionAction::execute(const Key& key)
 }
 
 bool OpacityOptionAction::isUndoable(const Key& key)
+{
+    return false;
+}
+
+// ========= THICKNESS OPTION ========
+
+ThicknessOption::ThicknessOption()
+{
+    pos_ = {0, 0};
+    size_ = STD_SLIDER_BACKGROUND_SIZE;
+    id_ = psapi::kThicknessBarId;
+
+    background_ = psapi::sfm::ITexture::create();
+    background_->loadFromFile(BACKGROUND_TEXTURE);
+
+    normal_rail_ = psapi::sfm::ITexture::create();
+    normal_rail_->loadFromFile(NORMAL_RAIL_TEXTURE);
+
+    active_rail_ = psapi::sfm::ITexture::create();
+    active_rail_->loadFromFile(ACTIVE_RAIL_TEXTURE);
+
+    normal_ = psapi::sfm::ITexture::create();
+    normal_->loadFromFile(NORMAL_TEXTURE);
+
+    hover_ = psapi::sfm::ITexture::create();
+    hover_->loadFromFile(HOVER_TEXTURE);
+
+    active_ = psapi::sfm::ITexture::create();
+    active_->loadFromFile(ACTIVE_TEXTURE);
+
+    rail_pos_ = pos_ + psapi::sfm::vec2i(((int) STD_SLIDER_BACKGROUND_SIZE.x - (int) RAIL_RECT.size.x) / 2,
+                                        ((int) STD_SLIDER_BACKGROUND_SIZE.y - (int) RAIL_RECT.size.y) / 2);
+
+    slider_pos_ = psapi::sfm::vec2i(0, -((int) SLIDER_RECT.size.y - (int) RAIL_RECT.size.y) / 2);
+
+    updateSlider();
+}
+
+psapi::wid_t ThicknessOption::getId() const
+{
+    return id_;
+}
+
+psapi::IWindow* ThicknessOption::getWindowById(psapi::wid_t id)
+{
+    return (id == getId()) ? this : nullptr;
+}
+
+const psapi::IWindow* ThicknessOption::getWindowById(psapi::wid_t id) const
+{
+    return (id == getId()) ? this : nullptr;
+}
+
+psapi::sfm::vec2i ThicknessOption::getPos() const
+{
+    return pos_;
+}
+
+psapi::sfm::vec2u ThicknessOption::getSize() const
+{
+    return size_;
+}
+
+void ThicknessOption::setSize(const psapi::sfm::vec2u& size)
+{
+    size_ = size;
+}
+
+void ThicknessOption::setPos(const psapi::sfm::vec2i& pos)
+{
+    pos_ = pos;
+
+    rail_pos_ = pos_ + psapi::sfm::vec2i(((int) STD_SLIDER_BACKGROUND_SIZE.x - (int) RAIL_RECT.size.x) / 2,
+                                        ((int) STD_SLIDER_BACKGROUND_SIZE.y - (int) RAIL_RECT.size.y) / 2);;
+}
+
+void ThicknessOption::setParent(const psapi::IWindow* parent)
+{
+    parent_ = parent;
+}
+
+void ThicknessOption::forceActivate()
+{
+    is_active_ = true;
+}
+
+void ThicknessOption::forceDeactivate()
+{
+    is_active_ = false;
+}
+
+bool ThicknessOption::isActive() const
+{
+    return is_active_;
+}
+
+bool ThicknessOption::isWindowContainer() const
+{
+    return false;
+}
+
+float ThicknessOption::getThickness() const
+{
+    return thickness_;
+}
+
+void ThicknessOption::setThickness(float thickness)
+{
+    thickness_ = thickness;
+}
+
+std::unique_ptr<psapi::IAction> ThicknessOption::createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    if (!isActive())
+        return std::make_unique<IdleAction>(renderWindow, event);
+
+    return std::make_unique<ThicknessOptionAction>(renderWindow, event, this);
+}
+
+std::unique_ptr<psapi::IThicknessOption> psapi::IThicknessOption::create()
+{
+    return std::make_unique<ThicknessOption>();
+}
+
+void ThicknessOption::loadStateTexture(psapi::sfm::ISprite* sprite) const
+{
+    switch (state_)
+    {
+        case State::Normal:
+            sprite->setTexture(normal_.get());
+            break;
+
+        case State::Hover:
+            sprite->setTexture(hover_.get());
+            break;
+
+        case State::Active:
+            sprite->setTexture(active_.get());
+            break;
+    }
+}
+
+void ThicknessOption::draw(psapi::IRenderWindow* renderWindow)
+{
+    if (!isActive())
+        return;
+
+    psapi::sfm::ISprite* background = psapi::sfm::ISprite::create().release();
+    background->setTextureRect({{0, 0}, {size_.x, size_.y}});
+    background->setTexture(background_.get());
+    background->setPosition(pos_.x, pos_.y);
+    background->setColor(Color(41, 44, 49));
+
+    psapi::sfm::ISprite* slider = psapi::sfm::ISprite::create().release();
+    slider->setTextureRect(SLIDER_RECT);
+    slider->setPosition(rail_pos_.x + slider_pos_.x, rail_pos_.y + slider_pos_.y);
+    loadStateTexture(slider);
+
+    psapi::sfm::ISprite* inactive_rail = psapi::sfm::ISprite::create().release();
+    inactive_rail->setTextureRect({{0, 0}, {slider_pos_.x, RAIL_RECT.size.y}});
+    inactive_rail->setTexture(normal_rail_.get());
+    inactive_rail->setPosition(rail_pos_.x, rail_pos_.y);
+    inactive_rail->setColor(Color(60, 62, 66));
+
+    psapi::sfm::ISprite* active_rail = psapi::sfm::ISprite::create().release();
+    active_rail->setTextureRect({{0, 0}, {RAIL_RECT.size.x - slider_pos_.x, RAIL_RECT.size.y}});
+    active_rail->setTexture(active_rail_.get());
+    active_rail->setPosition(rail_pos_.x + slider_pos_.x, rail_pos_.y);
+    active_rail->setColor(Color(0, 166, 165));
+
+    background->draw(renderWindow);
+    inactive_rail->draw(renderWindow);
+    active_rail->draw(renderWindow);
+    slider->draw(renderWindow);
+
+    delete background;
+    delete slider;
+    delete inactive_rail;
+    delete active_rail;
+}
+
+void ThicknessOption::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+{
+    psapi::sfm::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
+
+    bool pressed = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
+
+    bool rail_hovered = (mouse_pos.x >= rail_pos_.x && mouse_pos.x <= rail_pos_.x + RAIL_RECT.size.x) &&
+                       (mouse_pos.y >= rail_pos_.y && mouse_pos.y <= rail_pos_.y + RAIL_RECT.size.y);
+
+    bool slider_hovered = (mouse_pos.x >= rail_pos_.x + slider_pos_.x && mouse_pos.x <= rail_pos_.x + slider_pos_.x + SLIDER_RECT.size.x) &&
+                          (mouse_pos.y >= rail_pos_.y + slider_pos_.y && mouse_pos.y <= rail_pos_.y + slider_pos_.y + SLIDER_RECT.size.y);
+
+    switch (state_)
+    {
+        case ThicknessOption::State::Normal:
+            if (slider_hovered)
+            {
+                state_ = ThicknessOption::State::Hover;
+            }
+
+            if (pressed && rail_hovered && !slider_hovered)
+            {
+                state_ = ThicknessOption::State::Active;
+                setSliderPos({mouse_pos.x - rail_pos_.x - SLIDER_RECT.size.x / 2, mouse_pos.y - rail_pos_.y - SLIDER_RECT.size.y / 2});
+            }
+
+            break;
+
+        case ThicknessOption::State::Hover:
+            if (pressed)
+            {
+                state_ = ThicknessOption::State::Active;
+                catch_pos_ = {mouse_pos.x - rail_pos_.x - slider_pos_.x, mouse_pos.y - rail_pos_.y - slider_pos_.y};
+            }
+
+            if (!slider_hovered)
+            {
+                state_ = ThicknessOption::State::Normal;
+            }
+
+            break;
+
+        case ThicknessOption::State::Active:
+            if (!pressed)
+            {
+                state_ = ThicknessOption::State::Normal;
+                catch_pos_ = {SLIDER_RECT.size.x / 2, SLIDER_RECT.size.y / 2};
+            }
+            else
+            {
+                setSliderPos({mouse_pos.x - rail_pos_.x - catch_pos_.x, mouse_pos.y - rail_pos_.y - catch_pos_.y});
+            }
+
+            break;
+    }
+}
+
+void ThicknessOption::setSliderPos(psapi::sfm::vec2i pos)
+{
+    if (pos.x < -((int) SLIDER_RECT.size.x) / 2)
+        pos.x = -((int) SLIDER_RECT.size.x) / 2;
+
+    if (pos.x > (int) RAIL_RECT.size.x - (int) SLIDER_RECT.size.x / 2)
+        pos.x = (int) RAIL_RECT.size.x - (int) SLIDER_RECT.size.x / 2;
+
+    float thickness = (float) (pos.x + SLIDER_RECT.size.x / 2) / (float) RAIL_RECT.size.x;
+    if (thickness < 0) thickness = 0;
+
+    thickness_ = thickness;
+
+    slider_pos_ = {pos.x, slider_pos_.y};
+}
+
+void ThicknessOption::updateSlider()
+{
+    slider_pos_ = {thickness_ * RAIL_RECT.size.x - SLIDER_RECT.size.x / 2, slider_pos_.y};
+}
+
+ThicknessOptionAction::ThicknessOptionAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ThicknessOption* option) :
+            AAction(render_window, event), option_(option)
+{}
+
+bool ThicknessOptionAction::execute(const Key& key)
+{
+    if (!option_->isActive())
+        return false;
+
+    option_->updateState(render_window_, event_);
+    option_->updateSlider();
+
+    return true;
+}
+
+bool ThicknessOptionAction::isUndoable(const Key& key)
 {
     return false;
 }

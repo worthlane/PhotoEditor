@@ -35,6 +35,9 @@ bool onLoadPlugin()
     std::unique_ptr<psapi::IColorPalette> color_palette = psapi::IColorPalette::create();
     color_palette->setPos(back_rect.pos + psapi::sfm::vec2i(15, 6));
 
+    std::unique_ptr<psapi::IThicknessOption> thickness_opt = psapi::IThicknessOption::create();
+    thickness_opt->setPos(back_rect.pos + psapi::sfm::vec2i(600, 2));
+
     std::unique_ptr<psapi::IOpacityOption> opacity_opt = psapi::IOpacityOption::create();
     opacity_opt->setPos(back_rect.pos + psapi::sfm::vec2i(300, 2));
 
@@ -42,6 +45,7 @@ bool onLoadPlugin()
 
     root->addWindow(std::move(bar));
     root->addWindow(std::move(color_palette));
+    root->addWindow(std::move(thickness_opt));
     root->addWindow(std::move(opacity_opt));
 }
 

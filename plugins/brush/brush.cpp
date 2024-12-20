@@ -42,7 +42,7 @@ bool onLoadPlugin()
                                                psapi::vec2i(2, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(btn_sprite),
-                                               psapi::sfm::Color(255, 0, 0), 3);
+                                               psapi::sfm::Color(255, 0, 0), 100);
 
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
@@ -52,7 +52,7 @@ bool onLoadPlugin()
                                                 psapi::vec2i(6 + BUTTON_RECT.size.x, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
                                                std::move(ers_sprite),
-                                               canvas->getCanvasBaseColor(), 20, true);
+                                               canvas->getCanvasBaseColor(), 100, true);
 
     psapi::sfm::Color col = canvas->getCanvasBaseColor();
 
@@ -95,7 +95,8 @@ bool PaintAction::execute(const Key& key)
     auto canvas = button_->canvas_;
     auto array = button_->array_;
     auto color = button_->color_;
-    auto radius = button_->radius_;
+    auto radius = button_->radius_ * button_->thickness_->getThickness();
+    if (radius < 1) radius = 1;
 
     psapi::vec2i mouse_pos = canvas->getMousePosition();
     bool LMB_down = canvas->isPressedLeftMouseButton();
@@ -150,11 +151,6 @@ std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWi
 
     if (state_ != SwitchButton::State::Released)
     {
-        /*if (prev_state_ == SwitchButton::State::Released)
-        {
-            options_bar_->removeAllOptions();
-        }*/
-
         has_options_ = false;
         return std::make_unique<IdleAction>(renderWindow, event);
     }
@@ -162,7 +158,11 @@ std::unique_ptr<psapi::IAction> PaintButton::createAction(const psapi::IRenderWi
     if (!has_options_)
         replaceOptions();
 
-    if (canvas_->isPressedLeftMouseButton())
+    auto pos = canvas_->getMousePosition();
+    bool is_on_canvas = pos.x >= 0 && pos.x < canvas_->getSize().x &&
+                        pos.y >= 0 && pos.y < canvas_->getSize().y;
+
+    if (canvas_->isPressedLeftMouseButton() && is_on_canvas)
     {
 
         if (array_.size() < CATMULL_LEN)
@@ -208,5 +208,8 @@ void PaintButton::createOptions()
 
     opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
     assert(opacity_);
+
+    thickness_ = dynamic_cast<psapi::IThicknessOption*>(root->getWindowById(psapi::kThicknessBarId));
+    assert(thickness_);
 }
 
