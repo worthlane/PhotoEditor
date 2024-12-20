@@ -16,9 +16,6 @@ static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 void set_point(psapi::ILayer* layer, const psapi::vec2i& pos,
                       const psapi::sfm::Color& color, const int radius);
 
-void erase_point(psapi::ILayer* layer, const psapi::vec2i& pos, const psapi::sfm::Color& back_color,
-                      const float eraser_alpha, const int radius);
-
 static const size_t CATMULL_LEN = 4;
 
 bool onLoadPlugin()
@@ -112,8 +109,6 @@ bool PaintAction::execute(const Key& key)
 
     button_->color_.a = 255 * button_->opacity_->getOpacity();
 
-    auto active = canvas->getLayer(canvas->getActiveLayerIndex());
-
     if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
         double delta = 0.001 * static_cast<double>(radius);
@@ -121,7 +116,7 @@ bool PaintAction::execute(const Key& key)
 
         for (double i = 1; i < max_point; i += delta)
         {
-            set_point(active, array.getInterpolated(i), color, radius);
+            set_point(layer, array.getInterpolated(i), color, radius);
         }
     }
 
@@ -204,11 +199,11 @@ void PaintButton::createOptions()
         palette_ = dynamic_cast<psapi::IColorPalette*>(root->getWindowById(psapi::kColorPaletteId));
         palette_->forceActivate();
         assert(palette_);
-    }
 
-    opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
-    opacity_->forceActivate();
-    assert(opacity_);
+        opacity_ = dynamic_cast<psapi::IOpacityOption*>(root->getWindowById(psapi::kOpacityBarId));
+        opacity_->forceActivate();
+        assert(opacity_);
+    }
 
     thickness_ = dynamic_cast<psapi::IThicknessOption*>(root->getWindowById(psapi::kThicknessBarId));
     thickness_->forceActivate();
@@ -238,8 +233,6 @@ bool EraseAction::execute(const Key& key)
 
     psapi::ILayer* active = canvas->getLayer(canvas->getActiveLayerIndex());
 
-    button_->color_.a = 255 * button_->opacity_->getOpacity();
-
     if (canvas->isPressedLeftMouseButton() && array.size() >= CATMULL_LEN)
     {
         double delta = 0.001 * static_cast<double>(radius);
@@ -249,7 +242,7 @@ bool EraseAction::execute(const Key& key)
         {
             auto pos = array.getInterpolated(i);
 
-            set_point(layer, pos, psapi::sfm::Color(0, 0, 0, 0), radius);
+            set_point(active, pos, psapi::sfm::Color(0, 0, 0, 0), radius);
         }
     }
 

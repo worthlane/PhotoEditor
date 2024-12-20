@@ -2,6 +2,7 @@
 #define PHOTOSHOP_HPP
 
 #include "api/api_photoshop.hpp"
+
 #include "implementation/actions.hpp"
 
 class AWindow : public psapi::IWindow

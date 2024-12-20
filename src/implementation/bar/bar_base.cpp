@@ -203,7 +203,7 @@ void AOptionsBar::addWindow(std::unique_ptr<psapi::IWindow> window)
 {
     window.get()->setParent(this);
 
-    static const psapi::vec2i GAP = {10, 10};
+    /*static const psapi::vec2i GAP = {10, 10};
 
     psapi::vec2u size = window.get()->getSize();
     psapi::vec2i pos = window.get()->getPos();
@@ -226,7 +226,7 @@ void AOptionsBar::addWindow(std::unique_ptr<psapi::IWindow> window)
         info.pos = {pos_.x + GAP.x, prev_pos.y + GAP.y + prev_size.y};
     }
 
-    window.get()->setPos(info.pos);
+    window.get()->setPos(info.pos);*/
     options_.push_back(std::move(window));
 }
 

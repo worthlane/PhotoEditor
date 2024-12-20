@@ -444,10 +444,7 @@ std::unique_ptr<IImage> IImage::create()
 
 vec2i Image::getPos() const
 {
-    //sf::Vector2i pos = image_.getPos();
-
-    //return {pos.x, pos.y};
-    return {0, 0};
+    return pos_;
 }
 
 bool Image::saveToFile(const std::string &filename) const
@@ -457,7 +454,7 @@ bool Image::saveToFile(const std::string &filename) const
 
 void Image::setPos(const vec2i &pos)
 {
-    //image_.setPos(sf::Vector2i(pos.x, pos.y));
+    pos_ = pos;
 }
 
 // *************************************************************************
@@ -509,7 +506,7 @@ void Texture::update(const Color *pixels)
 void Texture::update(const Color *pixels, unsigned int width, unsigned int height,
                                           unsigned int x,     unsigned int y)
 {
-    assert(0 && "NOT IMPLEMENTED");
+    texture_.update(reinterpret_cast<const sf::Uint8*>(pixels), width, height, x, y);
 }
 
 std::unique_ptr<ITexture> ITexture::create()
@@ -570,6 +567,8 @@ void RectangleShape::setTexture(const ITexture *texture)
     const Texture* tex = static_cast<const Texture*>(texture);
 
     shape_.setTexture(&(tex->texture_));
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setFillColor(const Color &color)
@@ -577,43 +576,61 @@ void RectangleShape::setFillColor(const Color &color)
     color_ = color;
 
     shape_.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setPosition(const vec2i &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setPosition(const vec2f &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setPosition(const vec2d &pos)
 {
     shape_.setPosition(pos.x, pos.y);
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setScale(const vec2f &scale)
 {
     shape_.setScale(scale.x, scale.y);
+
+    update_flag_ = true;
 }
 
 void RectangleShape::setSize(const vec2u &size)
 {
     shape_.setSize(sf::Vector2f(size.x, size.y));
+
+    update_flag_ = true;
 }
 void RectangleShape::setRotation(float angle)
 {
     shape_.setRotation(angle);
+
+    update_flag_ = true;
 }
 void RectangleShape::setOutlineColor(const Color &color)
 {
     shape_.setOutlineColor(sf::Color(color.r, color.g, color.b, color.a));
+
+    update_flag_ = true;
 }
 void RectangleShape::setOutlineThickness(float thickness)
 {
     shape_.setOutlineThickness(thickness);
+
+    update_flag_ = true;
 }
 
 float RectangleShape::getRotation() const
@@ -655,23 +672,30 @@ const Color& RectangleShape::getOutlineColor() const
 
 const IImage* RectangleShape::getImage() const
 {
-    vec2u size = getSize();
+    if (update_flag_)
+    {
+        vec2u size = getSize();
 
-    if (size.x <= 0 || size.y <= 0)
-        return cached_image_.get();
+        if (size.x <= 0 || size.y <= 0)
+            return cached_image_.get();
 
-    sf::RenderTexture render_texture;
-    if (!render_texture.create(SCREEN.x, SCREEN.y))
-        return nullptr;
+        sf::RenderTexture render_texture;
+        if (!render_texture.create(SCREEN.x, SCREEN.y))
+            return nullptr;
 
-    render_texture.clear(sf::Color::Transparent);
-    render_texture.draw(shape_);
-    render_texture.display();
+        render_texture.clear(sf::Color::Transparent);
+        render_texture.draw(shape_);
+        render_texture.display();
 
-    sf::Image image = render_texture.getTexture().copyToImage();
+        sf::Image image = render_texture.getTexture().copyToImage();
 
-    cached_image_->create(image.getSize().x, image.getSize().y,
-                        reinterpret_cast<const Color*>(image.getPixelsPtr()));
+        cached_image_->create(image.getSize().x, image.getSize().y,
+                            reinterpret_cast<const Color*>(image.getPixelsPtr()));
+
+        cached_image_->setPos({0, 0});
+
+        update_flag_ = false;
+    }
 
     return cached_image_.get();
 }
@@ -699,7 +723,9 @@ RectangleShape::RectangleShape(unsigned int width, unsigned int height)
 
 void RectangleShape::move(const vec2f &offset)
 {
-    assert(0 && "NOT IMPLEMENTED");
+    shape_.move(sf::Vector2f{offset.x, offset.y});
+
+    update_flag_ = true;
 }
 
 // *************************************************************************

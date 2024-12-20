@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include "../plugins/canvas/canvas.hpp"
-
 #include "api/api_photoshop.hpp"
+
 #include "implementation/canvas/canvas.hpp"
 
 static const char* BACKGROUND_TEXTURE = "assets/textures/light_gray.jpg";

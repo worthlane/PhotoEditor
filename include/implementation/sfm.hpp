@@ -65,6 +65,8 @@ public:
 private:
     sf::Image image_;
 
+    vec2i pos_ = {0, 0};
+
     friend class Texture;
 
     friend class RectangleShape;
@@ -241,6 +243,8 @@ public:
 
 private:
     sf::RectangleShape shape_;
+
+    mutable bool update_flag_ = false;
 
     psapi::sfm::Color color_ = psapi::sfm::Color(255, 255, 255);
 };
