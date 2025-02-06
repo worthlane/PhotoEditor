@@ -41,7 +41,7 @@ bool onLoadPlugin()
     auto brush = std::make_unique<PaintButton>(kBrushButtonId, tool_bar,
                                                psapi::vec2i(2, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(btn_sprite), 100);
+                                               std::move(btn_sprite), 50);
 
     std::unique_ptr<psapi::sfm::ISprite> ers_sprite = psapi::sfm::ISprite::create();
     ers_sprite.get()->setTextureRect(BUTTON_RECT);
@@ -50,7 +50,7 @@ bool onLoadPlugin()
     auto eraser = std::make_unique<PaintButton>(kEraserButtonId, tool_bar,
                                                 psapi::vec2i(6 + BUTTON_RECT.size.x, 17),
                                                psapi::vec2u(BUTTON_RECT.size.x, BUTTON_RECT.size.y),
-                                               std::move(ers_sprite), 100, true);
+                                               std::move(ers_sprite), 50, true);
 
     psapi::sfm::Color col = canvas->getCanvasBaseColor();
 

@@ -41,9 +41,9 @@ bool ImportAction::execute(const Key& key)
     auto size = image->getSize();
     auto canvas_size = canvas->getSize();
 
-    for (int x = 0; x < size.x && x < canvas_size.x; x++)
+    for (int x = 0; x < size.x; x++)
     {
-        for (int y = 0; y < size.y && x < canvas_size.y; y++)
+        for (int y = 0; y < size.y; y++)
         {
             psapi::vec2i pos = {x, y};
             auto pixel = image->getPixel(pos.x, pos.y);
