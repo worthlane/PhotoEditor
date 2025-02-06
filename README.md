@@ -12,3 +12,4 @@ make plugins
 ```
 ./app
 ```
+![](readme_assets/redactortest.jpg)
