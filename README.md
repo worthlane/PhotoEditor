@@ -1,4 +1,6 @@
-# photo_redactor
+# Photo Redactor
+
+![](readme_assets/redactortest.jpg)
 
 ```
 make makedirs
@@ -12,4 +14,3 @@ make plugins
 ```
 ./app
 ```
-![](readme_assets/redactortest.jpg)
