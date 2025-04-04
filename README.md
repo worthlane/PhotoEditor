@@ -1,4 +1,4 @@
-# Photo Redactor
+# Photo Editor
 
 ![](readme_assets/redactortest.jpg)
 
