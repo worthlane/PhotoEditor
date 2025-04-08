@@ -6,9 +6,8 @@
 class InterpolationArray
 {
     public:
-        InterpolationArray();
+        InterpolationArray() = default;
         InterpolationArray(std::vector<psapi::sfm::vec2i>& array);
-        ~InterpolationArray();
 
         size_t size() const { return points_.size(); }
 

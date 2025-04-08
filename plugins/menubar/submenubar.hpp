@@ -26,8 +26,8 @@ public:
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     friend class SubMenuBarAction;
@@ -38,8 +38,8 @@ class SubMenuBarAction : public AAction
 public:
     SubMenuBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, SubMenuBar* bar);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     SubMenuBar* bar_;
 };
@@ -50,7 +50,7 @@ public:
     CallSubMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                   std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering = true);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 private:
 
     friend class CallSubMenuAction;
@@ -61,8 +61,8 @@ class CallSubMenuAction : public AAction
 public:
     CallSubMenuAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, CallSubMenuButton* button);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
 private:
     CallSubMenuButton* button_ = nullptr;

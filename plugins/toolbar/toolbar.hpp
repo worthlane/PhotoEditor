@@ -22,8 +22,8 @@ public:
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     friend class ToolBarAction;
@@ -34,8 +34,8 @@ class ToolBarAction : public AAction
 public:
     ToolBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ToolBar* tool_bar);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     ToolBar* tool_bar_;
 };

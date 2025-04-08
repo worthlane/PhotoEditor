@@ -25,7 +25,7 @@ public:
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  const size_t radius, const bool is_eraser = false);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     psapi::sfm::Color color_ = {255, 255, 255, 255};
@@ -62,8 +62,8 @@ public:
     bool undo(const Key &key) override;
     bool redo(const Key &key) override;
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     PaintButton* button_;
 };
@@ -76,8 +76,8 @@ public:
     bool undo(const Key &key) override;
     bool redo(const Key &key) override;
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     PaintButton* button_;
 };

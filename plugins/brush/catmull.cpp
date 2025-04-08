@@ -37,19 +37,6 @@ InterpolationArray::InterpolationArray(std::vector<psapi::sfm::vec2i>& array) : 
 
 //--------------------------------------------------------------------
 
-InterpolationArray::InterpolationArray() : points_()
-{
-}
-
-//--------------------------------------------------------------------
-
-InterpolationArray::~InterpolationArray()
-{
-    points_.clear();
-}
-
-//--------------------------------------------------------------------
-
 psapi::sfm::vec2i InterpolationArray::getInterpolated(const double num) const
 {
     int integrer = floor(num);

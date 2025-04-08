@@ -18,8 +18,8 @@ public:
     OptionBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
             std::unique_ptr<psapi::sfm::ISprite> background);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     friend class OptionBarAction;
@@ -30,8 +30,8 @@ class OptionBarAction : public AAction
 public:
     OptionBarAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, OptionBar* option_bar);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     OptionBar* option_bar_;
 };

@@ -14,7 +14,7 @@ public:
                  std::string& file_name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     psapi::ICanvas* canvas_ = nullptr;
@@ -27,8 +27,8 @@ class ExportAction : public AAction
 public:
     ExportAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, ExportButton* export_but);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
 private:
     ExportButton* export_but_ = nullptr;

@@ -22,7 +22,7 @@ public:
                  std::unique_ptr<psapi::sfm::ISprite> sprite,
                  std::unique_ptr<psapi::sfm::IShape> shape);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     std::unique_ptr<psapi::sfm::IShape> shape_;
@@ -50,11 +50,11 @@ class GeometryAction : public AUndoableAction
 public:
     GeometryAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, GeometryButton* button);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
-    virtual bool undo      (const Key& key) override;
-    virtual bool redo      (const Key& key) override;
+    bool undo      (const Key& key) override;
+    bool redo      (const Key& key) override;
 
 
 private:
@@ -67,7 +67,7 @@ public:
     LineButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     std::unique_ptr<psapi::sfm::IShape> shape_;
@@ -97,11 +97,11 @@ class LineAction : public AUndoableAction
 public:
     LineAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, LineButton* button);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
-    virtual bool undo      (const Key& key) override;
-    virtual bool redo      (const Key& key) override;
+    bool undo      (const Key& key) override;
+    bool redo      (const Key& key) override;
 private:
     LineButton* button_;
 };

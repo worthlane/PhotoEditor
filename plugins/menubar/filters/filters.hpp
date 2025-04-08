@@ -14,7 +14,7 @@ public:
                  std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     double k_;
@@ -31,8 +31,8 @@ class NegativeAction : public AUndoableAction
 public:
     NegativeAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, NegativeButton* filter);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
     bool undo(const Key &key);
     bool redo(const Key &key);
@@ -48,7 +48,7 @@ public:
                  std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     psapi::ICanvas* canvas_ = nullptr;
@@ -64,8 +64,8 @@ class BlurAction : public AUndoableAction
 public:
     BlurAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BlurButton* filter);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
     bool undo(const Key &key);
     bool redo(const Key &key);
@@ -81,7 +81,7 @@ public:
                  std::string& name, psapi::sfm::Color color,
                  psapi::ICanvas* canvas);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     psapi::ICanvas* canvas_ = nullptr;
@@ -97,8 +97,8 @@ class UnSharpMaskAction : public AUndoableAction
 public:
     UnSharpMaskAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, UnSharpMaskButton* filter);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
     bool undo(const Key &key);
     bool redo(const Key &key);
@@ -114,7 +114,7 @@ public:
                  std::string& name, psapi::sfm::Color color,
                  const double k, psapi::ICanvas* canvas);
 
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 private:
     double k_;
@@ -131,8 +131,8 @@ class BasReliefAction : public AUndoableAction
 public:
     BasReliefAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, BasReliefButton* filter);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 
     bool undo(const Key &key);
     bool redo(const Key &key);
