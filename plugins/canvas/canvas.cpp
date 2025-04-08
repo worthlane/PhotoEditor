@@ -6,7 +6,7 @@
 
 #include "implementation/canvas/canvas.hpp"
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/light_gray.jpg";
+static const char* kBackgroundTexture = "assets/textures/light_gray.jpg";
 static const char* NORMAL_TEXTURE = "assets/textures/mid_gray.jpg";
 static const char* HOVER_TEXTURE = "assets/textures/gray.jpg";
 static const char* ACTIVE_TEXTURE = "assets/textures/dark_gray.jpg";
@@ -28,7 +28,7 @@ bool onLoadPlugin()
     std::unique_ptr<psapi::sfm::ITexture> active_hor = psapi::sfm::ITexture::create();
     std::unique_ptr<psapi::sfm::ITexture> hover_hor = psapi::sfm::ITexture::create();
 
-    back_hor->loadFromFile(BACKGROUND_TEXTURE);
+    back_hor->loadFromFile(kBackgroundTexture);
     normal_hor->loadFromFile(NORMAL_TEXTURE);
     active_hor->loadFromFile(ACTIVE_TEXTURE);
     hover_hor->loadFromFile(HOVER_TEXTURE);
@@ -45,7 +45,7 @@ bool onLoadPlugin()
     std::unique_ptr<psapi::sfm::ITexture> active_ver = psapi::sfm::ITexture::create();
     std::unique_ptr<psapi::sfm::ITexture> hover_ver = psapi::sfm::ITexture::create();
 
-    back_ver->loadFromFile(BACKGROUND_TEXTURE);
+    back_ver->loadFromFile(kBackgroundTexture);
     normal_ver->loadFromFile(NORMAL_TEXTURE);
     active_ver->loadFromFile(ACTIVE_TEXTURE);
     hover_ver->loadFromFile(HOVER_TEXTURE);

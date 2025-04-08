@@ -8,8 +8,8 @@ template<typename SnapshotType>
 class AMementable : public psapi::IMementable<SnapshotType>
 {
 public:
-    virtual std::unique_ptr<SnapshotType> save() override;
-    virtual void restore(SnapshotType* snapshot) override;
+    std::unique_ptr<SnapshotType> save() override;
+    void restore(SnapshotType* snapshot) override;
 };
 
 class ALayerSnapshot : public psapi::ILayerSnapshot

@@ -13,27 +13,27 @@ public:
             std::unique_ptr<psapi::sfm::ISprite> pressed,
             std::unique_ptr<psapi::sfm::ISprite> released);
 
-    virtual psapi::wid_t getId() const override;
-    virtual void finishButtonDraw(psapi::IRenderWindow* renderWindow, const psapi::IBarButton* button) const override;
+    psapi::wid_t getId() const override;
+    void finishButtonDraw(psapi::IRenderWindow* renderWindow, const psapi::IBarButton* button) const override;
 
-    virtual psapi::IWindow* getWindowById(psapi::wid_t id) override;
-    virtual const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
+    psapi::IWindow* getWindowById(psapi::wid_t id) override;
+    const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
 
-    virtual psapi::vec2i getPos() const override;
-    virtual psapi::vec2u getSize() const override;
+    psapi::vec2i getPos() const override;
+    psapi::vec2u getSize() const override;
 
-    virtual void setParent(const psapi::IWindow* parent) override;
+    void setParent(const psapi::IWindow* parent) override;
 
-    virtual void forceActivate() override;
-    virtual void forceDeactivate() override;
-    virtual bool isActive() const override;
+    void forceActivate() override;
+    void forceDeactivate() override;
+    bool isActive() const override;
 
-    virtual void addWindow(std::unique_ptr<psapi::IWindow> window) override;
-    virtual void removeWindow(psapi::wid_t id) override;
+    void addWindow(std::unique_ptr<psapi::IWindow> window) override;
+    void removeWindow(psapi::wid_t id) override;
 
-    virtual void setSize(const psapi::vec2u& size) override;
-    virtual void setPos(const psapi::vec2i& pos) override;
-    virtual bool unPressAllButtons() override;
+    void setSize(const psapi::vec2u& size) override;
+    void setPos(const psapi::vec2i& pos) override;
+    bool unPressAllButtons() override;
 
 protected:
     psapi::wid_t id_;
@@ -60,27 +60,27 @@ public:
     AOptionsBar(const psapi::wid_t id, const psapi::vec2i& pos, const psapi::vec2u& size,
                 std::unique_ptr<psapi::sfm::ISprite> background);
 
-    virtual void removeAllOptions() override;
+    void removeAllOptions() override;
 
-    virtual psapi::wid_t getId() const override;
+    psapi::wid_t getId() const override;
 
-    virtual psapi::IWindow* getWindowById(psapi::wid_t id) override;
-    virtual const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
+    psapi::IWindow* getWindowById(psapi::wid_t id) override;
+    const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
 
-    virtual psapi::vec2i getPos() const override;
-    virtual psapi::vec2u getSize() const override;
+    psapi::vec2i getPos() const override;
+    psapi::vec2u getSize() const override;
 
-    virtual void setParent(const psapi::IWindow* parent) override;
+    void setParent(const psapi::IWindow* parent) override;
 
-    virtual void forceActivate() override;
-    virtual void forceDeactivate() override;
-    virtual bool isActive() const override;
+    void forceActivate() override;
+    void forceDeactivate() override;
+    bool isActive() const override;
 
-    virtual void addWindow(std::unique_ptr<psapi::IWindow> window) override;
-    virtual void removeWindow(psapi::wid_t id) override;
+    void addWindow(std::unique_ptr<psapi::IWindow> window) override;
+    void removeWindow(psapi::wid_t id) override;
 
-    virtual void setSize(const psapi::vec2u& size) override;
-    virtual void setPos(const psapi::vec2i& pos) override;
+    void setSize(const psapi::vec2u& size) override;
+    void setPos(const psapi::vec2i& pos) override;
 
 protected:
     psapi::wid_t id_;

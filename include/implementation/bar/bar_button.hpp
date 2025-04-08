@@ -13,29 +13,29 @@ public:
                const psapi::vec2u& size,
                std::unique_ptr<psapi::sfm::ISprite> sprite);
 
-    virtual psapi::wid_t getId() const override;
+    psapi::wid_t getId() const override;
 
-    virtual void setState(State state) override;
-    virtual State getState() const override;
+    void setState(State state) override;
+    State getState() const override;
 
-    virtual psapi::IWindow* getWindowById(psapi::wid_t id) override;
-    virtual const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
+    psapi::IWindow* getWindowById(psapi::wid_t id) override;
+    const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
 
-    virtual psapi::vec2i getPos() const override;
-    virtual psapi::vec2u getSize() const override;
+    psapi::vec2i getPos() const override;
+    psapi::vec2u getSize() const override;
 
-    virtual void setParent(const psapi::IWindow* parent) override;
+    void setParent(const psapi::IWindow* parent) override;
 
-    virtual void forceActivate() override;
-    virtual void forceDeactivate() override;
-    virtual bool isActive() const override;
+    void forceActivate() override;
+    void forceDeactivate() override;
+    bool isActive() const override;
 
-    virtual bool isWindowContainer() const override;
+    bool isWindowContainer() const override;
 
-    virtual void setSize(const psapi::vec2u& size) override;
-    virtual void setPos(const psapi::vec2i& pos) override;
+    void setSize(const psapi::vec2u& size) override;
+    void setPos(const psapi::vec2i& pos) override;
 
 protected:
     psapi::wid_t id_;
@@ -57,7 +57,7 @@ public:
     SwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite);
 
-    virtual void setState(State state) override;
+    void setState(State state) override;
 
 protected:
     State prev_state_ = State::Normal;
@@ -81,7 +81,7 @@ public:
     TextButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                 std::string& name, psapi::sfm::Color color);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
 
 protected:
     std::unique_ptr<psapi::sfm::IText> text_;
@@ -102,37 +102,37 @@ public:
                std::unique_ptr<psapi::sfm::ISprite> sprite,
                std::unique_ptr<psapi::IBar> menu);
 
-    virtual psapi::wid_t getId() const override;
+    psapi::wid_t getId() const override;
 
-    virtual void setState(State state) override;
-    virtual State getState() const override;
+    void setState(State state) override;
+    State getState() const override;
 
-    virtual psapi::IWindow* getWindowById(psapi::wid_t id) override;
-    virtual const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
+    psapi::IWindow* getWindowById(psapi::wid_t id) override;
+    const psapi::IWindow* getWindowById(psapi::wid_t id) const override;
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
 
-    virtual psapi::vec2i getPos() const override;
-    virtual psapi::vec2u getSize() const override;
+    psapi::vec2i getPos() const override;
+    psapi::vec2u getSize() const override;
 
-    virtual void setParent(const psapi::IWindow* parent) override;
+    void setParent(const psapi::IWindow* parent) override;
 
-    virtual void forceActivate() override;
-    virtual void forceDeactivate() override;
-    virtual bool isActive() const override;
+    void forceActivate() override;
+    void forceDeactivate() override;
+    bool isActive() const override;
 
-    virtual bool isWindowContainer() const override;
+    bool isWindowContainer() const override;
 
-    virtual void setSize(const psapi::vec2u& size) override;
-    virtual void setPos(const psapi::vec2i& pos) override;
+    void setSize(const psapi::vec2u& size) override;
+    void setPos(const psapi::vec2i& pos) override;
 
-    virtual void addMenuItem(std::unique_ptr<psapi::IWindow> item) override;
+    void addMenuItem(std::unique_ptr<psapi::IWindow> item) override;
 
-    virtual void activateMenu() override;
-    virtual void deactivateMenu() override;
+    void activateMenu() override;
+    void deactivateMenu() override;
 
-    virtual psapi::IBar *getMenu() override;
-    virtual const psapi::IBar *getMenu() const override;
+    psapi::IBar *getMenu() override;
+    const psapi::IBar *getMenu() const override;
 
     void expandMenu(psapi::IBar* menu, psapi::IWindow* item);
 
@@ -158,7 +158,7 @@ public:
     MenuSwitchButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                  std::unique_ptr<psapi::sfm::ISprite> sprite, std::unique_ptr<psapi::IBar> menu);
 
-    virtual void setState(State state) override;
+    void setState(State state) override;
 
 protected:
     State prev_state_ = State::Normal;
@@ -172,7 +172,7 @@ public:
     TextMenuButton(const psapi::wid_t id, psapi::IBar* bar, const psapi::vec2i& pos, const psapi::vec2u& size,
                 std::string& name, psapi::sfm::Color color, std::unique_ptr<psapi::IBar> menu, const bool need_centering = true);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
 
 protected:
     std::unique_ptr<psapi::sfm::IText> text_;

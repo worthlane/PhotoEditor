@@ -49,8 +49,8 @@ AScrollBar::AScrollBar(const psapi::wid_t id, const psapi::sfm::vec2i& pos, cons
     scroller_size_(size.x, size.y),
     background_(std::move(background)),
     normal_(std::move(normal)),
-    hover_(std::move(hover)),
     active_(std::move(active)),
+    hover_(std::move(hover)),
     object_(object)
 {}
 
@@ -94,7 +94,7 @@ void AScrollBar::draw(psapi::IRenderWindow* renderWindow)
     delete scroller;
 }
 
-void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psapi::Event&)
 {
     psapi::sfm::vec2i mouse_pos = psapi::sfm::Mouse::getPosition(renderWindow);
 
@@ -130,7 +130,6 @@ void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psa
             if (!scroller_hovered)
                 state_ = AScrollBar::State::Normal;
 
-
             break;
 
         case AScrollBar::State::Active:
@@ -140,9 +139,8 @@ void AScrollBar::updateState(const psapi::IRenderWindow* renderWindow, const psa
                 catch_pos_ = {scroller_size_.x / 2, scroller_size_.y / 2};
             }
             else
-            {
-                setScrollerPos({mouse_pos.x - pos_.x - catch_pos_.x, mouse_pos.y - pos_.y - catch_pos_.y});
-            }
+                setScrollerPos({mouse_pos.x - pos_.x - catch_pos_.x,
+                                mouse_pos.y - pos_.y - catch_pos_.y});
 
             break;
     }

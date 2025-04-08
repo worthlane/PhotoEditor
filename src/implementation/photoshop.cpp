@@ -2,8 +2,8 @@
 
 #include "implementation/photoshop.hpp"
 
-static const size_t SCREEN_LENGTH = 1200;
-static const size_t SCREEN_WIDTH  = 700;
+static const size_t SCREEN_LENGTH = 1400;
+static const size_t SCREEN_WIDTH  = 800;
 
 psapi::sfm::IntRect psapi::getCanvasIntRect()
 {

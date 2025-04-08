@@ -19,7 +19,7 @@ static psapi::sfm::ITexture* normal  = nullptr;
 
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 30}, {270, 61}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* kBackgroundTexture = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -32,7 +32,7 @@ bool onLoadPlugin()
     std::cout << "filebar loaded\n";
 
     back = psapi::sfm::ITexture::create().release();
-    back->loadFromFile(BACKGROUND_TEXTURE);
+    back->loadFromFile(kBackgroundTexture);
 
     hover = psapi::sfm::ITexture::create().release();
     hover->loadFromFile(HOVER_TEXTURE);

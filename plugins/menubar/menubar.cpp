@@ -18,7 +18,7 @@ static psapi::sfm::ITexture* normal  = psapi::sfm::ITexture::create().release();
 static const psapi::sfm::IntRect BACKGROUND_RECT = {{0, 0}, {1200, 30}};
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 30}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* kBackgroundTexture = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -30,7 +30,7 @@ bool onLoadPlugin()
 {
     std::cout << "menubar loaded\n";
 
-    back->loadFromFile(BACKGROUND_TEXTURE);
+    back->loadFromFile(kBackgroundTexture);
     hover->loadFromFile(HOVER_TEXTURE);
     press->loadFromFile(PRESS_TEXTURE);
     normal->loadFromFile(NORMAL_TEXTURE);

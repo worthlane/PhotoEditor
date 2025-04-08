@@ -7,50 +7,50 @@
 #include "api/api_photoshop.hpp"
 #include "api/api_actions.hpp"
 
-#define DLL_CHECK(pointer)          if (pointer == nullptr) \
-                                    {                       \
+#define DLL_CHECK(pointer)          if (pointer == nullptr)                               \
+                                    {                                                     \
                                         std::cerr << "Error: " << dlerror() << std::endl; \
-                                        return 1;           \
+                                        return 1;                                         \
                                     }
 
 
-static const std::vector<const char*> PLUGIN_NAMES = {"build/canvas.dylib", "build/toolbar.dylib",
+static const std::vector<const char*> kPluginNames = {"build/canvas.dylib", "build/toolbar.dylib",
                                                       "build/optionbar.dylib", "build/menubar.dylib",
                                                       "build/brush.dylib", "build/geometry.dylib", "build/filters.dylib",
                                                       "build/files.dylib", "build/edit.dylib"}; //"build/lib_unsharp_mask.dylib"};//, "build/layer.dylib", "build/help.dylib"};
-static       std::vector<void*> dll_ptrs;
+static       std::vector<void*> sDllPtrs;
 
-static const char* LOAD_PLUGIN   = "onLoadPlugin";
-static const char* UNLOAD_PLUGIN = "onUnloadPlugin";
+static const char* kLoadPlugin   = "onLoadPlugin";
+static const char* kUnloadPlugin = "onUnloadPlugin";
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* kBackgroundTexture = "assets/textures/white.jpg";
 
 int main()
 {
     auto screen = psapi::getScreenSize();
 
-    psapi::sfm::RenderWindow window(screen.x, screen.y, "PhotoRedactor");
+    psapi::sfm::RenderWindow window(screen.x, screen.y, "PhotoEditor");
 
     psapi::IRootWindow* root = psapi::getRootWindow();
     psapi::AActionController* controller = psapi::getActionController();
 
     psapi::sfm::ITexture* background = psapi::sfm::ITexture::create().release();
-    background->loadFromFile(BACKGROUND_TEXTURE);
+    background->loadFromFile(kBackgroundTexture);
 
     psapi::sfm::ISprite* background_sprite = psapi::sfm::ISprite::create().release();
     background_sprite->setTextureRect({{0, 0}, {screen.x, screen.y}});
     background_sprite->setTexture(background);
     background_sprite->setColor(psapi::sfm::Color(23, 23, 23));
 
-    for (auto& plugin_name : PLUGIN_NAMES)
+    for (auto& plugin_name : kPluginNames)
     {
         void* so_lib = dlopen(plugin_name, RTLD_NOW);
         DLL_CHECK(so_lib);
 
-        bool (*onLoadPlugin)() = (bool (*)()) dlsym(so_lib, LOAD_PLUGIN);
+        bool (*onLoadPlugin)() = (bool (*)()) dlsym(so_lib, kLoadPlugin);
         DLL_CHECK(onLoadPlugin);
 
-        dll_ptrs.push_back(so_lib);
+        sDllPtrs.push_back(so_lib);
 
         onLoadPlugin();
     }
@@ -76,11 +76,11 @@ int main()
         window.clear();
     }
 
-    for (int i = dll_ptrs.size() - 1; i >= 0; i--)
+    for (auto it = sDllPtrs.rbegin(); it != sDllPtrs.rend(); ++it)
     {
-        void* so_lib = dll_ptrs[i];
+        void* so_lib = *it;
 
-        bool (*onUnloadPlugin)() = (bool (*)()) dlsym(so_lib, UNLOAD_PLUGIN);
+        bool (*onUnloadPlugin)() = (bool (*)()) dlsym(so_lib, kUnloadPlugin);
         DLL_CHECK(onUnloadPlugin);
 
         onUnloadPlugin();

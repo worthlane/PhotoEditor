@@ -12,14 +12,14 @@ static psapi::sfm::ITexture* back    = nullptr;
 
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {60, 60}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* kBackgroundTexture = "assets/textures/white.jpg";
 
 bool onLoadPlugin()
 {
     std::cout << "option loaded\n";
 
     back = psapi::sfm::ITexture::create().release();
-    back->loadFromFile(BACKGROUND_TEXTURE);
+    back->loadFromFile(kBackgroundTexture);
 
     static const psapi::sfm::IntRect back_rect = psapi::getOptionsBarIntRect();
 

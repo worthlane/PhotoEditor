@@ -7,7 +7,7 @@
 
 #include "implementation/memento.hpp"
 
-static const char* GRID = "assets/textures/psgrid.png";
+static const char* kGrid = "assets/textures/psgrid.png";
 
 static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size);
 
@@ -55,16 +55,20 @@ std::unique_ptr<psapi::ILayerSnapshot> Layer::save()
     assert(0);
 }
 
-void Layer::restore(psapi::ILayerSnapshot* snapshot)
+void Layer::restore(psapi::ILayerSnapshot* /*snapshot*/)
 {
     assert(0);
 }
 
-static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start, const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size)
+static void dumpOnImage(psapi::ILayer* layer, psapi::sfm::IImage* image, const psapi::sfm::vec2i& coord_start,
+                        const psapi::sfm::vec2f& scale, const psapi::sfm::vec2i& size)
 {
-    for (size_t y = 0; y < size.y; y++)
+    unsigned int y_size = size.y;
+    unsigned int x_size = size.x;
+
+    for (unsigned int y = 0; y < y_size; ++y)
     {
-        for (size_t x = 0; x < size.x; x++)
+        for (unsigned int x = 0; x < x_size; ++x)
         {
             psapi::sfm::Color pixel = layer->getPixel(coord_start + psapi::sfm::vec2i(x / scale.x, y / scale.y));
             psapi::sfm::Color under = image->getPixel({x, y});
@@ -105,7 +109,7 @@ Canvas::Canvas(const psapi::sfm::vec2i& pos, const psapi::sfm::vec2u& size,
     background_sprite_ = psapi::sfm::ISprite::create();
     background_texture_ = psapi::sfm::ITexture::create();
 
-    background_texture_->loadFromFile(GRID);
+    background_texture_->loadFromFile(kGrid);
     background_sprite_->setTexture(background_texture_.get());
     background_sprite_->setTextureRect({{0, 0}, size_});
     background_sprite_->setPosition(pos.x, pos.y);
@@ -309,9 +313,9 @@ void Canvas::restore(psapi::ICanvasSnapshot* snapshot)
 
     psapi::vec2u canvas_size = getSize();
 
-    for (int x = 0; x < canvas_size.x; x++)
+    for (unsigned int x = 0; x < canvas_size.x; ++x)
     {
-        for (int y = 0; y < canvas_size.y; y++)
+        for (unsigned int y = 0; y < canvas_size.y; ++y)
         {
             auto pixel = canvas_snapshot->getImage()->getPixel(x, y);
 
@@ -324,9 +328,9 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
 {
     size_t layers_amount = layers_.size();
 
-    psapi::sfm::IImage* final_image = psapi::sfm::IImage::create().release();
-    psapi::sfm::ITexture* texture = psapi::sfm::ITexture::create().release();
-    psapi::sfm::ISprite* sprite = psapi::sfm::ISprite::create().release();
+    psapi::sfm::IImage*   final_image = psapi::sfm::IImage::create().release();
+    psapi::sfm::ITexture* texture     = psapi::sfm::ITexture::create().release();
+    psapi::sfm::ISprite*  sprite      = psapi::sfm::ISprite::create().release();
 
     final_image->create(size_.x, size_.y, psapi::sfm::Color(0, 0, 0, 0));
 
@@ -335,7 +339,7 @@ void Canvas::draw(psapi::IRenderWindow* renderWindow)
     psapi::sfm::vec2f scale = getScale();
     psapi::sfm::vec2i coord_start = getCoordStart();
 
-    for (int i = layers_amount - 1; i >= 0; i--)
+    for (int i = static_cast<int>(layers_amount) - 1; i >= 0; --i)
     {
         auto layer = getLayer(i);
         dumpOnImage(layer, final_image, coord_start, scale, size_);
@@ -368,11 +372,11 @@ psapi::sfm::vec2u Canvas::getObjectSize() const
     return size_;
 }
 
-bool Canvas::updateScale(const psapi::IRenderWindow* renderWindow, const psapi::Event& event)
+bool Canvas::updateScale(const psapi::IRenderWindow* /*renderWindow*/, const psapi::Event& event)
 {
-    auto scale = getScale();
+    auto scale       = getScale();
     auto coord_start = getCoordStart();
-    auto mouse_pos = getMousePosition();
+    auto mouse_pos   = getMousePosition();
 
     if (event.type == psapi::sfm::Event::MouseWheelScrolled &&
         event.mouseWheel.wheel == psapi::sfm::Mouse::Wheel::Vertical)
@@ -403,7 +407,7 @@ CanvasAction::CanvasAction(const psapi::IRenderWindow* render_window, const psap
     AAction(render_window, event), canvas_(canvas)
 {}
 
-bool CanvasAction::execute(const Key& key)
+bool CanvasAction::execute(const Key& /*key*/)
 {
     canvas_->mouse_pos_ = psapi::sfm::Mouse::getPosition(render_window_) - canvas_->pos_;
     canvas_->is_pressed_LMB_ = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
@@ -413,7 +417,7 @@ bool CanvasAction::execute(const Key& key)
     return canvas_->updateScale(render_window_, event_);
 }
 
-bool CanvasAction::isUndoable(const Key& key)
+bool CanvasAction::isUndoable(const Key& /*key*/)
 {
     return false;
 }

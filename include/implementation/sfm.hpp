@@ -21,46 +21,42 @@ static const Color BLUE  = Color(0, 0, 255);
 class PixelsArray : public IPixelsArray
 {
 public:
-    virtual ~PixelsArray() = default;
+    void setColor(const Color &color, size_t ind) override;
+    Color getColor(size_t ind) const override;
 
-    virtual void setColor(const Color &color, size_t ind) override;
-    virtual Color getColor(size_t ind) const override;
+    void setPosition(const vec2i &coord, size_t ind) override;
+    void setPosition(const vec2f &coord, size_t ind) override;
+    void setPosition(const vec2d &coord, size_t ind) override;
+    void setPosition(int x, int y, size_t ind) override;
+    void setPosition(float x, float y, size_t ind) override;
+    void setPosition(double x, double y, size_t ind) override;
 
-    virtual void setPosition(const vec2i &coord, size_t ind) override;
-    virtual void setPosition(const vec2f &coord, size_t ind) override;
-    virtual void setPosition(const vec2d &coord, size_t ind) override;
-    virtual void setPosition(int x, int y, size_t ind) override;
-    virtual void setPosition(float x, float y, size_t ind) override;
-    virtual void setPosition(double x, double y, size_t ind) override;
-
-    virtual void draw(IRenderWindow *window) const override;
+    void draw(IRenderWindow *window) const override;
 };
 
 class Image : public IImage
 {
 public:
-    virtual ~Image() = default;
+    void create(unsigned int width, unsigned int height, const Color &color=Color(0, 0, 0)) override;
+    void create(vec2u size, const Color &color=Color(0, 0, 0)) override;
 
-    virtual void create(unsigned int width, unsigned int height, const Color &color=Color(0, 0, 0)) override;
-    virtual void create(vec2u size, const Color &color=Color(0, 0, 0)) override;
+    void create(unsigned int width, unsigned int height, const Color *pixels) override;
+    void create(vec2u size, const Color *pixels) override;
 
-    virtual void create(unsigned int width, unsigned int height, const Color *pixels) override;
-    virtual void create(vec2u size, const Color *pixels) override;
-
-    virtual bool loadFromFile(const std::string &filename) override;
+    bool loadFromFile(const std::string &filename) override;
 
     bool saveToFile(const std::string &filename) const;
 
-    virtual void setPixel(unsigned int x, unsigned int y, const Color &color) override;
-    virtual void setPixel(vec2u pos, const Color &color) override;
+    void setPixel(unsigned int x, unsigned int y, const Color &color) override;
+    void setPixel(vec2u pos, const Color &color) override;
 
-    virtual Color getPixel(unsigned int x, unsigned int y) const override;
-    virtual Color getPixel(vec2u pos) const override;
+    Color getPixel(unsigned int x, unsigned int y) const override;
+    Color getPixel(vec2u pos) const override;
 
-    virtual vec2u getSize() const override;
+    vec2u getSize() const override;
 
-    virtual vec2i getPos() const override;
-    virtual void setPos(const vec2i &pos) override;
+    vec2i getPos() const override;
+    void setPos(const vec2i &pos) override;
 
 private:
     sf::Image image_;
@@ -76,16 +72,14 @@ private:
 class Texture : public ITexture
 {
 public:
-    virtual ~Texture() = default;
-
-    virtual bool create(unsigned int width, unsigned int height)                                     override;
-    virtual bool loadFromFile  (const std::string& filename,        const IntRect& area = IntRect()) override;
-    virtual bool loadFromMemory(const void* data, std::size_t size, const IntRect& area = IntRect()) override;
-    virtual vec2u getSize() const                                                                    override;
-    virtual std::unique_ptr<IImage> copyToImage() const                                              override;
-    virtual void update(const IImage *image)                                                         override;
-    virtual void update(const Color *pixels)                                                         override;
-    virtual void update(const Color *pixels, unsigned int width, unsigned int height,
+    bool create(unsigned int width, unsigned int height)                                     override;
+    bool loadFromFile  (const std::string& filename,        const IntRect& area = IntRect()) override;
+    bool loadFromMemory(const void* data, std::size_t size, const IntRect& area = IntRect()) override;
+    vec2u getSize() const                                                                    override;
+    std::unique_ptr<IImage> copyToImage() const                                              override;
+    void update(const IImage *image)                                                         override;
+    void update(const Color *pixels)                                                         override;
+    void update(const Color *pixels, unsigned int width, unsigned int height,
                                              unsigned int x,     unsigned int y) override;
 private:
     sf::Texture texture_;
@@ -99,26 +93,24 @@ private:
 class Sprite : public ISprite
 {
 public:
-    virtual ~Sprite() = default;
+    void setTexture(const ITexture *texture, bool reset_rect = false) override;
+    void setTextureRect(const IntRect &rectangle) override;
 
-    virtual void setTexture(const ITexture *texture, bool reset_rect = false) override;
-    virtual void setTextureRect(const IntRect &rectangle) override;
+    void setPosition(float x, float y) override;
+    void setPosition(const vec2f &pos) override;
 
-    virtual void setPosition(float x, float y) override;
-    virtual void setPosition(const vec2f &pos) override;
+    void setScale(float factorX, float factorY) override;
+    vec2u getSize() const override;
 
-    virtual void setScale(float factorX, float factorY) override;
-    virtual vec2u getSize() const override;
+    void setColor(const Color &color) override;
+    Color getColor() const override;
 
-    virtual void setColor(const Color &color) override;
-    virtual Color getColor() const override;
+    void setRotation(float angle) override;
 
-    virtual void setRotation(float angle) override;
+    const vec2f getPosition() const override;
+    IntRect getGlobalBounds() const override;
 
-    virtual const vec2f getPosition() const override;
-    virtual IntRect getGlobalBounds() const override;
-
-    virtual void draw(IRenderWindow *renderWindow) const override;
+    void draw(IRenderWindow *renderWindow) const override;
 
 private:
     sf::Sprite sprite_;
@@ -127,9 +119,7 @@ private:
 class Font : public IFont
 {
 public:
-    virtual ~Font() = default;
-
-    virtual bool loadFromFile(const std::string& filename) override;
+    bool loadFromFile(const std::string& filename) override;
 private:
     sf::Font font_;
 
@@ -139,22 +129,20 @@ private:
 class Text : public IText
 {
 public:
-    virtual ~Text() = default;
+    void setString(const std::string& string) override;
+    void setFont(const IFont* font)           override;
+    void setCharacterSize(unsigned int size)  override;
+    void setStyle(uint32_t style)             override;
+    void setFillColor(const Color* color)     override;
+    void setOutlineColor(const Color* color)  override;
+    void setOutlineThickness(float thickness) override;
 
-    virtual void setString(const std::string& string) override;
-    virtual void setFont(const IFont* font)           override;
-    virtual void setCharacterSize(unsigned int size)  override;
-    virtual void setStyle(uint32_t style)             override;
-    virtual void setFillColor(const Color* color)     override;
-    virtual void setOutlineColor(const Color* color)  override;
-    virtual void setOutlineThickness(float thickness) override;
+    void draw(IRenderWindow *window) const override;
 
-    virtual void draw(IRenderWindow *window) const override;
+    void setPos(const vec2f &pos) override;
+    void setSize(const vec2f &size) override;
 
-    virtual void setPos(const vec2f &pos) override;
-    virtual void setSize(const vec2f &size) override;
-
-    virtual IntRect getGlobalBounds() const override;
+    IntRect getGlobalBounds() const override;
 
 private:
     sf::Text text_;
@@ -166,19 +154,19 @@ public:
     RenderWindow(unsigned int width, unsigned int height, const std::string& name);
     virtual ~RenderWindow() = default;
 
-    virtual bool isOpen() const override;
-    virtual void clear()   override;
-    virtual void display() override;
-    virtual void close()   override;
+    bool isOpen() const override;
+    void clear()   override;
+    void display() override;
+    void close()   override;
 
-    virtual vec2u getSize() const override;
+    vec2u getSize() const override;
 
-    virtual bool pollEvent(Event& event) override;
+    bool pollEvent(Event& event) override;
 
-    virtual void draw(Drawable *target)override;
+    void draw(Drawable *target)override;
 
-    virtual void setFps(float fps) override;
-    virtual float getFps() const override;
+    void setFps(float fps) override;
+    float getFps() const override;
 
     sf::RenderWindow& getWindow();
 
@@ -193,9 +181,6 @@ private:
 
 class Shape : public IShape
 {
-public:
-    virtual ~Shape() = default;
-
 protected:
 
     mutable std::unique_ptr<Image> cached_image_;
@@ -216,30 +201,30 @@ public:
     RectangleShape(unsigned int width, unsigned int height);
     virtual ~RectangleShape() = default;
 
-    virtual void setTexture(const ITexture *texture) override;
-    virtual void setFillColor(const Color &color) override;
+    void setTexture(const ITexture *texture) override;
+    void setFillColor(const Color &color) override;
 
-    virtual void setPosition(const vec2i &pos) override;
-    virtual void setPosition(const vec2f &pos) override;
-    virtual void setPosition(const vec2d &pos) override;
-    virtual void setScale(const vec2f &scale) override;
-    virtual void setSize(const vec2u &size) override;
-    virtual void setRotation(float angle) override;
-    virtual void setOutlineColor(const Color &color) override;
-    virtual void setOutlineThickness(float thickness) override;
+    void setPosition(const vec2i &pos) override;
+    void setPosition(const vec2f &pos) override;
+    void setPosition(const vec2d &pos) override;
+    void setScale(const vec2f &scale) override;
+    void setSize(const vec2u &size) override;
+    void setRotation(float angle) override;
+    void setOutlineColor(const Color &color) override;
+    void setOutlineThickness(float thickness) override;
 
-    virtual float getRotation() const override;
-    virtual vec2f getScale() const override;
-    virtual vec2f getPosition() const override;
-    virtual const Color &getFillColor() const override;
-    virtual vec2u getSize() const override;
-    virtual float getOutlineThickness() const override;
-    virtual const Color &getOutlineColor() const override;
-    virtual const IImage* getImage() const override;
+    float getRotation() const override;
+    vec2f getScale() const override;
+    vec2f getPosition() const override;
+    const Color &getFillColor() const override;
+    vec2u getSize() const override;
+    float getOutlineThickness() const override;
+    const Color &getOutlineColor() const override;
+    const IImage* getImage() const override;
 
-    virtual void move(const vec2f &offset) override;
+    void move(const vec2f &offset) override;
 
-    virtual void draw(IRenderWindow *window) const override;
+    void draw(IRenderWindow *window) const override;
 
 private:
     sf::RectangleShape shape_;
@@ -256,30 +241,30 @@ public:
     EllipseShape(unsigned int width, unsigned int height);
     virtual ~EllipseShape() = default;
 
-    virtual void setTexture(const ITexture *texture) override;
-    virtual void setFillColor(const Color &color) override;
+    void setTexture(const ITexture *texture) override;
+    void setFillColor(const Color &color) override;
 
-    virtual void setPosition(const vec2i &pos) override;
-    virtual void setPosition(const vec2f &pos) override;
-    virtual void setPosition(const vec2d &pos) override;
-    virtual void setScale(const vec2f &scale) override;
-    virtual void setSize(const vec2u &size) override;
-    virtual void setRotation(float angle) override;
-    virtual void setOutlineColor(const Color &color) override;
-    virtual void setOutlineThickness(float thickness) override;
+    void setPosition(const vec2i &pos) override;
+    void setPosition(const vec2f &pos) override;
+    void setPosition(const vec2d &pos) override;
+    void setScale(const vec2f &scale) override;
+    void setSize(const vec2u &size) override;
+    void setRotation(float angle) override;
+    void setOutlineColor(const Color &color) override;
+    void setOutlineThickness(float thickness) override;
 
-    virtual float getRotation() const override;
-    virtual vec2f getScale() const override;
-    virtual vec2f getPosition() const override;
-    virtual const Color &getFillColor() const override;
-    virtual vec2u getSize() const override;
-    virtual float getOutlineThickness() const override;
-    virtual const Color &getOutlineColor() const override;
-    virtual const IImage* getImage() const override;
+    float getRotation() const override;
+    vec2f getScale() const override;
+    vec2f getPosition() const override;
+    const Color &getFillColor() const override;
+    vec2u getSize() const override;
+    float getOutlineThickness() const override;
+    const Color &getOutlineColor() const override;
+    const IImage* getImage() const override;
 
-    virtual void move(const vec2f &offset) override;
+    void move(const vec2f &offset) override;
 
-    virtual void draw(IRenderWindow *window) const override;
+    void draw(IRenderWindow *window) const override;
 private:
     sf::CircleShape shape_;
 

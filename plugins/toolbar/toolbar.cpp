@@ -15,7 +15,7 @@ static psapi::sfm::ITexture* normal  = nullptr;
 
 static const psapi::sfm::IntRect BUTTON_RECT = {{0, 0}, {30, 30}};
 
-static const char* BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const char* kBackgroundTexture = "assets/textures/white.jpg";
 static const char* HOVER_TEXTURE      = "assets/textures/white.jpg";
 static const char* RELEASE_TEXTURE    = "assets/textures/white.jpg";
 static const char* PRESS_TEXTURE      = "assets/textures/white.jpg";
@@ -28,7 +28,7 @@ bool onLoadPlugin()
     psapi::sfm::IntRect background_rect = psapi::getToolbarIntRect();
 
     back = psapi::sfm::ITexture::create().release();
-    back->loadFromFile(BACKGROUND_TEXTURE);
+    back->loadFromFile(kBackgroundTexture);
 
     hover = psapi::sfm::ITexture::create().release();
     hover->loadFromFile(HOVER_TEXTURE);

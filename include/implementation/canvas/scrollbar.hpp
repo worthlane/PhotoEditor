@@ -38,8 +38,8 @@ public:
                std::unique_ptr<psapi::sfm::ITexture> active,
                Scrollable* object);
 
-    virtual void draw(psapi::IRenderWindow* renderWindow) override;
-    virtual std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
+    void draw(psapi::IRenderWindow* renderWindow) override;
+    std::unique_ptr<psapi::IAction> createAction(const psapi::IRenderWindow* renderWindow, const psapi::Event& event) override;
 
 protected:
     Scrollable* object_;
@@ -77,7 +77,7 @@ public:
 
 protected:
     virtual void updateScroller();
-    virtual void setScrollerPos(psapi::sfm::vec2i pos) override;
+    void setScrollerPos(psapi::sfm::vec2i pos) override;
 
 };
 
@@ -93,7 +93,7 @@ public:
 
 protected:
     virtual void updateScroller();
-    virtual void setScrollerPos(psapi::sfm::vec2i pos) override;
+    void setScrollerPos(psapi::sfm::vec2i pos) override;
 
 };
 
@@ -102,8 +102,8 @@ class ScrollAction : public AAction
 public:
     ScrollAction(const psapi::IRenderWindow* render_window, const psapi::Event& event, AScrollBar* scrollbar);
 
-    virtual bool execute   (const Key& key) override;
-    virtual bool isUndoable(const Key& key) override;
+    bool execute   (const Key& key) override;
+    bool isUndoable(const Key& key) override;
 private:
     AScrollBar* scrollbar_;
 };

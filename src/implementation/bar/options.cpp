@@ -12,7 +12,7 @@ static const psapi::vec2u STD_PALETTE_SIZE = {200, 28};
 
 using psapi::sfm::Color;
 
-static const std::string BACKGROUND_TEXTURE = "assets/textures/white.jpg";
+static const std::string kBackgroundTexture = "assets/textures/white.jpg";
 static const std::string NORMAL_RAIL_TEXTURE = "assets/textures/white.jpg";
 static const std::string ACTIVE_RAIL_TEXTURE = "assets/textures/white.jpg";
 static const std::string NORMAL_TEXTURE = "assets/textures/normal_slider21.png";
@@ -228,7 +228,7 @@ OpacityOption::OpacityOption()
     id_ = psapi::kOpacityBarId;
 
     background_ = psapi::sfm::ITexture::create();
-    background_->loadFromFile(BACKGROUND_TEXTURE);
+    background_->loadFromFile(kBackgroundTexture);
 
     normal_rail_ = psapi::sfm::ITexture::create();
     normal_rail_->loadFromFile(NORMAL_RAIL_TEXTURE);
@@ -500,7 +500,7 @@ ThicknessOption::ThicknessOption()
     id_ = psapi::kThicknessBarId;
 
     background_ = psapi::sfm::ITexture::create();
-    background_->loadFromFile(BACKGROUND_TEXTURE);
+    background_->loadFromFile(kBackgroundTexture);
 
     normal_rail_ = psapi::sfm::ITexture::create();
     normal_rail_->loadFromFile(NORMAL_RAIL_TEXTURE);
@@ -675,10 +675,12 @@ void ThicknessOption::updateState(const psapi::IRenderWindow* renderWindow, cons
     bool pressed = psapi::sfm::Mouse::isButtonPressed(psapi::sfm::Mouse::Button::Left);
 
     bool rail_hovered = (mouse_pos.x >= rail_pos_.x && mouse_pos.x <= rail_pos_.x + RAIL_RECT.size.x) &&
-                       (mouse_pos.y >= rail_pos_.y && mouse_pos.y <= rail_pos_.y + RAIL_RECT.size.y);
+                        (mouse_pos.y >= rail_pos_.y && mouse_pos.y <= rail_pos_.y + RAIL_RECT.size.y);
 
-    bool slider_hovered = (mouse_pos.x >= rail_pos_.x + slider_pos_.x && mouse_pos.x <= rail_pos_.x + slider_pos_.x + SLIDER_RECT.size.x) &&
-                          (mouse_pos.y >= rail_pos_.y + slider_pos_.y && mouse_pos.y <= rail_pos_.y + slider_pos_.y + SLIDER_RECT.size.y);
+    bool slider_hovered = (mouse_pos.x >= rail_pos_.x + slider_pos_.x &&
+                           mouse_pos.x <= rail_pos_.x + slider_pos_.x + SLIDER_RECT.size.x) &&
+                          (mouse_pos.y >= rail_pos_.y + slider_pos_.y &&
+                           mouse_pos.y <= rail_pos_.y + slider_pos_.y + SLIDER_RECT.size.y);
 
     switch (state_)
     {
@@ -691,7 +693,8 @@ void ThicknessOption::updateState(const psapi::IRenderWindow* renderWindow, cons
             if (pressed && rail_hovered && !slider_hovered)
             {
                 state_ = ThicknessOption::State::Active;
-                setSliderPos({mouse_pos.x - rail_pos_.x - SLIDER_RECT.size.x / 2, mouse_pos.y - rail_pos_.y - SLIDER_RECT.size.y / 2});
+                setSliderPos({mouse_pos.x - rail_pos_.x - SLIDER_RECT.size.x / 2,
+                              mouse_pos.y - rail_pos_.y - SLIDER_RECT.size.y / 2});
             }
 
             break;
@@ -700,7 +703,8 @@ void ThicknessOption::updateState(const psapi::IRenderWindow* renderWindow, cons
             if (pressed)
             {
                 state_ = ThicknessOption::State::Active;
-                catch_pos_ = {mouse_pos.x - rail_pos_.x - slider_pos_.x, mouse_pos.y - rail_pos_.y - slider_pos_.y};
+                catch_pos_ = {mouse_pos.x - rail_pos_.x - slider_pos_.x,
+                              mouse_pos.y - rail_pos_.y - slider_pos_.y};
             }
 
             if (!slider_hovered)
@@ -750,7 +754,7 @@ ThicknessOptionAction::ThicknessOptionAction(const psapi::IRenderWindow* render_
             AAction(render_window, event), option_(option)
 {}
 
-bool ThicknessOptionAction::execute(const Key& key)
+bool ThicknessOptionAction::execute(const Key& /*key*/)
 {
     if (!option_->isActive())
         return false;
@@ -761,7 +765,7 @@ bool ThicknessOptionAction::execute(const Key& key)
     return true;
 }
 
-bool ThicknessOptionAction::isUndoable(const Key& key)
+bool ThicknessOptionAction::isUndoable(const Key& /*key*/)
 {
     return false;
 }

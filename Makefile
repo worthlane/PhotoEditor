@@ -102,15 +102,10 @@ $(MY_BUILD)/%.o : $(BAR_DIR)/%.cpp
 $(MY_BUILD)/%.o : $(IMPLEMENTATION_DIR)/%.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS) $(LOCATION_FLAG)
 
-# -------------------------------------------------------------------------------
-
-.PHONY: clean makedirs plugins
-
-clean:
-	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.dylib $(BUILD_DIR)/*.so $(BUILD_DIR)/*.dSYM $(MY_BUILD)/*.o $(MY_BUILD)/*.dll
-
-makedirs:
-	mkdir -p $(BUILD_DIR)
+# ==============================================================
+#                     PLUGINS BUILD
+# ==============================================================
+.PHONY: plugins
 
 plugins:
 	$(CXX) -dynamiclib plugins/canvas/canvas.cpp -o $(BUILD_DIR)/canvas.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
@@ -124,3 +119,12 @@ plugins:
 	$(CXX) -dynamiclib plugins/menubar/edit/edit.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/edit.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
 	$(CXX) -dynamiclib plugins/menubar/layer/layer.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/layer.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
 	$(CXX) -dynamiclib plugins/menubar/help/help.cpp plugins/menubar/submenubar.cpp -o $(BUILD_DIR)/help.dylib $(CXXFLAGS) $(LOCATION_FLAG) $(BUILD_DIR)/libapi_photoshop.dylib
+
+
+.PHONY: clean makedirs
+
+clean:
+	rm -rf  $(EXECUTABLE) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.dylib $(BUILD_DIR)/*.so $(BUILD_DIR)/*.dSYM $(MY_BUILD)/*.o $(MY_BUILD)/*.dll
+
+makedirs:
+	mkdir -p $(BUILD_DIR)
